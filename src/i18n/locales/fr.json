@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "title": "Juliette Logistique — Transport de véhicules premium",
+    "description": "Transport de véhicules premium et logistique sur mesure en Allemagne et à travers l'Europe."
+  },
+  "nav": {
+    "home": "Accueil",
+    "services": "Services",
+    "about": "À propos",
+    "partners": "Partenaires",
+    "contact": "Contact",
+    "careers": "Recrutement"
+  },
+  "cta": {
+    "ourServices": "Nos services",
+    "requestQuote": "Demander un devis",
+    "learnMore": "En savoir plus",
+    "allServices": "Voir tous nos services",
+    "apply": "Postuler maintenant",
+    "openPosition": "Voir le poste",
+    "submit": "Envoyer ma candidature"
+  },
+  "hero": {
+    "eyebrow": "Juliette Logistique",
+    "subtitle": "Transport de véhicules premium & logistique sur mesure",
+    "claims": ["Puissance", "Fiabilité", "Excellence"]
+  },
+  "trust": [
+    { "title": "Sécurité maximale", "text": "Priorité absolue pour votre véhicule" },
+    { "title": "5+ années", "text": "d'expérience dans le secteur" },
+    { "title": "Allemagne & international", "text": "partout où vous en avez besoin" },
+    { "title": "Service premium", "text": "une qualité sur laquelle compter" },
+    { "title": "Partenaires de confiance", "text": "un réseau solide" }
+  ],
+  "about": {
+    "title": "À propos de Juliette Logistique",
+    "lead": "Passion pour les véhicules. Responsabilité pour votre succès.",
+    "body": "Juliette Logistique est votre partenaire de confiance pour le convoyage de véhicules sur leurs propres roues. Nous concevons des solutions logistiques sur mesure avec le plus haut niveau de professionnalisme. Notre mission : acheminer votre véhicule en toute sécurité, rapidement et de manière fiable jusqu'à destination.",
+    "points": [
+      "Chauffeurs expérimentés et sélectionnés",
+      "Processus modernes et standards les plus élevés",
+      "Déroulé transparent de bout en bout",
+      "Interlocuteur personnel dédié"
+    ]
+  },
+  "services": {
+    "title": "Nos services",
+    "items": [
+      {
+        "title": "Convoyage de véhicules",
+        "text": "Sur leurs propres roues, en toute sécurité"
+      },
+      {
+        "title": "Enlèvement & livraison",
+        "text": "Ponctuels et flexibles, selon vos besoins"
+      },
+      {
+        "title": "Concessionnaires & flottes",
+        "text": "Transports réguliers en volume"
+      },
+      {
+        "title": "Courtes & longues distances",
+        "text": "Du transfert local au trajet international"
+      },
+      {
+        "title": "Allemagne & Europe",
+        "text": "Une couverture sans frontières"
+      },
+      {
+        "title": "Documentation complète",
+        "text": "Photos, rapports & preuves de livraison"
+      }
+    ]
+  },
+  "partners": {
+    "title": "Nos partenaires"
+  },
+  "contact": {
+    "title": "Contact",
+    "lead": "Prêt à collaborer ?",
+    "text": "Écrivez-nous et recevez une offre personnalisée.",
+    "phone": "+49 157 35 88 47 88"
+  },
+  "careers": {
+    "title": "Rejoignez l'équipe",
+    "lead": "Chauffeur convoyeur (H/F)",
+    "intro": "Nous recherchons des chauffeurs fiables pour convoyer des véhicules premium en Allemagne et à travers l'Europe. Vous travaillez de manière autonome, vous soignez chaque véhicule comme le vôtre et la ponctualité fait partie de votre quotidien.",
+    "tasksTitle": "Vos missions",
+    "tasks": [
+      "Convoyage de véhicules sur leurs propres roues",
+      "Enlèvement et livraison auprès des clients et concessionnaires",
+      "Contrôle de l'état du véhicule et documentation photo",
+      "Rédaction du protocole de remise"
+    ],
+    "requirementsTitle": "Votre profil",
+    "requirements": [
+      "Permis de conduire B valide (2 ans minimum)",
+      "Casier de conduite irréprochable",
+      "Allemand ou anglais courant",
+      "Flexibilité et esprit d'équipe"
+    ],
+    "offerTitle": "Notre offre",
+    "offer": [
+      "Rémunération attractive et paiement ponctuel",
+      "Véhicules premium et missions variées",
+      "Horaires flexibles",
+      "Interlocuteur personnel dédié"
+    ],
+    "processTitle": "Le déroulé de la candidature",
+    "process": [
+      "Vous remplissez le formulaire en ligne et joignez votre CV",
+      "Nous examinons votre dossier sous 5 jours ouvrés",
+      "Entretien téléphonique et prise de connaissance",
+      "Intégration et première mission"
+    ]
+  },
+  "application": {
+    "title": "Formulaire de candidature",
+    "lead": "Tous les champs marqués d'un astérisque sont obligatoires.",
+    "fields": {
+      "lastName": "Nom",
+      "firstName": "Prénom",
+      "email": "Adresse e-mail",
+      "phone": "Téléphone",
+      "country": "Pays",
+      "city": "Ville",
+      "birthDate": "Date de naissance",
+      "licenseSince": "Permis obtenu en (année)",
+      "licenseCategories": "Catégories de permis",
+      "languages": "Langues parlées",
+      "experienceYears": "Années d'expérience",
+      "availability": "Disponible à partir du",
+      "message": "Message / motivation",
+      "cv": "CV (PDF, DOC, DOCX — max. 5 Mo)",
+      "consent": "J'accepte le traitement de mes données dans le cadre du recrutement."
+    },
+    "success": {
+      "title": "Merci pour votre candidature !",
+      "text": "Nous avons reçu votre dossier et vous répondrons rapidement."
+    }
+  },
+  "validation": {
+    "required": "Ce champ est obligatoire.",
+    "tooShort": "Cette valeur est trop courte.",
+    "tooLong": "Cette valeur est trop longue.",
+    "email": "Adresse e-mail invalide.",
+    "number": "Veuillez saisir un nombre entier.",
+    "range": "La valeur est en dehors de la plage autorisée.",
+    "consent": "Votre accord est nécessaire pour poursuivre.",
+    "cvRequired": "Merci de joindre votre CV.",
+    "cvTooLarge": "Le fichier dépasse 5 Mo.",
+    "cvType": "Formats acceptés : PDF, DOC, DOCX."
+  },
+  "footer": {
+    "tagline": "Transport de véhicules premium & logistique sur mesure",
+    "rights": "Tous droits réservés.",
+    "imprint": "Mentions légales",
+    "privacy": "Confidentialité"
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "text": "La page demandée n'existe pas ou a été déplacée.",
+    "back": "Retour à l'accueil"
+  }
+}

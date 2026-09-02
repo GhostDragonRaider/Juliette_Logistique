@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "title": "Juliette Logistique — Premium vehicle transport",
+    "description": "Premium vehicle transport and tailor-made logistics across Germany and Europe."
+  },
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "about": "About",
+    "partners": "Partners",
+    "contact": "Contact",
+    "careers": "Careers"
+  },
+  "cta": {
+    "ourServices": "Our services",
+    "requestQuote": "Request a quote",
+    "learnMore": "Learn more",
+    "allServices": "See all services",
+    "apply": "Apply now",
+    "openPosition": "View position",
+    "submit": "Submit application"
+  },
+  "hero": {
+    "eyebrow": "Juliette Logistique",
+    "subtitle": "Premium vehicle transport & tailor-made logistics",
+    "claims": ["Reliable", "Secure", "On time"]
+  },
+  "trust": [
+    { "title": "Maximum safety", "text": "Top priority for your vehicle" },
+    { "title": "5+ years", "text": "of industry experience" },
+    { "title": "Germany & Europe", "text": "on the road wherever you need us" },
+    { "title": "Premium service", "text": "quality you can rely on" },
+    { "title": "Trusted partners", "text": "a strong network" }
+  ],
+  "about": {
+    "title": "About Juliette Logistique",
+    "lead": "Passion for vehicles. Responsibility for your success.",
+    "body": "Juliette Logistique is your trusted partner for driven vehicle transfers. We design tailor-made logistics solutions with the highest level of professionalism. Our mission: to get your vehicle to its destination safely, quickly and reliably.",
+    "points": [
+      "Experienced and vetted drivers",
+      "Modern processes and the highest standards",
+      "Transparent handling end to end",
+      "A dedicated personal contact"
+    ]
+  },
+  "services": {
+    "title": "Our services",
+    "items": [
+      {
+        "title": "Vehicle transfer",
+        "text": "Driven on its own wheels, safely delivered"
+      },
+      {
+        "title": "Pickup & delivery",
+        "text": "Punctual and flexible, tailored to your needs"
+      },
+      {
+        "title": "Dealer & fleet transport",
+        "text": "Recurring transports at volume"
+      },
+      {
+        "title": "Short & long distance",
+        "text": "From a local transfer to a European tour"
+      },
+      {
+        "title": "Germany & Europe",
+        "text": "Coverage without borders"
+      },
+      {
+        "title": "Photo documentation & protocol",
+        "text": "Photos, reports & proof of handover"
+      }
+    ]
+  },
+  "partners": {
+    "title": "Our partners"
+  },
+  "contact": {
+    "title": "Contact",
+    "lead": "Ready to work together?",
+    "text": "Get in touch and receive a personal offer.",
+    "phone": "+49 157 35 88 47 88"
+  },
+  "careers": {
+    "title": "Join the team",
+    "lead": "Vehicle transfer driver (m/f/d)",
+    "intro": "We are looking for reliable drivers to transfer premium vehicles across Germany and Europe. You work independently, treat every vehicle as your own, and punctuality is second nature to you.",
+    "tasksTitle": "Your responsibilities",
+    "tasks": [
+      "Transferring vehicles on their own wheels",
+      "Pickup and delivery at customers and dealerships",
+      "Condition checks and photo documentation",
+      "Completing the handover protocol"
+    ],
+    "requirementsTitle": "Your profile",
+    "requirements": [
+      "Valid category B driving licence (min. 2 years)",
+      "Clean driving record",
+      "Fluent German or English",
+      "Flexibility and team spirit"
+    ],
+    "offerTitle": "What we offer",
+    "offer": [
+      "Attractive pay, always on time",
+      "Premium vehicles and varied assignments",
+      "Flexible scheduling",
+      "A dedicated personal contact"
+    ],
+    "processTitle": "How the application works",
+    "process": [
+      "You fill in the online form and upload your CV",
+      "We review your application within 5 business days",
+      "Phone call and a personal introduction",
+      "Onboarding and your first assignment"
+    ]
+  },
+  "application": {
+    "title": "Application form",
+    "lead": "All fields marked with an asterisk are required.",
+    "fields": {
+      "lastName": "Last name",
+      "firstName": "First name",
+      "email": "Email address",
+      "phone": "Phone",
+      "country": "Country",
+      "city": "City",
+      "birthDate": "Date of birth",
+      "licenseSince": "Driving licence since (year)",
+      "licenseCategories": "Licence categories",
+      "languages": "Languages",
+      "experienceYears": "Years of experience",
+      "availability": "Available from",
+      "message": "Message / motivation",
+      "cv": "CV (PDF, DOC, DOCX — max. 5 MB)",
+      "consent": "I consent to my data being processed for recruitment purposes."
+    },
+    "success": {
+      "title": "Thank you for your application!",
+      "text": "We have received your documents and will get back to you shortly."
+    }
+  },
+  "validation": {
+    "required": "This field is required.",
+    "tooShort": "This value is too short.",
+    "tooLong": "This value is too long.",
+    "email": "Invalid email address.",
+    "number": "Please enter a whole number.",
+    "range": "The value is outside the allowed range.",
+    "consent": "We need your consent to continue.",
+    "cvRequired": "Please attach your CV.",
+    "cvTooLarge": "The file is larger than 5 MB.",
+    "cvType": "Accepted formats: PDF, DOC, DOCX."
+  },
+  "footer": {
+    "tagline": "Premium vehicle transport & tailor-made logistics",
+    "rights": "All rights reserved.",
+    "imprint": "Imprint",
+    "privacy": "Privacy policy"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "The page you requested does not exist or has been moved.",
+    "back": "Back to home"
+  }
+}

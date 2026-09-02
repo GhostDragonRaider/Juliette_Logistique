@@ -1,0 +1,64 @@
+@import 'tailwindcss';
+
+/*
+ * Juliette Logistique — design tokens.
+ * Minden márkaérték itt van egy helyen; a komponensek csak ezekre hivatkoznak.
+ */
+@theme {
+  --color-ink-950: #060606;
+  --color-ink-900: #0a0a0a;
+  --color-ink-800: #121212;
+  --color-ink-700: #1a1a1a;
+  --color-ink-600: #262626;
+
+  --color-gold-50: #fdf8e7;
+  --color-gold-100: #f7e9b8;
+  --color-gold-200: #efd68a;
+  --color-gold-300: #e5c25c;
+  --color-gold-400: #d4af37;
+  --color-gold-500: #bf9a2c;
+  --color-gold-600: #9a7a20;
+  --color-gold-700: #6f5716;
+
+  --font-display: 'Saira Condensed', 'Arial Narrow', sans-serif;
+  --font-heading: 'Cinzel', Georgia, serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  --shadow-glow: 0 0 40px -8px rgb(212 175 55 / 0.35);
+}
+
+/* A fő arany gradiens: a logó és a hero feliratok fémes hatásához. */
+@utility text-gold-gradient {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-gold-600) 0%,
+    var(--color-gold-200) 35%,
+    var(--color-gold-400) 55%,
+    var(--color-gold-700) 100%
+  );
+  background-clip: text;
+  color: transparent;
+}
+
+@utility border-gold-hairline {
+  border: 1px solid rgb(212 175 55 / 0.25);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ink-900 font-sans text-neutral-200 antialiased;
+  }
+
+  ::selection {
+    @apply bg-gold-400 text-ink-900;
+  }
+
+  /* A fókuszgyűrű sötét háttéren is jól látszik — akadálymentesítési alap. */
+  :focus-visible {
+    @apply outline-gold-400 outline-2 outline-offset-2;
+  }
+}

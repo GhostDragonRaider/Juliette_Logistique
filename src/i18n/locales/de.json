@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "title": "Juliette Logistique — Premium Fahrzeugüberführung",
+    "description": "Premium Fahrzeugüberführung und maßgeschneiderte Logistik — deutschlandweit und europaweit."
+  },
+  "nav": {
+    "home": "Startseite",
+    "services": "Leistungen",
+    "about": "Über uns",
+    "partners": "Partner",
+    "contact": "Kontakt",
+    "careers": "Karriere"
+  },
+  "cta": {
+    "ourServices": "Unsere Leistungen",
+    "requestQuote": "Transport anfragen",
+    "learnMore": "Mehr über uns",
+    "allServices": "Alle Leistungen ansehen",
+    "apply": "Jetzt bewerben",
+    "openPosition": "Stelle ansehen",
+    "submit": "Bewerbung absenden"
+  },
+  "hero": {
+    "eyebrow": "Juliette Logistique",
+    "subtitle": "Premium Fahrzeugüberführung & Logistik",
+    "claims": ["Zuverlässig", "Sicher", "Pünktlich"]
+  },
+  "trust": [
+    { "title": "Sicherheit", "text": "Höchste Priorität für Ihr Fahrzeug" },
+    { "title": "5+ Jahre", "text": "Erfahrung in der Branche" },
+    { "title": "Deutschlandweit & europaweit", "text": "für Sie unterwegs" },
+    { "title": "Premium Service", "text": "Qualität, auf die Sie sich verlassen können" },
+    { "title": "Verlässliche Partner", "text": "Starke Netzwerke" }
+  ],
+  "about": {
+    "title": "Über uns",
+    "lead": "Leidenschaft für Fahrzeuge. Verantwortung für Ihren Erfolg.",
+    "body": "Juliette Logistique steht für professionelle Fahrzeugüberführungen auf höchstem Niveau. Mit Erfahrung, Leidenschaft und einem starken Netzwerk sorgen wir dafür, dass Ihr Fahrzeug sicher, schnell und zuverlässig am Ziel ankommt.",
+    "points": [
+      "Erfahrene & geschulte Fahrer",
+      "Moderne Prozesse & höchste Standards",
+      "Transparente Abläufe",
+      "Persönlicher Ansprechpartner"
+    ]
+  },
+  "services": {
+    "title": "Unsere Leistungen",
+    "items": [
+      {
+        "title": "Fahrzeugüberführung",
+        "text": "Auf eigener Achse, sicher am Ziel"
+      },
+      {
+        "title": "Abholung & Zustellung",
+        "text": "Pünktlich und flexibel nach Ihrem Bedarf"
+      },
+      {
+        "title": "Händler- & Flottentransporte",
+        "text": "Regelmäßige Transporte in Volumen"
+      },
+      {
+        "title": "Kurz- & Langstrecken",
+        "text": "Vom lokalen Transfer bis zur Europatour"
+      },
+      {
+        "title": "Deutschlandweit & europaweit",
+        "text": "Abdeckung ohne Grenzen"
+      },
+      {
+        "title": "Foto-Dokumentation & Protokoll",
+        "text": "Fotos, Berichte & Übergabenachweis"
+      }
+    ]
+  },
+  "partners": {
+    "title": "Unsere Partner"
+  },
+  "contact": {
+    "title": "Kontakt",
+    "lead": "Bereit für die Zusammenarbeit?",
+    "text": "Schreiben Sie uns und erhalten Sie ein persönliches Angebot.",
+    "phone": "+49 157 35 88 47 88"
+  },
+  "careers": {
+    "title": "Werde Teil des Teams",
+    "lead": "Fahrzeugüberführer (m/w/d)",
+    "intro": "Wir suchen zuverlässige Fahrer für die Überführung von Premium-Fahrzeugen in Deutschland und Europa. Du arbeitest selbstständig, behandelst jedes Fahrzeug wie dein eigenes und Pünktlichkeit ist für dich selbstverständlich.",
+    "tasksTitle": "Deine Aufgaben",
+    "tasks": [
+      "Überführung von Fahrzeugen auf eigener Achse",
+      "Abholung und Zustellung bei Kunden und Händlern",
+      "Zustandskontrolle und Foto-Dokumentation",
+      "Erstellung des Übergabeprotokolls"
+    ],
+    "requirementsTitle": "Dein Profil",
+    "requirements": [
+      "Gültiger Führerschein Klasse B (mind. 2 Jahre)",
+      "Einwandfreies Fahrverhalten",
+      "Deutsch oder Englisch verhandlungssicher",
+      "Flexibilität und Teamgeist"
+    ],
+    "offerTitle": "Unser Angebot",
+    "offer": [
+      "Attraktive und pünktliche Vergütung",
+      "Premium-Fahrzeuge und abwechslungsreiche Einsätze",
+      "Flexible Zeiteinteilung",
+      "Persönlicher Ansprechpartner"
+    ],
+    "processTitle": "So läuft die Bewerbung",
+    "process": [
+      "Du füllst das Online-Formular aus und lädst deinen Lebenslauf hoch",
+      "Wir prüfen deine Unterlagen innerhalb von 5 Werktagen",
+      "Telefongespräch und persönliches Kennenlernen",
+      "Einarbeitung und erster Einsatz"
+    ]
+  },
+  "application": {
+    "title": "Bewerbungsformular",
+    "lead": "Alle mit einem Stern markierten Felder sind Pflichtfelder.",
+    "fields": {
+      "lastName": "Nachname",
+      "firstName": "Vorname",
+      "email": "E-Mail-Adresse",
+      "phone": "Telefon",
+      "country": "Land",
+      "city": "Stadt",
+      "birthDate": "Geburtsdatum",
+      "licenseSince": "Führerschein seit (Jahr)",
+      "licenseCategories": "Führerscheinklassen",
+      "languages": "Sprachkenntnisse",
+      "experienceYears": "Jahre Berufserfahrung",
+      "availability": "Verfügbar ab",
+      "message": "Nachricht / Motivation",
+      "cv": "Lebenslauf (PDF, DOC, DOCX — max. 5 MB)",
+      "consent": "Ich stimme der Verarbeitung meiner Daten im Rahmen des Bewerbungsverfahrens zu."
+    },
+    "success": {
+      "title": "Danke für deine Bewerbung!",
+      "text": "Wir haben deine Unterlagen erhalten und melden uns in Kürze."
+    }
+  },
+  "validation": {
+    "required": "Dieses Feld ist ein Pflichtfeld.",
+    "tooShort": "Diese Angabe ist zu kurz.",
+    "tooLong": "Diese Angabe ist zu lang.",
+    "email": "Ungültige E-Mail-Adresse.",
+    "number": "Bitte eine ganze Zahl eingeben.",
+    "range": "Der Wert liegt außerhalb des zulässigen Bereichs.",
+    "consent": "Ohne deine Zustimmung können wir nicht fortfahren.",
+    "cvRequired": "Bitte lade deinen Lebenslauf hoch.",
+    "cvTooLarge": "Die Datei ist größer als 5 MB.",
+    "cvType": "Erlaubte Formate: PDF, DOC, DOCX."
+  },
+  "footer": {
+    "tagline": "Premium Fahrzeugüberführung & Logistik",
+    "rights": "Alle Rechte vorbehalten.",
+    "imprint": "Impressum",
+    "privacy": "Datenschutz"
+  },
+  "notFound": {
+    "title": "Seite nicht gefunden",
+    "text": "Die angeforderte Seite existiert nicht oder wurde verschoben.",
+    "back": "Zurück zur Startseite"
+  }
+}
