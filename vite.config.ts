@@ -1,7 +1,17 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
-// https://vite.dev/config/
+/**
+ * A Vite beállítások Emotion JSX támogatással.
+ */
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      jsxImportSource: '@emotion/react',
+    }),
+  ],
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+  },
 })
