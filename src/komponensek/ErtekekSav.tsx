@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import { AranyIkon } from './AranyIkon'
-import { ertekPontok } from '../adatok/fooldalAdatok'
+import { useNyelv } from '../nyelv/useNyelv'
 import { tema } from '../stilusok/tema'
 
 /** Az értékek vízszintes sávja */
@@ -54,12 +54,14 @@ const ErtekLeiras = styled.p`
 `
 
 /**
- * Az öt bizalmi / értékpontot jeleníti meg a hero alatt.
+ * Az öt bizalmi / értékpontot jeleníti meg a kiválasztott nyelven.
  */
 export function ErtekekSav() {
+  const { szoveg } = useNyelv()
+
   return (
-    <ErtekekKeret className="ertekek-sav" aria-label="Unsere Stärken">
-      {ertekPontok.map((pont) => (
+    <ErtekekKeret className="ertekek-sav" aria-label={szoveg.ertekekAria}>
+      {szoveg.ertekek.map((pont) => (
         <ErtekKartya key={pont.azonosito} className="ertek-kartya">
           <AranyIkon tipus={pont.ikon} meret={30} className="ertek-ikon" />
           <ErtekCim className="ertek-cim">{pont.cim}</ErtekCim>

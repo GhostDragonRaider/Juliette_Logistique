@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import { AranyIkon } from './AranyIkon'
 import { Gomb } from './Gomb'
-import { szolgaltatasok } from '../adatok/fooldalAdatok'
+import { useNyelv } from '../nyelv/useNyelv'
 import { tema, aranySzovegAtmenet } from '../stilusok/tema'
 
 /** A szolgáltatások szekció kerete */
@@ -84,15 +84,17 @@ const KozepGombSor = styled.div`
 `
 
 /**
- * A szolgáltatások rácsát jeleníti meg a főoldalon.
+ * A szolgáltatások rácsát jeleníti meg a kiválasztott nyelven.
  */
 export function SzolgaltatasokSzekcio() {
+  const { szoveg } = useNyelv()
+
   return (
     <SzolgaltatasokKeret className="szolgaltatasok-szekcio" id="szolgaltatasok">
-      <SzekcioCim className="szolgaltatasok-cim">UNSERE LEISTUNGEN</SzekcioCim>
+      <SzekcioCim className="szolgaltatasok-cim">{szoveg.szolgaltatasokCim}</SzekcioCim>
 
       <KartyaRac className="szolgaltatas-kartya-rac">
-        {szolgaltatasok.map((elem) => (
+        {szoveg.szolgaltatasok.map((elem) => (
           <SzolgaltatasKartya
             key={elem.azonosito}
             className="szolgaltatas-kartya"
@@ -112,7 +114,7 @@ export function SzolgaltatasokSzekcio() {
           valtozat="korvonal"
           mutatNyilat
         >
-          ALLE LEISTUNGEN ANSEHEN
+          {szoveg.szolgaltatasokGomb}
         </Gomb>
       </KozepGombSor>
     </SzolgaltatasokKeret>

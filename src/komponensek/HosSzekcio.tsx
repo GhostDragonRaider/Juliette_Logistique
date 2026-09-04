@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import { keyframes } from '@emotion/react'
 import { Gomb } from './Gomb'
-import { hosSzovegek } from '../adatok/fooldalAdatok'
+import { useNyelv } from '../nyelv/useNyelv'
 import { tema, aranySzovegAtmenet } from '../stilusok/tema'
 
 /** A hero tartalom felúszó animációja */
@@ -87,16 +87,18 @@ const GombSor = styled.div`
 `
 
 /**
- * A főoldal hero szekcióját jeleníti meg: háttérkép, márkanév, alcím és CTA gombok.
+ * A főoldal hero szekcióját jeleníti meg a kiválasztott nyelven.
  */
 export function HosSzekcio() {
+  const { szoveg } = useNyelv()
+
   return (
     <HosKeret className="hos-szekcio" id="kezdooldal">
       <HosHatter className="hos-hatter" aria-hidden="true" />
       <HosTartalom className="hos-tartalom">
-        <MarkaCim className="marka-cim">{hosSzovegek.markaNev}</MarkaCim>
-        <HosAlcim className="hos-alcim">{hosSzovegek.alcim}</HosAlcim>
-        <HosMotto className="hos-motto">{hosSzovegek.mottó}</HosMotto>
+        <MarkaCim className="marka-cim">{szoveg.hos.markaNev}</MarkaCim>
+        <HosAlcim className="hos-alcim">{szoveg.hos.alcim}</HosAlcim>
+        <HosMotto className="hos-motto">{szoveg.hos.motto}</HosMotto>
         <GombSor className="hos-gomb-sor">
           <Gomb
             className="hos-elsodleges-gomb"
@@ -104,7 +106,7 @@ export function HosSzekcio() {
             valtozat="telitett"
             mutatNyilat
           >
-            {hosSzovegek.elsodlegesGomb}
+            {szoveg.hos.elsodlegesGomb}
           </Gomb>
           <Gomb
             className="hos-masodlagos-gomb"
@@ -112,7 +114,7 @@ export function HosSzekcio() {
             valtozat="korvonal"
             mutatNyilat
           >
-            {hosSzovegek.masodlagosGomb}
+            {szoveg.hos.masodlagosGomb}
           </Gomb>
         </GombSor>
       </HosTartalom>

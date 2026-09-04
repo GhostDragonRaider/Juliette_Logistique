@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { partnerNevek } from '../adatok/fooldalAdatok'
+import { useNyelv } from '../nyelv/useNyelv'
 import { tema, aranySzovegAtmenet } from '../stilusok/tema'
 
 /** A partnerek szekció kerete */
@@ -29,7 +30,7 @@ const PartnerSor = styled.div`
   gap: 1.4rem 2.4rem;
 `
 
-/** Egy partnernév felirat (logo helyett tipográfia) */
+/** Egy partnernév felirat */
 const PartnerNev = styled.span`
   font-family: ${tema.betu.cim};
   font-size: clamp(0.95rem, 1.8vw, 1.25rem);
@@ -46,12 +47,14 @@ const PartnerNev = styled.span`
 `
 
 /**
- * A partnerek tipográfikus logósorát jeleníti meg.
+ * A partnerek tipográfikus logósorát jeleníti meg a kiválasztott nyelven.
  */
 export function PartnerekSzekcio() {
+  const { szoveg } = useNyelv()
+
   return (
     <PartnerekKeret className="partnerek-szekcio" id="partnerek">
-      <SzekcioCim className="partnerek-cim">UNSERE PARTNER</SzekcioCim>
+      <SzekcioCim className="partnerek-cim">{szoveg.partnerekCim}</SzekcioCim>
       <PartnerSor className="partner-sor">
         {partnerNevek.map((nev) => (
           <PartnerNev key={nev} className="partner-nev">

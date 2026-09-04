@@ -2,7 +2,9 @@ import { useState } from 'react'
 import styled from '@emotion/styled'
 import { Logo } from './Logo'
 import { Gomb } from './Gomb'
-import { navigacioLinkek, nyelvek, telefonszam } from '../adatok/fooldalAdatok'
+import { telefonszam } from '../adatok/fooldalAdatok'
+import { useNyelv } from '../nyelv/useNyelv'
+import { nyelvKapcsolok, type NyelvKod } from '../nyelv/nyelvTipusok'
 import { tema, aranyKeret } from '../stilusok/tema'
 
 /** A fejléc rögzített sávja */
@@ -68,22 +70,18 @@ const JobbSav = styled.div`
   gap: 0.85rem;
 `
 
-/** Nyelvválasztó sor */
+/** Nyelvválasztó sor — mindig látható */
 const NyelvValaszto = styled.div`
-  display: none;
+  display: flex;
   align-items: center;
   gap: 0.35rem;
   font-family: ${tema.betu.cim};
   font-size: 0.68rem;
   letter-spacing: 0.12em;
   color: ${tema.szin.szurke};
-
-  @media (min-width: ${tema.szelesseg.mobil}) {
-    display: flex;
-  }
 `
 
-/** Egy nyelv gombja */
+/** Egy nyelv gombja a kapcsolóban */
 const NyelvGomb = styled.button<{ aktiv: boolean }>`
   color: ${(props) => (props.aktiv ? tema.szin.aranyVilagos : tema.szin.szurke)};
   font-weight: ${(props) => (props.aktiv ? 700 : 500)};
@@ -92,11 +90,23 @@ const NyelvGomb = styled.button<{ aktiv: boolean }>`
   &:hover {
     color: ${tema.szin.arany};
   }
+
+  &:focus-visible {
+    outline: 2px solid ${tema.szin.arany};
+    outline-offset: 3px;
+  }
 `
 
 /** Elválasztó a nyelvek között */
 const NyelvElvalaszto = styled.span`
   color: ${tema.szin.szurkeSotet};
+`
+
+/** Egy nyelv gomb csoportja az elválasztóval */
+const NyelvElem = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
 `
 
 /** Mobil menü gomb */
@@ -138,18 +148,11 @@ const MobilMenuPanel = styled.div<{ nyitva: boolean }>`
 `
 
 /**
- * A főoldal fejlécét rajzolja ki: logo, navigáció, nyelvváltó és telefon gomb.
+ * A főoldal fejlécét rajzolja ki: logo, navigáció, nyelvkapcsoló és telefon gomb.
  */
 export function Fejlec() {
-  const [aktivNyelv, setAktivNyelv] = useState<(typeof nyelvek)[number]>('DE')
+  const { nyelv, szoveg, nyelvetValaszt } = useNyelv()
   const [mobilMenuNyitva, setMobilMenuNyitva] = useState(false)
-
-  /**
-   * Átváltja a kiválasztott nyelvet a fejlécben.
-   */
-  function nyelvetValaszt(nyelv: (typeof nyelvek)[number]) {
-    setAktivNyelv(nyelv)
-  }
 
   /**
    * Megnyitja vagy bezárja a mobil menüt.
@@ -165,12 +168,19 @@ export function Fejlec() {
     setMobilMenuNyitva(false)
   }
 
+  /**
+   * Átváltja az oldal nyelvét a kapcsolóról.
+   */
+  function nyelvetAtvalt(ujNyelv: NyelvKod) {
+    nyelvetValaszt(ujNyelv)
+  }
+
   return (
     <FejlecSav className="fejlec-sav">
       <Logo className="fejlec-logo" />
 
-      <NavigacioLista className="navigacio-lista" aria-label="Hauptnavigation">
-        {navigacioLinkek.map((link) => (
+      <NavigacioLista className="navigacio-lista" aria-label={szoveg.navigacioAria}>
+        {szoveg.navigacio.map((link) => (
           <NavigacioLinkElem
             key={link.azonosito}
             className="navigacio-link"
@@ -182,19 +192,24 @@ export function Fejlec() {
       </NavigacioLista>
 
       <JobbSav className="fejlec-jobb-sav">
-        <NyelvValaszto className="nyelv-valaszto" aria-label="Sprache">
-          {nyelvek.map((nyelv, index) => (
-            <span key={nyelv} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-              {index > 0 ? <NyelvElvalaszto>|</NyelvElvalaszto> : null}
+        <NyelvValaszto
+          className="nyelv-valaszto"
+          role="group"
+          aria-label={szoveg.nyelvAria}
+        >
+          {nyelvKapcsolok.map((kapcsolo, index) => (
+            <NyelvElem key={kapcsolo.kod} className="nyelv-elem">
+              {index > 0 ? <NyelvElvalaszto aria-hidden="true">|</NyelvElvalaszto> : null}
               <NyelvGomb
                 className="nyelv-gomb"
                 type="button"
-                aktiv={aktivNyelv === nyelv}
-                onClick={() => nyelvetValaszt(nyelv)}
+                aktiv={nyelv === kapcsolo.kod}
+                aria-pressed={nyelv === kapcsolo.kod}
+                onClick={() => nyelvetAtvalt(kapcsolo.kod)}
               >
-                {nyelv}
+                {kapcsolo.felirat}
               </NyelvGomb>
-            </span>
+            </NyelvElem>
           ))}
         </NyelvValaszto>
 
@@ -210,7 +225,7 @@ export function Fejlec() {
         <MobilMenuGomb
           className="mobil-menu-gomb"
           type="button"
-          aria-label="Menü"
+          aria-label={szoveg.menuAria}
           aria-expanded={mobilMenuNyitva}
           onClick={mobilMenutValt}
         >
@@ -221,7 +236,7 @@ export function Fejlec() {
       </JobbSav>
 
       <MobilMenuPanel className="mobil-menu-panel" nyitva={mobilMenuNyitva}>
-        {navigacioLinkek.map((link) => (
+        {szoveg.navigacio.map((link) => (
           <NavigacioLinkElem
             key={link.azonosito}
             className="mobil-navigacio-link"

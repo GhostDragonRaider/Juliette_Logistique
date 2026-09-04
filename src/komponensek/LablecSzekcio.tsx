@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import { Gomb } from './Gomb'
-import { lablecSzovegek, telefonszam } from '../adatok/fooldalAdatok'
+import { telefonszam } from '../adatok/fooldalAdatok'
+import { useNyelv } from '../nyelv/useNyelv'
 import { tema, aranySzovegAtmenet } from '../stilusok/tema'
 
 /** A záró CTA sáv */
@@ -49,14 +50,16 @@ const LablecKiemeles = styled.span`
 `
 
 /**
- * A záró „kapcsolatfelvétel” sávot és a láblécet jeleníti meg.
+ * A záró kapcsolatfelvételi sávot és a láblécet jeleníti meg a kiválasztott nyelven.
  */
 export function LablecSzekcio() {
+  const { szoveg } = useNyelv()
+
   return (
     <>
       <LablecCtaKeret className="lablec-cta-szekcio" id="kapcsolat">
         <LablecKerdes className="lablec-kerdes">
-          {lablecSzovegek.kerdes}
+          {szoveg.lablec.kerdes}
         </LablecKerdes>
         <Gomb
           className="lablec-kapcsolat-gomb"
@@ -64,14 +67,15 @@ export function LablecSzekcio() {
           valtozat="telitett"
           mutatNyilat
         >
-          {lablecSzovegek.gomb}
+          {szoveg.lablec.gomb}
         </Gomb>
       </LablecCtaKeret>
 
       <LablecKeret className="lablec-keret">
         <p className="lablec-marka">
           <LablecKiemeles>Juliette Logistique</LablecKiemeles>
-          {' — Premium Fahrzeugüberführung'}
+          {' '}
+          {szoveg.lablec.markaLeiras}
         </p>
         <p className="lablec-telefon">{telefonszam}</p>
       </LablecKeret>

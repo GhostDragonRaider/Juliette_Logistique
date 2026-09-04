@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import { Gomb } from './Gomb'
-import { rolunkSzovegek } from '../adatok/fooldalAdatok'
+import { useNyelv } from '../nyelv/useNyelv'
 import { tema, aranySzovegAtmenet } from '../stilusok/tema'
 
 /** A rólunk szekció kétoszlopos kerete */
@@ -100,16 +100,18 @@ const ElonyPont = styled.li`
 `
 
 /**
- * A „Rólunk” szekciót jeleníti meg képpel, szöveggel és előnyökkel.
+ * A „Rólunk” szekciót jeleníti meg a kiválasztott nyelven.
  */
 export function RolunkSzekcio() {
+  const { szoveg } = useNyelv()
+
   return (
     <RolunkKeret className="rolunk-szekcio" id="rolunk">
       <KepOldal className="rolunk-kep-oldal">
         <RolunkKep
           className="rolunk-kep"
           src="/kepek/kamion-rolunk.png"
-          alt="Juliette Logistique Transportfahrzeug"
+          alt={szoveg.rolunk.kepAlt}
         />
         <MonogramJel className="rolunk-monogram" aria-hidden="true">
           JL
@@ -117,13 +119,13 @@ export function RolunkSzekcio() {
       </KepOldal>
 
       <SzovegOldal className="rolunk-szoveg-oldal">
-        <RolunkCim className="rolunk-cim">{rolunkSzovegek.cim}</RolunkCim>
+        <RolunkCim className="rolunk-cim">{szoveg.rolunk.cim}</RolunkCim>
         <RolunkBekezdes className="rolunk-bekezdes">
-          {rolunkSzovegek.bekezdes}
+          {szoveg.rolunk.bekezdes}
         </RolunkBekezdes>
 
         <ElonyLista className="rolunk-elony-lista">
-          {rolunkSzovegek.pontok.map((pont) => (
+          {szoveg.rolunk.pontok.map((pont) => (
             <ElonyPont key={pont} className="rolunk-elony-pont">
               {pont}
             </ElonyPont>
@@ -137,7 +139,7 @@ export function RolunkSzekcio() {
             valtozat="korvonal"
             mutatNyilat
           >
-            {rolunkSzovegek.gomb}
+            {szoveg.rolunk.gomb}
           </Gomb>
         </div>
       </SzovegOldal>
