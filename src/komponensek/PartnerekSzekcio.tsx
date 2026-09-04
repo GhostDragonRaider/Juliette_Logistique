@@ -27,52 +27,55 @@ const SzekcioCim = styled.h2`
   ${aranySzovegAtmenet}
 `
 
-/** A partner logók sora */
+/** A partner logók sora — középre igazítva */
 const PartnerSor = styled.ul`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 1.5rem 2rem;
+  gap: 1.75rem 2.25rem;
+  margin: 0 auto;
+  padding: 0;
   list-style: none;
 
   @media (min-width: ${tema.szelesseg.mobil}) {
-    gap: 2rem 3rem;
+    gap: 2.25rem 3.25rem;
   }
 `
 
-/** Egy partner logó doboza */
+/** Egy partner logó doboza — tartalom középen */
 const PartnerLogoDoboz = styled.li`
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 120px;
-  min-height: 64px;
-  padding: 0.35rem;
-  opacity: 0.88;
+  width: clamp(120px, 18vw, 170px);
+  height: clamp(56px, 9vw, 72px);
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  opacity: 0.9;
   transition: opacity 0.25s ease, transform 0.25s ease, filter 0.25s ease;
 
   @media (hover: hover) {
     &:hover {
       opacity: 1;
-      transform: translateY(-4px);
-      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.35));
+      transform: translateY(-3px);
+      filter: drop-shadow(0 0 14px rgba(197, 165, 114, 0.2));
     }
-  }
-
-  @media (min-width: ${tema.szelesseg.mobil}) {
-    min-width: 150px;
-    min-height: 72px;
   }
 `
 
-/** Maga a logó kép */
+/** Maga a logó kép — középre igazítva, átlátszó háttérrel */
 const PartnerLogoKep = styled.img`
   display: block;
-  width: auto;
-  max-width: min(170px, 36vw);
-  height: clamp(40px, 7vw, 56px);
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0 auto;
   object-fit: contain;
+  object-position: center;
+  background: transparent;
 `
 
 /**

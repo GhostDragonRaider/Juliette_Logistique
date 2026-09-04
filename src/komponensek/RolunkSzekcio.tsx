@@ -40,19 +40,31 @@ const RolunkKep = styled.img`
   object-fit: cover;
 `
 
-/** Arany JL monogram a képen */
-const MonogramJel = styled.div`
+/**
+ * A jobb alsó sarokban lévő logó jelvény.
+ * Ugyanaz a stílus, mint a korábbi JL monogramnál:
+ * sötét üvegszerű háttér + pezsgőarany keret.
+ */
+const LogoJelveny = styled.div`
   position: absolute;
   right: 0.75rem;
   bottom: 0.75rem;
-  padding: 0.45rem 0.65rem;
-  font-family: ${tema.betu.marka};
-  font-size: clamp(1.2rem, 3vw, 1.6rem);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: ${tema.szin.aranyVilagos};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(78px, 16vw, 118px);
+  padding: 0.45rem 0.55rem;
   background: rgba(0, 0, 0, 0.55);
   border: 1px solid rgba(197, 165, 114, 0.4);
+  backdrop-filter: blur(2px);
+`
+
+/** A mellékelt, pezsgőaranyra konvertált brand logo */
+const LogoJelvenyKep = styled.img`
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 `
 
 /** A jobb oldali szöveges rész */
@@ -127,9 +139,13 @@ export function RolunkSzekcio() {
             loading="lazy"
             decoding="async"
           />
-          <MonogramJel className="rolunk-monogram" aria-hidden="true">
-            JL
-          </MonogramJel>
+          <LogoJelveny className="rolunk-logo-jelveny">
+            <LogoJelvenyKep
+              className="rolunk-logo-kep"
+              src="/brand/logo-arany.png"
+              alt="Juliette Logistique"
+            />
+          </LogoJelveny>
         </KepOldal>
 
         <SzovegOldal className="rolunk-szoveg-oldal">
