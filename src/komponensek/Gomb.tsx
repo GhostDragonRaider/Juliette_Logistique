@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import styled from '@emotion/styled'
 import { css } from '@emotion/react'
 import { AranyIkon } from './AranyIkon'
-import { tema, aranyKeret } from '../stilusok/tema'
+import { tema, aranyKeret, fokuszKeret } from '../stilusok/tema'
 
 type GombValtozat = 'telitett' | 'korvonal' | 'telefon'
 
@@ -14,6 +14,7 @@ type GombTulajdonsagok = {
   onClick?: () => void
   mutatNyilat?: boolean
   mutatTelefont?: boolean
+  ariaLabel?: string
 }
 
 /** Az elsődleges (arannyal töltött) gomb stílusa */
@@ -46,9 +47,16 @@ const telefonStilus = css`
   background: transparent;
   color: ${tema.szin.aranyVilagos};
   border: ${aranyKeret};
-  padding: 0.55rem 0.9rem;
-  font-size: 0.78rem;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.72rem;
   letter-spacing: 0.04em;
+
+  @media (min-width: ${tema.szelesseg.kicsi}) {
+    padding: 0.55rem 0.9rem;
+    font-size: 0.78rem;
+  }
 
   &:hover {
     background: rgba(201, 162, 39, 0.1);
@@ -61,13 +69,19 @@ const GombAlap = styled.a<{ valtozat: GombValtozat }>`
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
-  padding: 0.85rem 1.35rem;
+  min-height: 44px;
+  padding: 0.85rem 1.2rem;
   font-family: ${tema.betu.cim};
-  font-size: 0.78rem;
+  font-size: clamp(0.68rem, 1.5vw, 0.78rem);
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  text-align: center;
   transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+
+  &:focus-visible {
+    ${fokuszKeret}
+  }
 
   ${(props) => props.valtozat === 'telitett' && telitettStilus}
   ${(props) => props.valtozat === 'korvonal' && korvonalStilus}
@@ -85,6 +99,7 @@ export function Gomb({
   onClick,
   mutatNyilat = false,
   mutatTelefont = false,
+  ariaLabel,
 }: GombTulajdonsagok) {
   return (
     <GombAlap
@@ -92,6 +107,7 @@ export function Gomb({
       href={href}
       valtozat={valtozat}
       onClick={onClick}
+      aria-label={ariaLabel}
     >
       {mutatTelefont ? <AranyIkon tipus="telefon" meret={16} /> : null}
       <span>{children}</span>

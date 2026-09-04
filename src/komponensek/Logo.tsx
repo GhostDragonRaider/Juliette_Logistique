@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { tema } from '../stilusok/tema'
+import { tema, fokuszKeret } from '../stilusok/tema'
 
 type LogoTulajdonsagok = {
   meret?: number
@@ -10,27 +10,53 @@ type LogoTulajdonsagok = {
 const LogoDoboz = styled.a`
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.55rem;
+  min-width: 0;
   color: ${tema.szin.arany};
+
+  &:focus-visible {
+    ${fokuszKeret}
+  }
+
+  @media (min-width: ${tema.szelesseg.kicsi}) {
+    gap: 0.75rem;
+  }
 `
 
 /** A JL monogram SVG mérete */
 const LogoSvg = styled.svg`
   display: block;
   flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+
+  @media (min-width: ${tema.szelesseg.kicsi}) {
+    width: 48px;
+    height: 48px;
+  }
+
+  @media (min-width: ${tema.szelesseg.tablet}) {
+    width: 52px;
+    height: 52px;
+  }
 `
 
 /** A logo szöveges része */
 const LogoSzoveg = styled.div`
-  display: flex;
+  display: none;
   flex-direction: column;
   line-height: 1.05;
+  min-width: 0;
+
+  @media (min-width: ${tema.szelesseg.kicsi}) {
+    display: flex;
+  }
 `
 
 /** „Juliette” márkanév */
 const MarkaNev = styled.span`
   font-family: ${tema.betu.marka};
-  font-size: 1.15rem;
+  font-size: clamp(1rem, 2vw, 1.15rem);
   font-weight: 600;
   letter-spacing: 0.04em;
   color: ${tema.szin.aranyVilagos};
@@ -39,9 +65,9 @@ const MarkaNev = styled.span`
 /** „LOGISTIQUE” alcím */
 const MarkaAlcim = styled.span`
   font-family: ${tema.betu.cim};
-  font-size: 0.62rem;
+  font-size: 0.58rem;
   font-weight: 600;
-  letter-spacing: 0.32em;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: ${tema.szin.arany};
 `
@@ -49,16 +75,10 @@ const MarkaAlcim = styled.span`
 /**
  * A Juliette Logistique arany logóját jeleníti meg (JL monogram + szöveg).
  */
-export function Logo({ meret = 52, className }: LogoTulajdonsagok) {
+export function Logo({ className }: LogoTulajdonsagok) {
   return (
     <LogoDoboz className={className} href="#kezdooldal" aria-label="Juliette Logistique">
-      <LogoSvg
-        width={meret}
-        height={meret}
-        viewBox="0 0 80 80"
-        role="img"
-        aria-hidden="true"
-      >
+      <LogoSvg viewBox="0 0 80 80" role="img" aria-hidden="true">
         <text
           x="12"
           y="48"
@@ -79,7 +99,6 @@ export function Logo({ meret = 52, className }: LogoTulajdonsagok) {
         >
           L
         </text>
-        {/* Út ív a monogram alatt */}
         <path
           d="M8 56 C 24 48, 40 62, 72 50"
           fill="none"

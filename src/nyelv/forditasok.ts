@@ -7,7 +7,16 @@ const magyar: OldalForditas = {
   htmlNyelv: 'hu',
   navigacioAria: 'Fő navigáció',
   nyelvAria: 'Nyelv választása',
-  menuAria: 'Menü',
+  menuAria: 'Menü megnyitása',
+  menuBezaroAria: 'Menü bezárása',
+  ugrasATartalomra: 'Ugrás a tartalomra',
+  seo: {
+    cim: 'Juliette Logistique | Premium járműszállítás és logisztika',
+    leiras:
+      'Premium járműszállítás és személyre szabott logisztika Németországban és Európában. Megbízható, biztonságos és pontos szolgáltatás.',
+    kulcsszavak:
+      'járműszállítás, premium logisztika, autószállítás, Németország, Európa, Juliette Logistique',
+  },
   navigacio: [
     { azonosito: 'kezdo', felirat: 'KEZDŐLAP', cel: '#kezdooldal' },
     { azonosito: 'rolunk', felirat: 'RÓLUNK', cel: '#rolunk' },
@@ -129,7 +138,16 @@ const angol: OldalForditas = {
   htmlNyelv: 'en',
   navigacioAria: 'Main navigation',
   nyelvAria: 'Choose language',
-  menuAria: 'Menu',
+  menuAria: 'Open menu',
+  menuBezaroAria: 'Close menu',
+  ugrasATartalomra: 'Skip to content',
+  seo: {
+    cim: 'Juliette Logistique | Premium vehicle transport & logistics',
+    leiras:
+      'Premium vehicle transport and tailored logistics across Germany and Europe. Reliable, safe and on-time service.',
+    kulcsszavak:
+      'vehicle transport, premium logistics, car transfer, Germany, Europe, Juliette Logistique',
+  },
   navigacio: [
     { azonosito: 'kezdo', felirat: 'HOME', cel: '#kezdooldal' },
     { azonosito: 'rolunk', felirat: 'ABOUT', cel: '#rolunk' },
@@ -251,7 +269,16 @@ const nemet: OldalForditas = {
   htmlNyelv: 'de',
   navigacioAria: 'Hauptnavigation',
   nyelvAria: 'Sprache wählen',
-  menuAria: 'Menü',
+  menuAria: 'Menü öffnen',
+  menuBezaroAria: 'Menü schließen',
+  ugrasATartalomra: 'Zum Inhalt springen',
+  seo: {
+    cim: 'Juliette Logistique | Premium Fahrzeugüberführung & Logistik',
+    leiras:
+      'Premium Fahrzeugüberführung und maßgeschneiderte Logistik in Deutschland und Europa. Zuverlässig, sicher und pünktlich.',
+    kulcsszavak:
+      'Fahrzeugüberführung, Premium Logistik, Autotransport, Deutschland, Europa, Juliette Logistique',
+  },
   navigacio: [
     { azonosito: 'kezdo', felirat: 'STARTSEITE', cel: '#kezdooldal' },
     { azonosito: 'rolunk', felirat: 'ÜBER UNS', cel: '#rolunk' },

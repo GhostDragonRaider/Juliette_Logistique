@@ -41,6 +41,13 @@ export type OldalForditas = {
   navigacioAria: string
   nyelvAria: string
   menuAria: string
+  menuBezaroAria: string
+  ugrasATartalomra: string
+  seo: {
+    cim: string
+    leiras: string
+    kulcsszavak: string
+  }
   navigacio: NavigacioLinkForditas[]
   hos: {
     markaNev: string

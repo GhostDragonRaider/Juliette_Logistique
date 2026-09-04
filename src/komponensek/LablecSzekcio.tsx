@@ -4,16 +4,22 @@ import { telefonszam } from '../adatok/fooldalAdatok'
 import { useNyelv } from '../nyelv/useNyelv'
 import { tema, aranySzovegAtmenet } from '../stilusok/tema'
 
-/** A záró CTA sáv */
-const LablecCtaKeret = styled.section`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1.2rem;
-  padding: 2.4rem 4vw;
+/** Teljes szélességű CTA háttér */
+const LablecCtaHatter = styled.section`
   background: ${tema.hatter.emelt};
   border-top: 1px solid rgba(201, 162, 39, 0.25);
+`
+
+/** A záró CTA sáv belseje */
+const LablecCtaKeret = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 1.2rem;
+  width: min(100%, ${tema.maxTartalom});
+  margin: 0 auto;
+  padding: clamp(1.8rem, 4vw, 2.4rem) ${tema.oldalsoPadding};
 
   @media (min-width: ${tema.szelesseg.mobil}) {
     flex-direction: row;
@@ -24,9 +30,9 @@ const LablecCtaKeret = styled.section`
 /** A CTA kérdés szövege */
 const LablecKerdes = styled.h2`
   font-family: ${tema.betu.cim};
-  font-size: clamp(1.15rem, 2.4vw, 1.7rem);
+  font-size: clamp(1rem, 3vw, 1.7rem);
   font-weight: 800;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   ${aranySzovegAtmenet}
 `
@@ -34,19 +40,37 @@ const LablecKerdes = styled.h2`
 /** A tényleges lábléc */
 const LablecKeret = styled.footer`
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 0.8rem;
-  padding: 1.3rem 4vw 1.8rem;
+  gap: 0.6rem;
+  padding:
+    1.2rem
+    ${tema.oldalsoPadding}
+    max(1.5rem, env(safe-area-inset-bottom, 0px));
   background: ${tema.hatter.fekete};
   border-top: 1px solid rgba(201, 162, 39, 0.12);
   color: ${tema.szin.szurke};
-  font-size: 0.82rem;
+  font-size: clamp(0.78rem, 1.6vw, 0.86rem);
+
+  @media (min-width: ${tema.szelesseg.kicsi}) {
+    flex-direction: row;
+    align-items: center;
+  }
 `
 
 /** Kis arany kiemelés a láblécben */
 const LablecKiemeles = styled.span`
   color: ${tema.szin.arany};
+`
+
+/** Telefon link a láblécben */
+const TelefonLink = styled.a`
+  color: ${tema.szin.aranyVilagos};
+
+  &:hover {
+    text-decoration: underline;
+  }
 `
 
 /**
@@ -57,19 +81,26 @@ export function LablecSzekcio() {
 
   return (
     <>
-      <LablecCtaKeret className="lablec-cta-szekcio" id="kapcsolat">
-        <LablecKerdes className="lablec-kerdes">
-          {szoveg.lablec.kerdes}
-        </LablecKerdes>
-        <Gomb
-          className="lablec-kapcsolat-gomb"
-          href={`tel:${telefonszam.replace(/\s/g, '')}`}
-          valtozat="telitett"
-          mutatNyilat
-        >
-          {szoveg.lablec.gomb}
-        </Gomb>
-      </LablecCtaKeret>
+      <LablecCtaHatter
+        className="lablec-cta-szekcio"
+        id="kapcsolat"
+        aria-labelledby="kapcsolat-cim"
+      >
+        <LablecCtaKeret className="lablec-cta-keret">
+          <LablecKerdes className="lablec-kerdes" id="kapcsolat-cim">
+            {szoveg.lablec.kerdes}
+          </LablecKerdes>
+          <Gomb
+            className="lablec-kapcsolat-gomb"
+            href={`tel:${telefonszam.replace(/\s/g, '')}`}
+            valtozat="telitett"
+            mutatNyilat
+            ariaLabel={`${szoveg.lablec.gomb}: ${telefonszam}`}
+          >
+            {szoveg.lablec.gomb}
+          </Gomb>
+        </LablecCtaKeret>
+      </LablecCtaHatter>
 
       <LablecKeret className="lablec-keret">
         <p className="lablec-marka">
@@ -77,7 +108,11 @@ export function LablecSzekcio() {
           {' '}
           {szoveg.lablec.markaLeiras}
         </p>
-        <p className="lablec-telefon">{telefonszam}</p>
+        <p className="lablec-telefon">
+          <TelefonLink href={`tel:${telefonszam.replace(/\s/g, '')}`}>
+            {telefonszam}
+          </TelefonLink>
+        </p>
       </LablecKeret>
     </>
   )

@@ -3,13 +3,19 @@ import { Gomb } from './Gomb'
 import { useNyelv } from '../nyelv/useNyelv'
 import { tema, aranySzovegAtmenet } from '../stilusok/tema'
 
+/** Teljes szélességű háttér */
+const RolunkHatter = styled.section`
+  background: ${tema.hatter.sotet};
+`
+
 /** A rólunk szekció kétoszlopos kerete */
-const RolunkKeret = styled.section`
+const RolunkKeret = styled.div`
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
-  padding: 5rem 4vw;
-  background: ${tema.hatter.sotet};
+  gap: 1.75rem;
+  width: min(100%, ${tema.maxTartalom});
+  margin: 0 auto;
+  padding: clamp(3rem, 7vw, 5rem) ${tema.oldalsoPadding};
 
   @media (min-width: ${tema.szelesseg.tablet}) {
     grid-template-columns: 1.05fr 1fr;
@@ -21,7 +27,7 @@ const RolunkKeret = styled.section`
 /** A bal oldali képrész */
 const KepOldal = styled.div`
   position: relative;
-  min-height: 340px;
+  min-height: clamp(240px, 50vw, 420px);
   overflow: hidden;
   border: 1px solid rgba(201, 162, 39, 0.25);
 `
@@ -30,18 +36,18 @@ const KepOldal = styled.div`
 const RolunkKep = styled.img`
   width: 100%;
   height: 100%;
-  min-height: 340px;
+  min-height: clamp(240px, 50vw, 420px);
   object-fit: cover;
 `
 
 /** Arany JL monogram a képen */
 const MonogramJel = styled.div`
   position: absolute;
-  right: 1rem;
-  bottom: 1rem;
-  padding: 0.55rem 0.75rem;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  padding: 0.45rem 0.65rem;
   font-family: ${tema.betu.marka};
-  font-size: 1.6rem;
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
   font-weight: 700;
   letter-spacing: 0.08em;
   color: ${tema.szin.aranyVilagos};
@@ -53,15 +59,16 @@ const MonogramJel = styled.div`
 const SzovegOldal = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1.1rem;
+  min-width: 0;
 `
 
 /** A rólunk főcíme */
 const RolunkCim = styled.h2`
   font-family: ${tema.betu.cim};
-  font-size: clamp(1.35rem, 2.6vw, 1.9rem);
+  font-size: clamp(1.15rem, 3vw, 1.9rem);
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   line-height: 1.25;
   text-transform: uppercase;
   ${aranySzovegAtmenet}
@@ -71,14 +78,18 @@ const RolunkCim = styled.h2`
 const RolunkBekezdes = styled.p`
   max-width: 34rem;
   color: ${tema.szin.szurke};
-  font-size: 0.98rem;
+  font-size: clamp(0.92rem, 1.8vw, 1rem);
 `
 
 /** Az előnyök listája */
 const ElonyLista = styled.ul`
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem 1.2rem;
+  grid-template-columns: 1fr;
+  gap: 0.7rem 1.2rem;
+
+  @media (min-width: ${tema.szelesseg.kicsi}) {
+    grid-template-columns: 1fr 1fr;
+  }
 `
 
 /** Egy előny pont */
@@ -86,7 +97,7 @@ const ElonyPont = styled.li`
   display: flex;
   align-items: center;
   gap: 0.55rem;
-  font-size: 0.9rem;
+  font-size: clamp(0.86rem, 1.6vw, 0.95rem);
   color: ${tema.szin.feher};
 
   &::before {
@@ -106,43 +117,49 @@ export function RolunkSzekcio() {
   const { szoveg } = useNyelv()
 
   return (
-    <RolunkKeret className="rolunk-szekcio" id="rolunk">
-      <KepOldal className="rolunk-kep-oldal">
-        <RolunkKep
-          className="rolunk-kep"
-          src="/kepek/kamion-rolunk.png"
-          alt={szoveg.rolunk.kepAlt}
-        />
-        <MonogramJel className="rolunk-monogram" aria-hidden="true">
-          JL
-        </MonogramJel>
-      </KepOldal>
+    <RolunkHatter className="rolunk-szekcio" id="rolunk" aria-labelledby="rolunk-cim">
+      <RolunkKeret className="rolunk-keret">
+        <KepOldal className="rolunk-kep-oldal">
+          <RolunkKep
+            className="rolunk-kep"
+            src="/kepek/kamion-rolunk.png"
+            alt={szoveg.rolunk.kepAlt}
+            loading="lazy"
+            decoding="async"
+          />
+          <MonogramJel className="rolunk-monogram" aria-hidden="true">
+            JL
+          </MonogramJel>
+        </KepOldal>
 
-      <SzovegOldal className="rolunk-szoveg-oldal">
-        <RolunkCim className="rolunk-cim">{szoveg.rolunk.cim}</RolunkCim>
-        <RolunkBekezdes className="rolunk-bekezdes">
-          {szoveg.rolunk.bekezdes}
-        </RolunkBekezdes>
+        <SzovegOldal className="rolunk-szoveg-oldal">
+          <RolunkCim className="rolunk-cim" id="rolunk-cim">
+            {szoveg.rolunk.cim}
+          </RolunkCim>
+          <RolunkBekezdes className="rolunk-bekezdes">
+            {szoveg.rolunk.bekezdes}
+          </RolunkBekezdes>
 
-        <ElonyLista className="rolunk-elony-lista">
-          {szoveg.rolunk.pontok.map((pont) => (
-            <ElonyPont key={pont} className="rolunk-elony-pont">
-              {pont}
-            </ElonyPont>
-          ))}
-        </ElonyLista>
+          <ElonyLista className="rolunk-elony-lista">
+            {szoveg.rolunk.pontok.map((pont) => (
+              <ElonyPont key={pont} className="rolunk-elony-pont">
+                {pont}
+              </ElonyPont>
+            ))}
+          </ElonyLista>
 
-        <div>
-          <Gomb
-            className="rolunk-gomb"
-            href="#kapcsolat"
-            valtozat="korvonal"
-            mutatNyilat
-          >
-            {szoveg.rolunk.gomb}
-          </Gomb>
-        </div>
-      </SzovegOldal>
-    </RolunkKeret>
+          <div>
+            <Gomb
+              className="rolunk-gomb"
+              href="#kapcsolat"
+              valtozat="korvonal"
+              mutatNyilat
+            >
+              {szoveg.rolunk.gomb}
+            </Gomb>
+          </div>
+        </SzovegOldal>
+      </RolunkKeret>
+    </RolunkHatter>
   )
 }

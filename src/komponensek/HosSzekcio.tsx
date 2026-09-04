@@ -20,9 +20,13 @@ const feluszas = keyframes`
 const HosKeret = styled.section`
   position: relative;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: flex-end;
-  padding: 7rem 4vw 5.5rem;
+  padding:
+    clamp(6rem, 14vh, 8rem)
+    ${tema.oldalsoPadding}
+    clamp(3rem, 8vh, 5.5rem);
   overflow: hidden;
 `
 
@@ -31,50 +35,58 @@ const HosHatter = styled.div`
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.45) 48%, rgba(0, 0, 0, 0.2) 100%),
-    linear-gradient(0deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.15) 45%, rgba(0, 0, 0, 0.35) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.86) 0%, rgba(0, 0, 0, 0.55) 48%, rgba(0, 0, 0, 0.28) 100%),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 45%, rgba(0, 0, 0, 0.4) 100%),
     url('/kepek/hos-hatter.png') center / cover no-repeat;
   transform: scale(1.04);
   animation: ${feluszas} 1.2s ease both;
+
+  @media (max-width: ${tema.szelesseg.mobil}) {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.78) 55%, rgba(0, 0, 0, 0.92) 100%),
+      url('/kepek/hos-hatter.png') 70% center / cover no-repeat;
+  }
 `
 
 /** A hero szöveges tartalma */
 const HosTartalom = styled.div`
   position: relative;
   z-index: 1;
-  max-width: 820px;
+  width: min(100%, 820px);
   animation: ${feluszas} 0.9s ease 0.15s both;
 `
 
 /** A nagy arany márkanév */
 const MarkaCim = styled.h1`
-  margin-bottom: 1rem;
+  margin-bottom: 0.85rem;
   font-family: ${tema.betu.cim};
-  font-size: clamp(2.4rem, 7vw, 5.4rem);
+  font-size: clamp(1.85rem, 8vw, 5.4rem);
   font-weight: 800;
-  letter-spacing: 0.06em;
-  line-height: 0.95;
+  letter-spacing: 0.04em;
+  line-height: 0.98;
   text-transform: uppercase;
+  word-break: break-word;
   ${aranySzovegAtmenet}
 `
 
 /** A hero alcíme */
 const HosAlcim = styled.p`
   margin-bottom: 0.7rem;
+  max-width: 40rem;
   font-family: ${tema.betu.cim};
-  font-size: clamp(0.85rem, 1.6vw, 1.05rem);
+  font-size: clamp(0.78rem, 2.2vw, 1.05rem);
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: ${tema.szin.feher};
 `
 
 /** A rövid mottó */
 const HosMotto = styled.p`
-  margin-bottom: 2rem;
+  margin-bottom: 1.6rem;
   font-family: ${tema.betu.torzs};
-  font-size: 0.95rem;
-  letter-spacing: 0.22em;
+  font-size: clamp(0.78rem, 2vw, 0.95rem);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: ${tema.szin.aranyVilagos};
 `
@@ -83,7 +95,16 @@ const HosMotto = styled.p`
 const GombSor = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.9rem;
+  gap: 0.75rem;
+
+  @media (max-width: ${tema.szelesseg.kicsi}) {
+    flex-direction: column;
+    align-items: stretch;
+
+    a {
+      width: 100%;
+    }
+  }
 `
 
 /**
@@ -93,10 +114,12 @@ export function HosSzekcio() {
   const { szoveg } = useNyelv()
 
   return (
-    <HosKeret className="hos-szekcio" id="kezdooldal">
+    <HosKeret className="hos-szekcio" id="kezdooldal" aria-labelledby="hos-cim">
       <HosHatter className="hos-hatter" aria-hidden="true" />
       <HosTartalom className="hos-tartalom">
-        <MarkaCim className="marka-cim">{szoveg.hos.markaNev}</MarkaCim>
+        <MarkaCim className="marka-cim" id="hos-cim">
+          {szoveg.hos.markaNev}
+        </MarkaCim>
         <HosAlcim className="hos-alcim">{szoveg.hos.alcim}</HosAlcim>
         <HosMotto className="hos-motto">{szoveg.hos.motto}</HosMotto>
         <GombSor className="hos-gomb-sor">
