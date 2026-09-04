@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { Gomb } from './Gomb'
+import { PremiumSzam } from './PremiumSzam'
 import { telefonszam } from '../adatok/fooldalAdatok'
 import { useNyelv } from '../nyelv/useNyelv'
 import { tema, aranySzovegAtmenet } from '../stilusok/tema'
@@ -7,7 +8,7 @@ import { tema, aranySzovegAtmenet } from '../stilusok/tema'
 /** Teljes szélességű CTA háttér */
 const LablecCtaHatter = styled.section`
   background: ${tema.hatter.emelt};
-  border-top: 1px solid rgba(201, 162, 39, 0.25);
+  border-top: 1px solid rgba(197, 165, 114, 0.22);
 `
 
 /** A záró CTA sáv belseje */
@@ -30,8 +31,8 @@ const LablecCtaKeret = styled.div`
 /** A CTA kérdés szövege */
 const LablecKerdes = styled.h2`
   font-family: ${tema.betu.cim};
-  font-size: clamp(1rem, 3vw, 1.7rem);
-  font-weight: 800;
+  font-size: clamp(1.05rem, 2.8vw, 1.6rem);
+  font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   ${aranySzovegAtmenet}
@@ -49,7 +50,7 @@ const LablecKeret = styled.footer`
     ${tema.oldalsoPadding}
     max(1.5rem, env(safe-area-inset-bottom, 0px));
   background: ${tema.hatter.fekete};
-  border-top: 1px solid rgba(201, 162, 39, 0.12);
+  border-top: 1px solid rgba(197, 165, 114, 0.12);
   color: ${tema.szin.szurke};
   font-size: clamp(0.78rem, 1.6vw, 0.86rem);
 
@@ -110,7 +111,7 @@ export function LablecSzekcio() {
         </p>
         <p className="lablec-telefon">
           <TelefonLink href={`tel:${telefonszam.replace(/\s/g, '')}`}>
-            {telefonszam}
+            <PremiumSzam>{telefonszam}</PremiumSzam>
           </TelefonLink>
         </p>
       </LablecKeret>

@@ -17,9 +17,14 @@ type GombTulajdonsagok = {
   ariaLabel?: string
 }
 
-/** Az elsődleges (arannyal töltött) gomb stílusa */
+/** Az elsődleges pezsgőarany gomb stílusa */
 const telitettStilus = css`
-  background: linear-gradient(135deg, ${tema.szin.arany} 0%, ${tema.szin.aranyVilagos} 50%, ${tema.szin.arany} 100%);
+  background: linear-gradient(
+    135deg,
+    ${tema.szin.aranySotet} 0%,
+    ${tema.szin.aranyVilagos} 48%,
+    ${tema.szin.arany} 100%
+  );
   color: ${tema.hatter.fekete};
   border: 1px solid ${tema.szin.arany};
 
@@ -36,7 +41,7 @@ const korvonalStilus = css`
   border: ${aranyKeret};
 
   &:hover {
-    background: rgba(201, 162, 39, 0.08);
+    background: rgba(197, 165, 114, 0.08);
     box-shadow: ${tema.arnyek.aranyFeny};
     transform: translateY(-2px);
   }
@@ -50,16 +55,17 @@ const telefonStilus = css`
   min-width: 44px;
   min-height: 44px;
   padding: 0.55rem 0.7rem;
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  font-style: italic;
 
   @media (min-width: ${tema.szelesseg.kicsi}) {
-    padding: 0.55rem 0.9rem;
-    font-size: 0.78rem;
+    padding: 0.55rem 0.95rem;
+    font-size: 0.84rem;
   }
 
   &:hover {
-    background: rgba(201, 162, 39, 0.1);
+    background: rgba(197, 165, 114, 0.1);
   }
 `
 
@@ -70,11 +76,11 @@ const GombAlap = styled.a<{ valtozat: GombValtozat }>`
   justify-content: center;
   gap: 0.55rem;
   min-height: 44px;
-  padding: 0.85rem 1.2rem;
+  padding: 0.85rem 1.25rem;
   font-family: ${tema.betu.cim};
-  font-size: clamp(0.68rem, 1.5vw, 0.78rem);
+  font-size: clamp(0.72rem, 1.4vw, 0.84rem);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   text-align: center;
   transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
@@ -89,7 +95,7 @@ const GombAlap = styled.a<{ valtozat: GombValtozat }>`
 `
 
 /**
- * Egységes arany gombot rajzol ki (telített, keretes vagy telefonos változat).
+ * Egységes pezsgőarany gombot rajzol ki (telített, keretes vagy telefonos változat).
  */
 export function Gomb({
   children,

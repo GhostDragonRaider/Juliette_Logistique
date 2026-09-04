@@ -29,7 +29,7 @@ const KepOldal = styled.div`
   position: relative;
   min-height: clamp(240px, 50vw, 420px);
   overflow: hidden;
-  border: 1px solid rgba(201, 162, 39, 0.25);
+  border: 1px solid rgba(197, 165, 114, 0.25);
 `
 
 /** A kamion háttérkép */
@@ -52,7 +52,7 @@ const MonogramJel = styled.div`
   letter-spacing: 0.08em;
   color: ${tema.szin.aranyVilagos};
   background: rgba(0, 0, 0, 0.55);
-  border: 1px solid rgba(201, 162, 39, 0.45);
+  border: 1px solid rgba(197, 165, 114, 0.4);
 `
 
 /** A jobb oldali szöveges rész */
@@ -66,8 +66,8 @@ const SzovegOldal = styled.div`
 /** A rólunk főcíme */
 const RolunkCim = styled.h2`
   font-family: ${tema.betu.cim};
-  font-size: clamp(1.15rem, 3vw, 1.9rem);
-  font-weight: 800;
+  font-size: clamp(1.2rem, 3vw, 1.85rem);
+  font-weight: 700;
   letter-spacing: 0.06em;
   line-height: 1.25;
   text-transform: uppercase;

@@ -65,7 +65,7 @@ export function SeoFej() {
     metaBeallitas('description', szoveg.seo.leiras)
     metaBeallitas('keywords', szoveg.seo.kulcsszavak)
     metaBeallitas('robots', 'index, follow')
-    metaBeallitas('theme-color', '#050505')
+    metaBeallitas('theme-color', '#141414')
     metaBeallitas('og:type', 'website', 'property')
     metaBeallitas('og:site_name', 'Juliette Logistique', 'property')
     metaBeallitas('og:title', szoveg.seo.cim, 'property')

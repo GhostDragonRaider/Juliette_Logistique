@@ -20,9 +20,9 @@ const BelsoTartalom = styled.div`
 const SzekcioCim = styled.h2`
   margin-bottom: 1.75rem;
   font-family: ${tema.betu.cim};
-  font-size: clamp(1.2rem, 3.2vw, 2rem);
-  font-weight: 800;
-  letter-spacing: 0.14em;
+  font-size: clamp(1.25rem, 3vw, 1.9rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   ${aranySzovegAtmenet}
 `

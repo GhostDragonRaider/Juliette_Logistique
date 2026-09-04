@@ -1,13 +1,14 @@
 import styled from '@emotion/styled'
 import { AranyIkon } from './AranyIkon'
+import { premiumSzamokkal } from './premiumSzamokkal'
 import { useNyelv } from '../nyelv/useNyelv'
 import { tema } from '../stilusok/tema'
 
 /** Teljes szélességű háttérsáv */
 const ErtekekHatter = styled.section`
   background: ${tema.hatter.sotet};
-  border-top: 1px solid rgba(201, 162, 39, 0.18);
-  border-bottom: 1px solid rgba(201, 162, 39, 0.18);
+  border-top: 1px solid rgba(197, 165, 114, 0.16);
+  border-bottom: 1px solid rgba(197, 165, 114, 0.16);
 `
 
 /** Az értékek belső rácsa */
@@ -52,9 +53,9 @@ const ErtekKartya = styled.article`
 /** Az érték címe */
 const ErtekCim = styled.h3`
   font-family: ${tema.betu.cim};
-  font-size: clamp(0.68rem, 1.5vw, 0.74rem);
+  font-size: clamp(0.78rem, 1.5vw, 0.88rem);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: ${tema.szin.aranyVilagos};
 `
@@ -77,7 +78,7 @@ export function ErtekekSav() {
         {szoveg.ertekek.map((pont) => (
           <ErtekKartya key={pont.azonosito} className="ertek-kartya">
             <AranyIkon tipus={pont.ikon} meret={30} className="ertek-ikon" />
-            <ErtekCim className="ertek-cim">{pont.cim}</ErtekCim>
+            <ErtekCim className="ertek-cim">{premiumSzamokkal(pont.cim)}</ErtekCim>
             <ErtekLeiras className="ertek-leiras">{pont.leiras}</ErtekLeiras>
           </ErtekKartya>
         ))}

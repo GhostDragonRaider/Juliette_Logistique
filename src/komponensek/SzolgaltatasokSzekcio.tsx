@@ -21,9 +21,9 @@ const SzekcioCim = styled.h2`
   margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
   text-align: center;
   font-family: ${tema.betu.cim};
-  font-size: clamp(1.25rem, 3.5vw, 2.2rem);
-  font-weight: 800;
-  letter-spacing: 0.14em;
+  font-size: clamp(1.35rem, 3.2vw, 2.1rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   ${aranySzovegAtmenet}
 `
@@ -55,7 +55,7 @@ const SzolgaltatasKartya = styled.article<{ kep: string }>`
   gap: 0.55rem;
   padding: 1.25rem;
   overflow: hidden;
-  border: 1px solid rgba(201, 162, 39, 0.22);
+  border: 1px solid rgba(197, 165, 114, 0.22);
   background:
     linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.9) 72%),
     url(${(props) => props.kep}) center / cover no-repeat;
@@ -64,7 +64,7 @@ const SzolgaltatasKartya = styled.article<{ kep: string }>`
   @media (hover: hover) {
     &:hover {
       transform: translateY(-6px);
-      border-color: rgba(201, 162, 39, 0.65);
+      border-color: rgba(197, 165, 114, 0.55);
       box-shadow: ${tema.arnyek.aranyFeny};
     }
   }

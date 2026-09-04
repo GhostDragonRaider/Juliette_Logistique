@@ -3,12 +3,10 @@ import { tema, fokuszKeret } from './tema'
 
 /**
  * Az egész oldal alapvető, globális Emotion stílusait adja vissza.
- * Reszponzivitás, akadálymentesség és alap tipográfia.
+ * Georgia tipográfia, prémium háttér és akadálymentes fókusz.
  */
 function globalisStilusok() {
   return css`
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;700&family=Montserrat:wght@500;600;700;800&display=swap');
-
     *,
     *::before,
     *::after {
@@ -30,9 +28,11 @@ function globalisStilusok() {
       background: ${tema.hatter.fekete};
       color: ${tema.szin.feher};
       font-family: ${tema.betu.torzs};
-      font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
-      line-height: 1.6;
+      font-size: clamp(0.98rem, 0.94rem + 0.2vw, 1.08rem);
+      line-height: 1.65;
+      letter-spacing: 0.01em;
       -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
 
     #root {

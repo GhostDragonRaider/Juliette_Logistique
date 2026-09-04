@@ -2,6 +2,7 @@ import { useEffect, useId, useState } from 'react'
 import styled from '@emotion/styled'
 import { Logo } from './Logo'
 import { Gomb } from './Gomb'
+import { PremiumSzam } from './PremiumSzam'
 import { telefonszam } from '../adatok/fooldalAdatok'
 import { useNyelv } from '../nyelv/useNyelv'
 import { nyelvKapcsolok, type NyelvKod } from '../nyelv/nyelvTipusok'
@@ -43,9 +44,9 @@ const NavigacioLinkElem = styled.a`
   display: inline-flex;
   align-items: center;
   font-family: ${tema.betu.cim};
-  font-size: clamp(0.62rem, 0.9vw, 0.72rem);
+  font-size: clamp(0.68rem, 0.9vw, 0.8rem);
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   color: ${tema.szin.aranyVilagos};
   transition: color 0.2s ease;
 
@@ -186,7 +187,7 @@ const MobilMenuPanel = styled.div<{ nyitva: boolean }>`
   flex-direction: column;
   gap: 0.35rem;
   padding: 1rem ${tema.oldalsoPadding} 1.4rem;
-  background: rgba(8, 8, 8, 0.97);
+  background: rgba(27, 27, 27, 0.97);
   border-bottom: ${aranyKeret};
 
   @media (min-width: ${tema.szelesseg.tablet}) {
@@ -286,7 +287,9 @@ export function Fejlec() {
           mutatTelefont
           ariaLabel={telefonszam}
         >
-          <TelefonSzoveg className="telefon-szoveg">{telefonszam}</TelefonSzoveg>
+          <TelefonSzoveg className="telefon-szoveg">
+            <PremiumSzam>{telefonszam}</PremiumSzam>
+          </TelefonSzoveg>
         </Gomb>
 
         <MobilMenuGomb
