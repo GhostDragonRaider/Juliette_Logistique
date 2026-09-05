@@ -1,36 +1,49 @@
 # Juliette Logistique
 
-Premium járműszállítás és logisztika — TypeScript + React weboldal.
+Premium járműszállítás és logisztika — TypeScript + React + Vite.
 
-## Gyors start
+## Gyors start (helyi / nem Vercel)
 
 ```bash
 npm install
 npm run dev
 ```
 
-Egyéb parancsok:
+Előnézet a production build után:
+
+```bash
+npm run build
+npm run preview
+```
+
+A `dist/` mappa bármilyen static hoston futtatható (Netlify, GitHub Pages, nginx, stb.).
+
+## Vercel
+
+A repo tartalmazza a `vercel.json` fájlt. Vercel-en:
+
+1. Importáld a GitHub repo-t: `GhostDragonRaider/Juliette_Logistique`
+2. Framework: **Vite** (auto)
+3. Build: `npm run build`
+4. Output: `dist`
+5. Production branch: `main`
+
+SPA útvonalakhoz a `vercel.json` minden kérést az `index.html`-re ír át.
+
+## Parancsok
 
 | Parancs | Leírás |
 |---|---|
+| `npm run dev` | Fejlesztői szerver |
 | `npm run build` | Production build (`dist/`) |
 | `npm run preview` | Build előnézet |
 | `npm run lint` | Oxlint |
 
-## Stack (jelenlegi setup)
+## Stack
 
-- **Vite 8** + **React 19** + **TypeScript**
-- **react-router-dom** — többoldalas navigációhoz
-- Koncepcióképek: `docs/concepts/`
-- Logo: `public/brand/logo.png`
+- Vite 8 + React 19 + TypeScript
+- Emotion (`@emotion/styled`) — nincs CSS/SASS fájl
+- HU / EN / DE nyelvválasztó
+- react-router-dom
 
-## Következő lépések — javaslatok
-
-Részletes architektúra: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
-
-Röviden:
-
-1. **Landing** — sötét + arany premium design a koncepciók alapján (FR/DE/EN)
-2. **Karrier** — munkakör bemutatása → jelentkezési űrlap (CV feltöltés)
-3. **Backend** — ajánlott: Supabase (Postgres + Storage + Auth) vagy Firebase
-4. **Admin** — jelentkezések listázása, CV letöltés, státuszkezelés
+Részletes terv: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
