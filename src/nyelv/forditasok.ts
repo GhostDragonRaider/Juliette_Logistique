@@ -128,17 +128,17 @@ const magyar: OldalForditas = {
     cim: 'HOGYAN DOLGOZUNK',
     lepesek: [
       {
-        szam: '01',
+        szam: '1',
         cim: 'MEGKERESÉS',
         leiras: 'Rövid egyeztetés az útvonalról, időpontról és a jármű részleteiről.',
       },
       {
-        szam: '02',
+        szam: '2',
         cim: 'TERVEZÉS',
         leiras: 'Pontos ütemezés, biztonságos útvonal és átlátható dokumentáció.',
       },
       {
-        szam: '03',
+        szam: '3',
         cim: 'ÁTVITEL',
         leiras: 'Megbízható szállítás tapasztalt sofőrökkel — határidőre.',
       },
@@ -289,17 +289,17 @@ const angol: OldalForditas = {
     cim: 'HOW WE WORK',
     lepesek: [
       {
-        szam: '01',
+        szam: '1',
         cim: 'INQUIRY',
         leiras: 'A short briefing on route, timing and vehicle details.',
       },
       {
-        szam: '02',
+        szam: '2',
         cim: 'PLANNING',
         leiras: 'Precise scheduling, secure routing and clear documentation.',
       },
       {
-        szam: '03',
+        szam: '3',
         cim: 'TRANSFER',
         leiras: 'Reliable transport with experienced drivers — on time.',
       },
@@ -450,17 +450,17 @@ const nemet: OldalForditas = {
     cim: 'SO ARBEITEN WIR',
     lepesek: [
       {
-        szam: '01',
+        szam: '1',
         cim: 'ANFRAGE',
         leiras: 'Kurze Abstimmung zu Route, Termin und Fahrzeugdetails.',
       },
       {
-        szam: '02',
+        szam: '2',
         cim: 'PLANUNG',
         leiras: 'Präzise Terminierung, sichere Strecke und klare Dokumentation.',
       },
       {
-        szam: '03',
+        szam: '3',
         cim: 'ÜBERFÜHRUNG',
         leiras: 'Zuverlässiger Transport mit erfahrenen Fahrern — pünktlich.',
       },

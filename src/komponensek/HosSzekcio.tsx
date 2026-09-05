@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react'
 import styled from '@emotion/styled'
 import { keyframes } from '@emotion/react'
 import { Gomb } from './Gomb'
 import { useNyelv } from '../nyelv/useNyelv'
 import { tema, aranySzovegAtmenet } from '../stilusok/tema'
 
-/** Ken Burns: lassú zoom + pan a háttérképen */
+/** Ken Burns: lassú zoom + pan a háttérképen (görgetéstől független) */
 const kenBurns = keyframes`
   0% {
     transform: scale(1.08) translate3d(0, 0, 0);
@@ -59,16 +58,7 @@ const HosKeret = styled.section`
   overflow: hidden;
 `
 
-/** Parallax réteg a háttérhez */
-const HatterParallax = styled.div<{ eltolas: number }>`
-  position: absolute;
-  inset: -8% 0 -4%;
-  transform: translate3d(0, ${(props) => props.eltolas}px, 0);
-  will-change: transform;
-  transition: transform 0.08s linear;
-`
-
-/** A hero háttérkép — Ken Burns mozgással */
+/** A hero háttérkép — rögzített a görgetéshez, Ken Burns animációval */
 const HosHatter = styled.div`
   position: absolute;
   inset: 0;
@@ -200,33 +190,10 @@ const GombSor = styled.div`
 
 /**
  * A főoldal hero szekcióját jeleníti meg cinematic motionnal.
+ * A háttér görgetéskor nem mozog (nincs parallax).
  */
 export function HosSzekcio() {
   const { szoveg } = useNyelv()
-  const [parallax, setParallax] = useState(0)
-
-  useEffect(() => {
-    /**
-     * Finom parallax: a háttér lassabban mozog, mint a görgetés.
-     */
-    function parallaxFigyelo() {
-      const y = window.scrollY
-      const max = window.innerHeight
-      if (y > max * 1.2) {
-        return
-      }
-      setParallax(y * 0.28)
-    }
-
-    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
-    if (media.matches) {
-      return
-    }
-
-    parallaxFigyelo()
-    window.addEventListener('scroll', parallaxFigyelo, { passive: true })
-    return () => window.removeEventListener('scroll', parallaxFigyelo)
-  }, [])
 
   return (
     <HosKeret
@@ -234,9 +201,7 @@ export function HosSzekcio() {
       id="kezdooldal"
       aria-labelledby="hos-cim"
     >
-      <HatterParallax eltolas={parallax} aria-hidden="true">
-        <HosHatter className="hos-hatter" />
-      </HatterParallax>
+      <HosHatter className="hos-hatter" aria-hidden="true" />
 
       <HosTartalom className="hos-tartalom">
         <FadeSor kesleltetes="0.1s">

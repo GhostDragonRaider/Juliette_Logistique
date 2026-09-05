@@ -28,57 +28,104 @@ const SzekcioCim = styled.h2`
   ${revealAlap}
 `
 
-/** 01–03 lépésrács */
+/** 1–3 lépésrács — folyamatos összekötő vonallal */
 const LepesRac = styled.ol`
+  position: relative;
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.75rem;
   list-style: none;
   margin: 0;
   padding: 0;
-  counter-reset: none;
 
   @media (min-width: ${tema.szelesseg.mobil}) {
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
+
+    /* Egy folyamatos vonal mindhárom lépésen át — az 1. is kapja */
+    &::before {
+      content: '';
+      position: absolute;
+      top: 1.55rem;
+      left: 8%;
+      right: 8%;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        rgba(197, 165, 114, 0.15),
+        rgba(197, 165, 114, 0.5) 20%,
+        rgba(197, 165, 114, 0.5) 80%,
+        rgba(197, 165, 114, 0.15)
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
   }
 `
 
 /** Egy folyamat lépés */
 const LepesKartya = styled.li<{ kesleltetes: string }>`
   position: relative;
+  z-index: 1;
   padding: 0.5rem 0.25rem 0.5rem 0;
   ${revealAlap}
   transition-delay: ${(props) => props.kesleltetes};
 
-  @media (min-width: ${tema.szelesseg.mobil}) {
-    &::after {
+  /* Mobil: függőleges összekötő minden lépésnél (az utolsó kivételével) */
+  @media (max-width: ${tema.szelesseg.mobil}) {
+    padding-left: 1.1rem;
+
+    &:not(:last-child)::after {
       content: '';
       position: absolute;
-      top: 1.4rem;
-      left: calc(100% - 0.5rem);
-      width: calc(100% - 2rem);
-      height: 1px;
+      left: 0.15rem;
+      top: 3.2rem;
+      bottom: -1.2rem;
+      width: 1px;
       background: linear-gradient(
-        90deg,
+        180deg,
         rgba(197, 165, 114, 0.45),
         transparent
       );
       pointer-events: none;
     }
+  }
+
+  /* Asztali: rövid összekötő a szám jobb oldalán — mindháromnál, az utolsónál sem rejtjük el a közös vonalat */
+  @media (min-width: ${tema.szelesseg.mobil}) {
+    &::after {
+      content: '';
+      position: absolute;
+      top: 1.5rem;
+      left: 2.6rem;
+      width: calc(100% - 1.5rem);
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        rgba(197, 165, 114, 0.55),
+        rgba(197, 165, 114, 0.2)
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
 
     &:last-child::after {
-      display: none;
+      width: 0;
+      background: none;
     }
   }
 `
 
-/** Nagy 01–03 szám */
+/** Nagy 1–3 szám */
 const LepesSzam = styled.span`
-  display: block;
+  position: relative;
+  z-index: 1;
+  display: inline-block;
   margin-bottom: 0.85rem;
+  padding-right: 0.35rem;
   font-size: clamp(2.4rem, 5vw, 3.4rem);
   line-height: 1;
+  background: ${tema.hatter.fekete};
   ${premiumSzamStilus}
 `
 
@@ -129,7 +176,7 @@ function FolyamatLepes({ szam, cim, leiras, index }: LepesTulajdonsagok) {
 }
 
 /**
- * A „Hogyan dolgozunk” 01–03 idővonal szekciót jeleníti meg.
+ * A „Hogyan dolgozunk” 1–3 idővonal szekciót jeleníti meg.
  */
 export function HogyanDolgozunkSzekcio() {
   const { szoveg } = useNyelv()
