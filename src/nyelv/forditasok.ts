@@ -18,11 +18,12 @@ const magyar: OldalForditas = {
       'járműszállítás, premium logisztika, autószállítás, Németország, Európa, Juliette Logistique',
   },
   navigacio: [
-    { azonosito: 'kezdo', felirat: 'KEZDŐLAP', cel: '#kezdooldal' },
-    { azonosito: 'rolunk', felirat: 'RÓLUNK', cel: '#rolunk' },
-    { azonosito: 'szolgaltatasok', felirat: 'SZOLGÁLTATÁSOK', cel: '#szolgaltatasok' },
-    { azonosito: 'partnerek', felirat: 'PARTNEREK', cel: '#partnerek' },
-    { azonosito: 'kapcsolat', felirat: 'KAPCSOLAT', cel: '#kapcsolat' },
+    { azonosito: 'kezdo', felirat: 'KEZDŐLAP', cel: '/' },
+    { azonosito: 'rolunk', felirat: 'RÓLUNK', cel: '/#rolunk' },
+    { azonosito: 'szolgaltatasok', felirat: 'SZOLGÁLTATÁSOK', cel: '/#szolgaltatasok' },
+    { azonosito: 'partnerek', felirat: 'PARTNEREK', cel: '/#partnerek' },
+    { azonosito: 'karrier', felirat: 'KARRIER', cel: '/karrier' },
+    { azonosito: 'kapcsolat', felirat: 'KAPCSOLAT', cel: '/#kapcsolat' },
   ],
   hos: {
     markaNev: 'JULIETTE LOGISTIQUE',
@@ -154,6 +155,49 @@ const magyar: OldalForditas = {
     gomb: 'KAPCSOLATFELVÉTEL',
     kepAlt: 'Juliette Logistique járműszállítás az úton',
   },
+  karrier: {
+    seoCim: 'Karrier | Juliette Logistique',
+    seoLeiras:
+      'Csatlakozzon a Juliette Logistique csapatához. Premium járműszállítás — sofőr és logisztikai pozíciók Németországban és Európában.',
+    cim: 'KARRIER',
+    alcim: 'CSATLAKOZZON A PRÉMIUM CSAPATHOZ',
+    bekezdes:
+      'Pontosságot, biztonságot és személyes felelősséget keresünk. Ha Ön is a járművek és a megbízható logisztika mellett elkötelezett, várjuk jelentkezését.',
+    poziciokCim: 'NYITOTT POZÍCIÓK',
+    poziciok: [
+      {
+        cim: 'JÁRMŰÁTVEZETŐ / SOFŐR',
+        leiras:
+          'Premium személygépjárművek biztonságos átvezetése regionális és európai útvonalakon.',
+        elvarasok: [
+          'Érvényes B jogosítvány (BE előny)',
+          'Tiszta előélet és megbízható megjelenés',
+          'Rugalmasság rövid és hosszú távú fuvarokra',
+          'Német és/vagy angol kommunikáció',
+        ],
+      },
+      {
+        cim: 'LOGISZTIKAI KOORDINÁTOR',
+        leiras:
+          'Útvonaltervezés, ügyfélkapcsolat és a szállítások átlátható dokumentálása.',
+        elvarasok: [
+          'Logisztikai vagy ügyfélszolgálati tapasztalat',
+          'Pontos, strukturált munkavégzés',
+          'Jó kommunikációs készség (DE / EN)',
+          'Önálló és csapatban is hatékony munka',
+        ],
+      },
+    ],
+    elonyokCim: 'MIÉRT ÉRDEMES HOZZÁNK CSATLAKOZNI?',
+    elonyok: [
+      'Prémium márkákkal és flottákkal való munka',
+      'Átlátható folyamatok és személyes kapcsolattartás',
+      'Európai útvonalak, változatos feladatok',
+      'Megbízható, korrekt együttműködés',
+    ],
+    gomb: 'JELENTKEZEM',
+    emailTargy: 'Karrier jelentkezés — Juliette Logistique',
+  },
   lablec: {
     kerdes: 'KÉSZ AZ EGYÜTTMŰKÖDÉSRE?',
     gomb: 'KAPCSOLATFELVÉTEL',
@@ -179,11 +223,12 @@ const angol: OldalForditas = {
       'vehicle transport, premium logistics, car transfer, Germany, Europe, Juliette Logistique',
   },
   navigacio: [
-    { azonosito: 'kezdo', felirat: 'HOME', cel: '#kezdooldal' },
-    { azonosito: 'rolunk', felirat: 'ABOUT', cel: '#rolunk' },
-    { azonosito: 'szolgaltatasok', felirat: 'SERVICES', cel: '#szolgaltatasok' },
-    { azonosito: 'partnerek', felirat: 'PARTNERS', cel: '#partnerek' },
-    { azonosito: 'kapcsolat', felirat: 'CONTACT', cel: '#kapcsolat' },
+    { azonosito: 'kezdo', felirat: 'HOME', cel: '/' },
+    { azonosito: 'rolunk', felirat: 'ABOUT', cel: '/#rolunk' },
+    { azonosito: 'szolgaltatasok', felirat: 'SERVICES', cel: '/#szolgaltatasok' },
+    { azonosito: 'partnerek', felirat: 'PARTNERS', cel: '/#partnerek' },
+    { azonosito: 'karrier', felirat: 'CAREERS', cel: '/karrier' },
+    { azonosito: 'kapcsolat', felirat: 'CONTACT', cel: '/#kapcsolat' },
   ],
   hos: {
     markaNev: 'JULIETTE LOGISTIQUE',
@@ -315,6 +360,49 @@ const angol: OldalForditas = {
     gomb: 'CONTACT US',
     kepAlt: 'Juliette Logistique vehicle transport on the road',
   },
+  karrier: {
+    seoCim: 'Careers | Juliette Logistique',
+    seoLeiras:
+      'Join the Juliette Logistique team. Premium vehicle transport — driver and logistics roles across Germany and Europe.',
+    cim: 'CAREERS',
+    alcim: 'JOIN A PREMIUM TEAM',
+    bekezdes:
+      'We look for precision, safety and personal responsibility. If you are committed to vehicles and reliable logistics, we welcome your application.',
+    poziciokCim: 'OPEN POSITIONS',
+    poziciok: [
+      {
+        cim: 'VEHICLE TRANSFER DRIVER',
+        leiras:
+          'Safe transfer of premium passenger cars on regional and Europe-wide routes.',
+        elvarasok: [
+          'Valid category B licence (BE is an advantage)',
+          'Clean record and professional appearance',
+          'Flexibility for short and long-distance trips',
+          'German and/or English communication',
+        ],
+      },
+      {
+        cim: 'LOGISTICS COORDINATOR',
+        leiras:
+          'Route planning, client contact and clear documentation of transports.',
+        elvarasok: [
+          'Logistics or customer-service experience',
+          'Precise, structured working style',
+          'Strong communication skills (DE / EN)',
+          'Effective both independently and in a team',
+        ],
+      },
+    ],
+    elonyokCim: 'WHY JOIN US?',
+    elonyok: [
+      'Work with premium brands and fleets',
+      'Clear processes and personal contact',
+      'European routes and varied assignments',
+      'Reliable, fair collaboration',
+    ],
+    gomb: 'APPLY NOW',
+    emailTargy: 'Career application — Juliette Logistique',
+  },
   lablec: {
     kerdes: 'READY TO COLLABORATE?',
     gomb: 'CONTACT US',
@@ -340,11 +428,12 @@ const nemet: OldalForditas = {
       'Fahrzeugüberführung, Premium Logistik, Autotransport, Deutschland, Europa, Juliette Logistique',
   },
   navigacio: [
-    { azonosito: 'kezdo', felirat: 'STARTSEITE', cel: '#kezdooldal' },
-    { azonosito: 'rolunk', felirat: 'ÜBER UNS', cel: '#rolunk' },
-    { azonosito: 'szolgaltatasok', felirat: 'LEISTUNGEN', cel: '#szolgaltatasok' },
-    { azonosito: 'partnerek', felirat: 'PARTNER', cel: '#partnerek' },
-    { azonosito: 'kapcsolat', felirat: 'KONTAKT', cel: '#kapcsolat' },
+    { azonosito: 'kezdo', felirat: 'STARTSEITE', cel: '/' },
+    { azonosito: 'rolunk', felirat: 'ÜBER UNS', cel: '/#rolunk' },
+    { azonosito: 'szolgaltatasok', felirat: 'LEISTUNGEN', cel: '/#szolgaltatasok' },
+    { azonosito: 'partnerek', felirat: 'PARTNER', cel: '/#partnerek' },
+    { azonosito: 'karrier', felirat: 'KARRIERE', cel: '/karrier' },
+    { azonosito: 'kapcsolat', felirat: 'KONTAKT', cel: '/#kapcsolat' },
   ],
   hos: {
     markaNev: 'JULIETTE LOGISTIQUE',
@@ -475,6 +564,49 @@ const nemet: OldalForditas = {
     cim: 'PREMIUM LOGISTIK. EUROPAWEITE ABDECKUNG.',
     gomb: 'KONTAKT AUFNEHMEN',
     kepAlt: 'Juliette Logistique Fahrzeugtransport unterwegs',
+  },
+  karrier: {
+    seoCim: 'Karriere | Juliette Logistique',
+    seoLeiras:
+      'Werden Sie Teil von Juliette Logistique. Premium Fahrzeugüberführung — Fahrer- und Logistikpositionen in Deutschland und Europa.',
+    cim: 'KARRIERE',
+    alcim: 'WERDEN SIE TEIL EINES PREMIUM-TEAMS',
+    bekezdes:
+      'Wir suchen Präzision, Sicherheit und persönliche Verantwortung. Wenn Sie Fahrzeuge und zuverlässige Logistik leben, freuen wir uns auf Ihre Bewerbung.',
+    poziciokCim: 'OFFENE STELLEN',
+    poziciok: [
+      {
+        cim: 'FAHRZEUGÜBERFÜHRER / FAHRER',
+        leiras:
+          'Sichere Überführung von Premium-Pkw auf regionalen und europaweiten Strecken.',
+        elvarasok: [
+          'Gültiger Führerschein Klasse B (BE von Vorteil)',
+          'Sauberes Führungszeugnis und gepflegtes Auftreten',
+          'Flexibilität für Kurz- und Langstrecken',
+          'Kommunikation auf Deutsch und/oder Englisch',
+        ],
+      },
+      {
+        cim: 'LOGISTIKKOORDINATOR',
+        leiras:
+          'Routenplanung, Kundenkontakt und transparente Dokumentation der Transporte.',
+        elvarasok: [
+          'Erfahrung in Logistik oder Kundenservice',
+          'Präzise, strukturierte Arbeitsweise',
+          'Starke Kommunikationsfähigkeit (DE / EN)',
+          'Effektiv im Team und selbstständig',
+        ],
+      },
+    ],
+    elonyokCim: 'WARUM ZU UNS?',
+    elonyok: [
+      'Arbeit mit Premium-Marken und Flotten',
+      'Klare Abläufe und persönlicher Kontakt',
+      'Europäische Routen und abwechslungsreiche Einsätze',
+      'Zuverlässige, faire Zusammenarbeit',
+    ],
+    gomb: 'JETZT BEWERBEN',
+    emailTargy: 'Karrierebewerbung — Juliette Logistique',
   },
   lablec: {
     kerdes: 'BEREIT ZUR ZUSAMMENARBEIT?',

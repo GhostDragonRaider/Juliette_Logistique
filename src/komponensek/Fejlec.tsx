@@ -1,4 +1,5 @@
 import { useEffect, useId, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import styled from '@emotion/styled'
 import { Logo } from './Logo'
 import { Gomb } from './Gomb'
@@ -7,6 +8,11 @@ import { telefonszam } from '../adatok/fooldalAdatok'
 import { useNyelv } from '../nyelv/useNyelv'
 import { nyelvKapcsolok, type NyelvKod } from '../nyelv/nyelvTipusok'
 import { tema, aranyKeret, fokuszKeret } from '../stilusok/tema'
+
+type FejlecTulajdonsagok = {
+  /** Ha true, a fejléc mindig sticky üveg stílusú (pl. karrier oldal) */
+  mindigSticky?: boolean
+}
 
 /** A fejléc — scroll után sticky üveg hatás */
 const FejlecSav = styled.header<{ sticky: boolean }>`
@@ -44,23 +50,27 @@ const FejlecSav = styled.header<{ sticky: boolean }>`
 const NavigacioLista = styled.nav`
   display: none;
   align-items: center;
-  gap: clamp(0.8rem, 1.5vw, 1.5rem);
+  gap: clamp(0.55rem, 1.2vw, 1.25rem);
 
   @media (min-width: ${tema.szelesseg.tablet}) {
     display: flex;
   }
+
+  @media (min-width: ${tema.szelesseg.asztali}) {
+    gap: clamp(0.8rem, 1.5vw, 1.5rem);
+  }
 `
 
 /** Egy navigációs link */
-const NavigacioLinkElem = styled.a`
+const navigacioLinkStilus = `
   position: relative;
   min-height: 44px;
   display: inline-flex;
   align-items: center;
   font-family: ${tema.betu.cim};
-  font-size: clamp(0.68rem, 0.9vw, 0.8rem);
+  font-size: clamp(0.62rem, 0.85vw, 0.78rem);
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   color: ${tema.szin.aranyVilagos};
   transition: color 0.2s ease;
 
@@ -87,6 +97,9 @@ const NavigacioLinkElem = styled.a`
     ${fokuszKeret}
   }
 `
+
+const NavigacioLinkElem = styled.a`${navigacioLinkStilus}`
+const NavigacioRouterLink = styled(Link)`${navigacioLinkStilus}`
 
 /** Jobb oldali segédsáv (nyelv + telefon) */
 const JobbSav = styled.div`
@@ -211,17 +224,23 @@ const MobilMenuPanel = styled.div<{ nyitva: boolean }>`
 `
 
 /**
+ * Eldönti, hogy a navigációs cél route-e (nem csak hash a főoldalon).
+ */
+function routeCel(cel: string) {
+  return cel.startsWith('/') && !cel.startsWith('/#')
+}
+
+/**
  * A főoldal fejlécét rajzolja ki: logo, navigáció, nyelvkapcsoló és telefon gomb.
  */
-export function Fejlec() {
+export function Fejlec({ mindigSticky = false }: FejlecTulajdonsagok) {
   const { nyelv, szoveg, nyelvetValaszt } = useNyelv()
+  const hely = useLocation()
+  const navigal = useNavigate()
   const [mobilMenuNyitva, setMobilMenuNyitva] = useState(false)
-  const [sticky, setSticky] = useState(false)
+  const [sticky, setSticky] = useState(mindigSticky)
   const menuAzonosito = useId()
 
-  /**
-   * Escape billentyűvel bezárja a mobil menüt.
-   */
   useEffect(() => {
     /**
      * Figyeli az Escape billentyűt a menü bezárásához.
@@ -236,10 +255,12 @@ export function Fejlec() {
     return () => window.removeEventListener('keydown', escapeFigyelo)
   }, [])
 
-  /**
-   * Görgetés után sticky üveg fejlécet kapcsol be.
-   */
   useEffect(() => {
+    if (mindigSticky) {
+      setSticky(true)
+      return
+    }
+
     /**
      * A hero alsó része után aktiválja a sticky üveg státuszt.
      */
@@ -250,7 +271,7 @@ export function Fejlec() {
     stickyFigyelo()
     window.addEventListener('scroll', stickyFigyelo, { passive: true })
     return () => window.removeEventListener('scroll', stickyFigyelo)
-  }, [])
+  }, [mindigSticky])
 
   /**
    * Megnyitja vagy bezárja a mobil menüt.
@@ -273,20 +294,65 @@ export function Fejlec() {
     nyelvetValaszt(ujNyelv)
   }
 
+  /**
+   * Hashes főoldali linkeket kezel — más oldalról is a megfelelő szekcióra ugrik.
+   */
+  function hashLinkKattintas(cel: string) {
+    mobilMenutBezar()
+    const hash = cel.includes('#') ? `#${cel.split('#')[1]}` : cel
+
+    if (hely.pathname !== '/') {
+      navigal({ pathname: '/', hash: hash.replace(/^#/, '') })
+      return
+    }
+
+    const elem = document.querySelector(hash)
+    if (elem) {
+      elem.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  /**
+   * Egy navigációs linket rajzol ki (route vagy hash).
+   */
+  function navigacioLinketRajzol(
+    link: { azonosito: string; felirat: string; cel: string },
+    osztalyNev: string,
+  ) {
+    if (routeCel(link.cel)) {
+      return (
+        <NavigacioRouterLink
+          key={link.azonosito}
+          className={osztalyNev}
+          to={link.cel}
+          onClick={mobilMenutBezar}
+        >
+          {link.felirat}
+        </NavigacioRouterLink>
+      )
+    }
+
+    return (
+      <NavigacioLinkElem
+        key={link.azonosito}
+        className={osztalyNev}
+        href={link.cel.startsWith('/#') ? link.cel.slice(1) : link.cel}
+        onClick={(esemeny) => {
+          esemeny.preventDefault()
+          hashLinkKattintas(link.cel)
+        }}
+      >
+        {link.felirat}
+      </NavigacioLinkElem>
+    )
+  }
+
   return (
-    <FejlecSav className="fejlec-sav" sticky={sticky}>
+    <FejlecSav className="fejlec-sav" sticky={sticky || mindigSticky}>
       <Logo className="fejlec-logo" />
 
       <NavigacioLista className="navigacio-lista" aria-label={szoveg.navigacioAria}>
-        {szoveg.navigacio.map((link) => (
-          <NavigacioLinkElem
-            key={link.azonosito}
-            className="navigacio-link"
-            href={link.cel}
-          >
-            {link.felirat}
-          </NavigacioLinkElem>
-        ))}
+        {szoveg.navigacio.map((link) => navigacioLinketRajzol(link, 'navigacio-link'))}
       </NavigacioLista>
 
       <JobbSav className="fejlec-jobb-sav">
@@ -346,16 +412,9 @@ export function Fejlec() {
         role="navigation"
         aria-label={szoveg.navigacioAria}
       >
-        {szoveg.navigacio.map((link) => (
-          <NavigacioLinkElem
-            key={link.azonosito}
-            className="mobil-navigacio-link"
-            href={link.cel}
-            onClick={mobilMenutBezar}
-          >
-            {link.felirat}
-          </NavigacioLinkElem>
-        ))}
+        {szoveg.navigacio.map((link) =>
+          navigacioLinketRajzol(link, 'mobil-navigacio-link'),
+        )}
       </MobilMenuPanel>
     </FejlecSav>
   )

@@ -2,6 +2,13 @@ import { useEffect } from 'react'
 import { telefonszam } from '../adatok/fooldalAdatok'
 import { useNyelv } from '../nyelv/useNyelv'
 
+type SeoFejTulajdonsagok = {
+  /** Opcionális cím felülírás (pl. karrier oldal) */
+  cimFeluliras?: string
+  /** Opcionális leírás felülírás */
+  leirasFeluliras?: string
+}
+
 /**
  * Beállítja vagy létrehozza a megadott meta elemet a document head-ben.
  */
@@ -54,28 +61,30 @@ function jsonLdBeallitas(adat: Record<string, unknown>) {
 /**
  * A kiválasztott nyelvhez igazítja a SEO meta adatokat és a JSON-LD-t.
  */
-export function SeoFej() {
+export function SeoFej({ cimFeluliras, leirasFeluliras }: SeoFejTulajdonsagok = {}) {
   const { nyelv, szoveg } = useNyelv()
 
   useEffect(() => {
     const oldalUrl = window.location.origin + window.location.pathname
     const kepUrl = `${window.location.origin}/kepek/hos-hatter.png`
+    const cim = cimFeluliras ?? szoveg.seo.cim
+    const leiras = leirasFeluliras ?? szoveg.seo.leiras
 
-    document.title = szoveg.seo.cim
-    metaBeallitas('description', szoveg.seo.leiras)
+    document.title = cim
+    metaBeallitas('description', leiras)
     metaBeallitas('keywords', szoveg.seo.kulcsszavak)
     metaBeallitas('robots', 'index, follow')
     metaBeallitas('theme-color', '#141414')
     metaBeallitas('og:type', 'website', 'property')
     metaBeallitas('og:site_name', 'Juliette Logistique', 'property')
-    metaBeallitas('og:title', szoveg.seo.cim, 'property')
-    metaBeallitas('og:description', szoveg.seo.leiras, 'property')
+    metaBeallitas('og:title', cim, 'property')
+    metaBeallitas('og:description', leiras, 'property')
     metaBeallitas('og:locale', nyelv === 'hu' ? 'hu_HU' : nyelv === 'de' ? 'de_DE' : 'en_US', 'property')
     metaBeallitas('og:url', oldalUrl, 'property')
     metaBeallitas('og:image', kepUrl, 'property')
     metaBeallitas('twitter:card', 'summary_large_image')
-    metaBeallitas('twitter:title', szoveg.seo.cim)
-    metaBeallitas('twitter:description', szoveg.seo.leiras)
+    metaBeallitas('twitter:title', cim)
+    metaBeallitas('twitter:description', leiras)
     metaBeallitas('twitter:image', kepUrl)
     linkBeallitas('canonical', oldalUrl)
 
@@ -83,7 +92,7 @@ export function SeoFej() {
       '@context': 'https://schema.org',
       '@type': 'Organization',
       name: 'Juliette Logistique',
-      url: oldalUrl,
+      url: window.location.origin,
       logo: `${window.location.origin}/brand/logo.png`,
       image: kepUrl,
       description: szoveg.seo.leiras,
@@ -97,7 +106,7 @@ export function SeoFej() {
         availableLanguage: ['hu', 'en', 'de'],
       },
     })
-  }, [nyelv, szoveg])
+  }, [nyelv, szoveg, cimFeluliras, leirasFeluliras])
 
   return null
 }

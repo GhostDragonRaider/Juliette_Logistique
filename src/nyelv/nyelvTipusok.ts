@@ -82,6 +82,19 @@ export type OldalForditas = {
     gomb: string
     kepAlt: string
   }
+  karrier: {
+    seoCim: string
+    seoLeiras: string
+    cim: string
+    alcim: string
+    bekezdes: string
+    poziciokCim: string
+    poziciok: { cim: string; leiras: string; elvarasok: string[] }[]
+    elonyokCim: string
+    elonyok: string[]
+    gomb: string
+    emailTargy: string
+  }
   lablec: {
     kerdes: string
     gomb: string
