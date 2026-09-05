@@ -1,16 +1,30 @@
+import { useEffect, useState } from 'react'
 import styled from '@emotion/styled'
 import { keyframes } from '@emotion/react'
 import { Gomb } from './Gomb'
 import { useNyelv } from '../nyelv/useNyelv'
-import { tema, aranySzovegAtmenet } from '../stilusok/tema'
+import { tema, aranySzovegAtmenet, fokuszKeret } from '../stilusok/tema'
 
-/** Ken Burns: lassú zoom + pan a háttérképen (görgetéstől független) */
+/** A hero háttérképei — váltakozó prémium jelenetek */
+const hosKepek = [
+  '/kepek/hos-mercedes.png',
+  '/kepek/hos-bmw.png',
+  '/kepek/hos-volvo.png',
+] as const
+
+/** Egy dián töltött idő (ms) */
+const DIA_IDO = 6500
+
+/** Áttűnés hossza (ms) — prémium, lassú crossfade */
+const ATTUNES_IDO = 1600
+
+/** Ken Burns: lassú zoom a látható képen */
 const kenBurns = keyframes`
   0% {
-    transform: scale(1.08) translate3d(0, 0, 0);
+    transform: scale(1.04) translate3d(0, 0, 0);
   }
   100% {
-    transform: scale(1.18) translate3d(-2.5%, -1.5%, 0);
+    transform: scale(1.12) translate3d(-1.2%, -0.8%, 0);
   }
 `
 
@@ -58,33 +72,97 @@ const HosKeret = styled.section`
   overflow: hidden;
 `
 
-/** A hero háttérkép — rögzített a görgetéshez, Ken Burns animációval */
-const HosHatter = styled.div`
+/** A váltakozó háttérképek konténere */
+const HatterKeret = styled.div`
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(90deg, rgba(20, 20, 20, 0.78) 0%, rgba(20, 20, 20, 0.42) 48%, rgba(20, 20, 20, 0.18) 100%),
-    linear-gradient(0deg, rgba(20, 20, 20, 0.72) 0%, rgba(20, 20, 20, 0.18) 48%, rgba(20, 20, 20, 0.28) 100%),
-    url('/kepek/hos-hatter.png') center / cover no-repeat;
-  animation: ${kenBurns} 28s ease-in-out infinite alternate;
-  will-change: transform;
+  overflow: hidden;
+`
+
+/** Egy háttérkép réteg — soft crossfade + Ken Burns */
+const KepReteg = styled.div<{ aktiv: boolean; kep: string }>`
+  position: absolute;
+  inset: 0;
+  background: url(${(props) => props.kep}) center / cover no-repeat;
+  opacity: ${(props) => (props.aktiv ? 1 : 0)};
+  transform: scale(${(props) => (props.aktiv ? 1 : 1.04)});
+  transition:
+    opacity ${ATTUNES_IDO}ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform ${ATTUNES_IDO}ms cubic-bezier(0.4, 0, 0.2, 1);
+  animation: ${(props) => (props.aktiv ? kenBurns : 'none')} ${DIA_IDO + ATTUNES_IDO}ms
+    ease-in-out both;
+  will-change: opacity, transform;
 
   @media (max-width: ${tema.szelesseg.mobil}) {
-    background:
-      linear-gradient(180deg, rgba(20, 20, 20, 0.4) 0%, rgba(20, 20, 20, 0.62) 55%, rgba(20, 20, 20, 0.82) 100%),
-      url('/kepek/hos-hatter.png') 70% center / cover no-repeat;
+    background-position: 65% center;
   }
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
+    transition: opacity 0.4s ease;
     transform: scale(1.04);
+  }
+`
+
+/** Sötét fátyol a szöveg olvashatóságához — minden kép felett */
+const HatterFatyol = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(20, 20, 20, 0.78) 0%, rgba(20, 20, 20, 0.42) 48%, rgba(20, 20, 20, 0.22) 100%),
+    linear-gradient(0deg, rgba(20, 20, 20, 0.72) 0%, rgba(20, 20, 20, 0.18) 48%, rgba(20, 20, 20, 0.28) 100%);
+
+  @media (max-width: ${tema.szelesseg.mobil}) {
+    background: linear-gradient(
+      180deg,
+      rgba(20, 20, 20, 0.4) 0%,
+      rgba(20, 20, 20, 0.62) 55%,
+      rgba(20, 20, 20, 0.82) 100%
+    );
+  }
+`
+
+/** Finom arany indikátor pontok a hero alján */
+const IndikatorSor = styled.div`
+  position: absolute;
+  right: ${tema.oldalsoPadding};
+  bottom: clamp(1.4rem, 4vh, 2.4rem);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+`
+
+/** Egy indikátor pont / vékony arany vonal */
+const IndikatorPont = styled.button<{ aktiv: boolean }>`
+  width: ${(props) => (props.aktiv ? '28px' : '8px')};
+  height: 3px;
+  padding: 0;
+  border-radius: 1px;
+  background: ${(props) =>
+    props.aktiv ? tema.szin.aranyVilagos : 'rgba(197, 165, 114, 0.35)'};
+  box-shadow: ${(props) =>
+    props.aktiv ? '0 0 10px rgba(197, 165, 114, 0.35)' : 'none'};
+  transition:
+    width 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.4s ease,
+    box-shadow 0.4s ease;
+
+  &:hover {
+    background: ${tema.szin.arany};
+  }
+
+  &:focus-visible {
+    ${fokuszKeret}
   }
 `
 
 /** A hero szöveges tartalma */
 const HosTartalom = styled.div`
   position: relative;
-  z-index: 1;
+  z-index: 2;
   width: min(100%, 860px);
 `
 
@@ -189,11 +267,45 @@ const GombSor = styled.div`
 `
 
 /**
- * A főoldal hero szekcióját jeleníti meg cinematic motionnal.
- * A háttér görgetéskor nem mozog (nincs parallax).
+ * A főoldal hero szekcióját jeleníti meg váltakozó háttérképekkel.
+ * Soft crossfade + Ken Burns — görgetéskor a háttér nem mozog.
  */
 export function HosSzekcio() {
   const { szoveg } = useNyelv()
+  const [aktivIndex, setAktivIndex] = useState(0)
+
+  useEffect(() => {
+    /**
+     * Előre betölti a hero képeket, hogy az áttűnés ne villogjon.
+     */
+    hosKepek.forEach((forras) => {
+      const kep = new Image()
+      kep.src = forras
+    })
+  }, [])
+
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (media.matches) {
+      return
+    }
+
+    /**
+     * Időközönként a következő képre vált soft crossfade-del.
+     */
+    const idozito = window.setInterval(() => {
+      setAktivIndex((elozo) => (elozo + 1) % hosKepek.length)
+    }, DIA_IDO)
+
+    return () => window.clearInterval(idozito)
+  }, [aktivIndex])
+
+  /**
+   * Manuálisan egy adott diára vált (indikátor kattintás).
+   */
+  function diaraValt(index: number) {
+    setAktivIndex(index)
+  }
 
   return (
     <HosKeret
@@ -201,7 +313,31 @@ export function HosSzekcio() {
       id="kezdooldal"
       aria-labelledby="hos-cim"
     >
-      <HosHatter className="hos-hatter" aria-hidden="true" />
+      <HatterKeret className="hos-hatter-keret" aria-hidden="true">
+        {hosKepek.map((kep, index) => (
+          <KepReteg
+            key={kep}
+            className="hos-kep-reteg"
+            kep={kep}
+            aktiv={index === aktivIndex}
+          />
+        ))}
+        <HatterFatyol className="hos-hatter-fatyol" />
+      </HatterKeret>
+
+      <IndikatorSor className="hos-indikator-sor" role="tablist" aria-label="Háttérképek">
+        {hosKepek.map((kep, index) => (
+          <IndikatorPont
+            key={kep}
+            type="button"
+            className="hos-indikator"
+            aktiv={index === aktivIndex}
+            aria-label={`${index + 1}. háttérkép`}
+            aria-current={index === aktivIndex}
+            onClick={() => diaraValt(index)}
+          />
+        ))}
+      </IndikatorSor>
 
       <HosTartalom className="hos-tartalom">
         <FadeSor kesleltetes="0.1s">
