@@ -124,6 +124,36 @@ const magyar: OldalForditas = {
     kepAlt: 'Juliette Logistique szállítójármű',
   },
   partnerekCim: 'PARTNEREINK',
+  hogyanDolgozunk: {
+    cim: 'HOGYAN DOLGOZUNK',
+    lepesek: [
+      {
+        szam: '01',
+        cim: 'MEGKERESÉS',
+        leiras: 'Rövid egyeztetés az útvonalról, időpontról és a jármű részleteiről.',
+      },
+      {
+        szam: '02',
+        cim: 'TERVEZÉS',
+        leiras: 'Pontos ütemezés, biztonságos útvonal és átlátható dokumentáció.',
+      },
+      {
+        szam: '03',
+        cim: 'ÁTVITEL',
+        leiras: 'Megbízható szállítás tapasztalt sofőrökkel — határidőre.',
+      },
+    ],
+  },
+  idezet: {
+    szoveg:
+      'A Juliette Logistique nem csak szállít — minden járművet úgy kezel, mintha a sajátja lenne.',
+    szerzo: '— Ügyfelünk, flottavezető',
+  },
+  zaroKep: {
+    cim: 'PREMIUM LOGISZTIKA. EURÓPAI LEFEDETTSÉG.',
+    gomb: 'KAPCSOLATFELVÉTEL',
+    kepAlt: 'Juliette Logistique járműszállítás az úton',
+  },
   lablec: {
     kerdes: 'KÉSZ AZ EGYÜTTMŰKÖDÉSRE?',
     gomb: 'KAPCSOLATFELVÉTEL',
@@ -255,6 +285,36 @@ const angol: OldalForditas = {
     kepAlt: 'Juliette Logistique transport vehicle',
   },
   partnerekCim: 'OUR PARTNERS',
+  hogyanDolgozunk: {
+    cim: 'HOW WE WORK',
+    lepesek: [
+      {
+        szam: '01',
+        cim: 'INQUIRY',
+        leiras: 'A short briefing on route, timing and vehicle details.',
+      },
+      {
+        szam: '02',
+        cim: 'PLANNING',
+        leiras: 'Precise scheduling, secure routing and clear documentation.',
+      },
+      {
+        szam: '03',
+        cim: 'TRANSFER',
+        leiras: 'Reliable transport with experienced drivers — on time.',
+      },
+    ],
+  },
+  idezet: {
+    szoveg:
+      'Juliette Logistique does not just transport — every vehicle is handled as if it were their own.',
+    szerzo: '— Client, fleet manager',
+  },
+  zaroKep: {
+    cim: 'PREMIUM LOGISTICS. EUROPE-WIDE COVERAGE.',
+    gomb: 'CONTACT US',
+    kepAlt: 'Juliette Logistique vehicle transport on the road',
+  },
   lablec: {
     kerdes: 'READY TO COLLABORATE?',
     gomb: 'CONTACT US',
@@ -386,6 +446,36 @@ const nemet: OldalForditas = {
     kepAlt: 'Juliette Logistique Transportfahrzeug',
   },
   partnerekCim: 'UNSERE PARTNER',
+  hogyanDolgozunk: {
+    cim: 'SO ARBEITEN WIR',
+    lepesek: [
+      {
+        szam: '01',
+        cim: 'ANFRAGE',
+        leiras: 'Kurze Abstimmung zu Route, Termin und Fahrzeugdetails.',
+      },
+      {
+        szam: '02',
+        cim: 'PLANUNG',
+        leiras: 'Präzise Terminierung, sichere Strecke und klare Dokumentation.',
+      },
+      {
+        szam: '03',
+        cim: 'ÜBERFÜHRUNG',
+        leiras: 'Zuverlässiger Transport mit erfahrenen Fahrern — pünktlich.',
+      },
+    ],
+  },
+  idezet: {
+    szoveg:
+      'Juliette Logistique transportiert nicht nur — jedes Fahrzeug wird behandelt, als wäre es das eigene.',
+    szerzo: '— Kunde, Flottenmanager',
+  },
+  zaroKep: {
+    cim: 'PREMIUM LOGISTIK. EUROPAWEITE ABDECKUNG.',
+    gomb: 'KONTAKT AUFNEHMEN',
+    kepAlt: 'Juliette Logistique Fahrzeugtransport unterwegs',
+  },
   lablec: {
     kerdes: 'BEREIT ZUR ZUSAMMENARBEIT?',
     gomb: 'KONTAKT AUFNEHMEN',

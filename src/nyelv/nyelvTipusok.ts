@@ -69,6 +69,19 @@ export type OldalForditas = {
     kepAlt: string
   }
   partnerekCim: string
+  hogyanDolgozunk: {
+    cim: string
+    lepesek: { szam: string; cim: string; leiras: string }[]
+  }
+  idezet: {
+    szoveg: string
+    szerzo: string
+  }
+  zaroKep: {
+    cim: string
+    gomb: string
+    kepAlt: string
+  }
   lablec: {
     kerdes: string
     gomb: string

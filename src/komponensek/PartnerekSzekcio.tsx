@@ -1,12 +1,13 @@
 import styled from '@emotion/styled'
 import { partnerLogok } from '../adatok/fooldalAdatok'
+import { useScrollReveal } from '../hookok/useScrollReveal'
 import { useNyelv } from '../nyelv/useNyelv'
-import { tema, aranySzovegAtmenet } from '../stilusok/tema'
+import { tema, aranySzovegAtmenet, revealAlap } from '../stilusok/tema'
 
 /** A partnerek szekció kerete */
 const PartnerekKeret = styled.section`
   padding: clamp(3rem, 6vw, 4.5rem) ${tema.oldalsoPadding};
-  background: ${tema.hatter.fekete};
+  background: transparent;
   text-align: center;
 `
 
@@ -14,6 +15,7 @@ const PartnerekKeret = styled.section`
 const BelsoTartalom = styled.div`
   width: min(100%, ${tema.maxTartalom});
   margin: 0 auto;
+  ${revealAlap}
 `
 
 /** A szekció címe */
@@ -43,7 +45,7 @@ const PartnerSor = styled.ul`
   }
 `
 
-/** Egy partner logó doboza — tartalom középen */
+/** Egy partner logó doboza — arany monokróm → szín hoverre */
 const PartnerLogoDoboz = styled.li`
   display: flex;
   align-items: center;
@@ -53,19 +55,21 @@ const PartnerLogoDoboz = styled.li`
   margin: 0;
   padding: 0;
   background: transparent;
-  opacity: 0.9;
-  transition: opacity 0.25s ease, transform 0.25s ease, filter 0.25s ease;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 
   @media (hover: hover) {
     &:hover {
+      transform: translateY(-4px);
+    }
+
+    &:hover img {
+      filter: none;
       opacity: 1;
-      transform: translateY(-3px);
-      filter: drop-shadow(0 0 14px rgba(197, 165, 114, 0.2));
     }
   }
 `
 
-/** Maga a logó kép — középre igazítva, átlátszó háttérrel */
+/** Maga a logó kép — alapból arany monokróm */
 const PartnerLogoKep = styled.img`
   display: block;
   width: 100%;
@@ -76,13 +80,17 @@ const PartnerLogoKep = styled.img`
   object-fit: contain;
   object-position: center;
   background: transparent;
+  opacity: 0.78;
+  filter: grayscale(1) brightness(1.15) sepia(0.55) hue-rotate(5deg) saturate(1.4);
+  transition: filter 0.4s ease, opacity 0.4s ease;
 `
 
 /**
- * A partnerek logósorát jeleníti meg a kiválasztott nyelven.
+ * A partnerek logósorát jeleníti meg monokróm → szín hoverrel.
  */
 export function PartnerekSzekcio() {
   const { szoveg } = useNyelv()
+  const { referencia, lathato } = useScrollReveal<HTMLDivElement>()
 
   return (
     <PartnerekKeret
@@ -90,7 +98,10 @@ export function PartnerekSzekcio() {
       id="partnerek"
       aria-labelledby="partnerek-cim"
     >
-      <BelsoTartalom>
+      <BelsoTartalom
+        ref={referencia}
+        className={lathato ? 'lathato' : undefined}
+      >
         <SzekcioCim className="partnerek-cim" id="partnerek-cim">
           {szoveg.partnerekCim}
         </SzekcioCim>

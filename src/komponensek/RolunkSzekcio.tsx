@@ -1,11 +1,12 @@
 import styled from '@emotion/styled'
 import { Gomb } from './Gomb'
+import { useScrollReveal } from '../hookok/useScrollReveal'
 import { useNyelv } from '../nyelv/useNyelv'
-import { tema, aranySzovegAtmenet } from '../stilusok/tema'
+import { tema, aranySzovegAtmenet, revealAlap } from '../stilusok/tema'
 
 /** Teljes szélességű háttér */
 const RolunkHatter = styled.section`
-  background: ${tema.hatter.sotet};
+  background: rgba(27, 27, 27, 0.88);
 `
 
 /** A rólunk szekció kétoszlopos kerete */
@@ -16,6 +17,7 @@ const RolunkKeret = styled.div`
   width: min(100%, ${tema.maxTartalom});
   margin: 0 auto;
   padding: clamp(3rem, 7vw, 5rem) ${tema.oldalsoPadding};
+  ${revealAlap}
 
   @media (min-width: ${tema.szelesseg.tablet}) {
     grid-template-columns: 1.05fr 1fr;
@@ -30,6 +32,12 @@ const KepOldal = styled.div`
   min-height: clamp(240px, 50vw, 420px);
   overflow: hidden;
   border: 1px solid rgba(197, 165, 114, 0.25);
+
+  @media (hover: hover) {
+    &:hover img.rolunk-kep {
+      transform: scale(1.04);
+    }
+  }
 `
 
 /** A kamion háttérkép */
@@ -38,12 +46,12 @@ const RolunkKep = styled.img`
   height: 100%;
   min-height: clamp(240px, 50vw, 420px);
   object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 `
 
 /**
  * A jobb alsó sarokban lévő logó jelvény.
- * Ugyanaz a stílus, mint a korábbi JL monogramnál:
- * sötét üvegszerű háttér + pezsgőarany keret.
  */
 const LogoJelveny = styled.div`
   position: absolute;
@@ -127,10 +135,14 @@ const ElonyPont = styled.li`
  */
 export function RolunkSzekcio() {
   const { szoveg } = useNyelv()
+  const { referencia, lathato } = useScrollReveal<HTMLDivElement>(0.12)
 
   return (
     <RolunkHatter className="rolunk-szekcio" id="rolunk" aria-labelledby="rolunk-cim">
-      <RolunkKeret className="rolunk-keret">
+      <RolunkKeret
+        ref={referencia}
+        className={`rolunk-keret${lathato ? ' lathato' : ''}`}
+      >
         <KepOldal className="rolunk-kep-oldal">
           <RolunkKep
             className="rolunk-kep"

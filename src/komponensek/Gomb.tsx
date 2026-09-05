@@ -2,7 +2,8 @@ import type { ReactNode } from 'react'
 import styled from '@emotion/styled'
 import { css } from '@emotion/react'
 import { AranyIkon } from './AranyIkon'
-import { tema, aranyKeret, fokuszKeret } from '../stilusok/tema'
+import { premiumKattintasHang } from '../lib/premiumHang'
+import { tema, aranyKeret, fokuszKeret, femesAranyGomb } from '../stilusok/tema'
 
 type GombValtozat = 'telitett' | 'korvonal' | 'telefon'
 
@@ -15,35 +16,70 @@ type GombTulajdonsagok = {
   mutatNyilat?: boolean
   mutatTelefont?: boolean
   ariaLabel?: string
+  /** Opcionális halk UI hang kattintáskor */
+  hanggal?: boolean
 }
 
-/** Az elsődleges pezsgőarany gomb stílusa */
+/** Fémes, csúszó feltöltésű elsődleges gomb */
 const telitettStilus = css`
-  background: linear-gradient(
-    135deg,
-    ${tema.szin.aranySotet} 0%,
-    ${tema.szin.aranyVilagos} 48%,
-    ${tema.szin.arany} 100%
-  );
-  color: ${tema.hatter.fekete};
-  border: 1px solid ${tema.szin.arany};
+  ${femesAranyGomb}
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease,
+    background-position 0.55s ease;
 
   &:hover {
-    box-shadow: ${tema.arnyek.aranyFeny};
     transform: translateY(-2px);
+  }
+
+  svg {
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  &:hover svg {
+    transform: translateX(3px);
   }
 `
 
 /** Az üres / arany keretes gomb stílusa */
 const korvonalStilus = css`
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   background: transparent;
   color: ${tema.szin.aranyVilagos};
   border: ${aranyKeret};
 
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    transform: translateX(-105%);
+    background: linear-gradient(
+      105deg,
+      transparent 0%,
+      rgba(197, 165, 114, 0.16) 45%,
+      transparent 70%
+    );
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
   &:hover {
-    background: rgba(197, 165, 114, 0.08);
     box-shadow: ${tema.arnyek.aranyFeny};
     transform: translateY(-2px);
+  }
+
+  &:hover::before {
+    transform: translateX(105%);
+  }
+
+  svg {
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  &:hover svg {
+    transform: translateX(3px);
   }
 `
 
@@ -106,13 +142,24 @@ export function Gomb({
   mutatNyilat = false,
   mutatTelefont = false,
   ariaLabel,
+  hanggal = false,
 }: GombTulajdonsagok) {
+  /**
+   * Kattintáskor opcionális hangot ad, majd a kapott onClick-et futtatja.
+   */
+  function kattintasKezelo() {
+    if (hanggal) {
+      premiumKattintasHang()
+    }
+    onClick?.()
+  }
+
   return (
     <GombAlap
       className={className}
       href={href}
       valtozat={valtozat}
-      onClick={onClick}
+      onClick={kattintasKezelo}
       aria-label={ariaLabel}
     >
       {mutatTelefont ? <AranyIkon tipus="telefon" meret={16} /> : null}
