@@ -1,5 +1,11 @@
 import styled from '@emotion/styled'
-import { aranySzovegAtmenet, revealAlap, tema } from '../stilusok/tema'
+import {
+  aranySzovegAtmenet,
+  femesAranyGomb,
+  fokuszKeret,
+  revealAlap,
+  tema,
+} from '../stilusok/tema'
 import { useState, useEffect } from 'react'
 import { useScrollReveal } from '../hookok/useScrollReveal'
 
@@ -215,8 +221,48 @@ const VideoHely = styled.div`
   }
 `
 
+const PremiumButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  max-width: min(100%, 22rem);
+  min-height: 48px;
+  margin: 2.5rem auto 0;
+  padding: 0.95rem 1.85rem;
+  cursor: pointer;
+  font-family: ${tema.betu.cim};
+  font-size: clamp(0.72rem, 1.4vw, 0.84rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  ${femesAranyGomb}
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease,
+    background-position 0.55s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    ${fokuszKeret}
+  }
+`
+
+const PremiumButtonText = styled.span`
+  position: relative;
+  z-index: 1;
+  color: ${tema.hatter.fekete};
+`
+
 /** Görgetésre felúszó tartalomblokk */
 const RevealBlokk = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
   padding-top: 0.5rem;
   ${revealAlap}
@@ -234,6 +280,7 @@ function MunkaTartalom({ lathato }: MunkaTartalomTulajdonsagok) {
   const feladatokReveal = useScrollReveal<HTMLDivElement>(0.2)
   const elvarasokReveal = useScrollReveal<HTMLDivElement>(0.2)
   const kinalunkReveal = useScrollReveal<HTMLDivElement>(0.2)
+  const premiumButtonReveal = useScrollReveal<HTMLDivElement>(0.2)
 
   return (
     <MunkaDiv lathato={lathato}>
@@ -317,7 +364,19 @@ function MunkaTartalom({ lathato }: MunkaTartalomTulajdonsagok) {
           </MunkaListaItem>
         </MunkaLista>
       </RevealBlokk>
+      <RevealBlokk
+        ref={premiumButtonReveal.referencia}
+        className={premiumButtonReveal.lathato ? 'lathato' : undefined}
+      >
+        <PremiumButton type="button">
+          <PremiumButtonText>Csatlakoznál hozzánk?</PremiumButtonText>
+        </PremiumButton>
+      </RevealBlokk>
+
+
     </MunkaDiv>
+
+    
   )
 }
 
