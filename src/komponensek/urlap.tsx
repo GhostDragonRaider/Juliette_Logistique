@@ -516,9 +516,10 @@ const KoszonetCim = styled.h2`
 
 const KoszonetSzoveg = styled.p`
   max-width: 36rem;
-  margin: 0;
+  margin: 0 auto;
   color: ${tema.szin.szurke};
   line-height: 1.7;
+  text-align: center;
 `
 
 type RadioProps = {
