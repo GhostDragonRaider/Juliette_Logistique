@@ -7,6 +7,7 @@ import {
   tema,
 } from '../stilusok/tema'
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useScrollReveal } from '../hookok/useScrollReveal'
 
 const Container = styled.div`
@@ -277,6 +278,7 @@ type MunkaTartalomTulajdonsagok = {
  * a további szekciók görgetésre áttűnnek.
  */
 function MunkaTartalom({ lathato }: MunkaTartalomTulajdonsagok) {
+  const navigate = useNavigate()
   const feladatokReveal = useScrollReveal<HTMLDivElement>(0.2)
   const elvarasokReveal = useScrollReveal<HTMLDivElement>(0.2)
   const kinalunkReveal = useScrollReveal<HTMLDivElement>(0.2)
@@ -368,8 +370,11 @@ function MunkaTartalom({ lathato }: MunkaTartalomTulajdonsagok) {
         ref={premiumButtonReveal.referencia}
         className={premiumButtonReveal.lathato ? 'lathato' : undefined}
       >
-        <PremiumButton type="button">
-          <PremiumButtonText>Csatlakoznál hozzánk?</PremiumButtonText>
+        <PremiumButton
+          type="button"
+          onClick={() => navigate('/karrier/jelentkezes')}
+        >
+          <PremiumButtonText>Jelentkezzen</PremiumButtonText>
         </PremiumButton>
       </RevealBlokk>
 
