@@ -374,7 +374,7 @@ function MunkaTartalom({ lathato }: MunkaTartalomTulajdonsagok) {
           type="button"
           onClick={() => navigate('/karrier/jelentkezes')}
         >
-          <PremiumButtonText>Jelentkezzen</PremiumButtonText>
+          <PremiumButtonText>Csatlakoznál hozzánk?</PremiumButtonText>
         </PremiumButton>
       </RevealBlokk>
 
