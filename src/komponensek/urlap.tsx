@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { useState, useEffect, type ChangeEvent, type FormEvent } from 'react'
+import { createPortal } from 'react-dom'
 import {
   aranyKeret,
   aranySzovegAtmenet,
@@ -1453,30 +1454,30 @@ export function Urlap() {
         </Form>
       </Keret>
 
-      {popupLathato ? (
-        <PopupHatter
-          role="presentation"
-          onClick={popupBezar}
-        >
-          <PopupAblak
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="urlap-koszonet-cim"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <PopupCim id="urlap-koszonet-cim">
-              Köszönjük jelentkezését!
-            </PopupCim>
-            <PopupSzoveg>
-              Sikeres előszűrés esetén felvesszük Önnel a kapcsolatot a további
-              lépésekkel kapcsolatban.
-            </PopupSzoveg>
-            <PopupZarGomb type="button" onClick={popupBezar}>
-              Bezárás
-            </PopupZarGomb>
-          </PopupAblak>
-        </PopupHatter>
-      ) : null}
+      {popupLathato
+        ? createPortal(
+            <PopupHatter role="presentation" onClick={popupBezar}>
+              <PopupAblak
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="urlap-koszonet-cim"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <PopupCim id="urlap-koszonet-cim">
+                  Köszönjük jelentkezését!
+                </PopupCim>
+                <PopupSzoveg>
+                  Sikeres előszűrés esetén felvesszük Önnel a kapcsolatot a
+                  további lépésekkel kapcsolatban.
+                </PopupSzoveg>
+                <PopupZarGomb type="button" onClick={popupBezar}>
+                  Bezárás
+                </PopupZarGomb>
+              </PopupAblak>
+            </PopupHatter>,
+            document.body,
+          )
+        : null}
     </Oldal>
   )
 }
