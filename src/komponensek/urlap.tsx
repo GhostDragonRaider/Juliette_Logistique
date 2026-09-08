@@ -493,33 +493,113 @@ const KuldesGomb = styled.button`
   }
 `
 
-const Koszonet = styled.div`
+const PopupHatter = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: ${tema.oldalsoPadding};
+  background: rgba(10, 10, 10, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: urlapPopupFade 0.28s ease;
+
+  @keyframes urlapPopupFade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+`
+
+const PopupAblak = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  width: 100%;
-  min-height: 50vh;
-  justify-content: center;
+  width: min(100%, 28rem);
+  padding: clamp(1.75rem, 4vw, 2.35rem) clamp(1.35rem, 3.5vw, 2rem);
   text-align: center;
-  padding: 2rem 0.5rem;
+  background:
+    linear-gradient(
+      165deg,
+      rgba(44, 44, 44, 0.98) 0%,
+      rgba(27, 27, 27, 0.98) 100%
+    );
+  border: 1px solid rgba(197, 165, 114, 0.35);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(232, 215, 181, 0.12);
+  animation: urlapPopupFel 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+
+  @keyframes urlapPopupFel {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 16px, 0) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 `
 
-const KoszonetCim = styled.h2`
+const PopupCim = styled.h2`
   margin: 0;
   font-family: ${tema.betu.cim};
-  font-size: clamp(1.2rem, 2.6vw, 1.7rem);
+  font-size: clamp(1.05rem, 2.4vw, 1.35rem);
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  line-height: 1.3;
   ${aranySzovegAtmenet}
 `
 
-const KoszonetSzoveg = styled.p`
-  max-width: 36rem;
-  margin: 0 auto;
+const PopupSzoveg = styled.p`
+  margin: 0;
   color: ${tema.szin.szurke};
+  font-size: clamp(0.92rem, 1.5vw, 1rem);
   line-height: 1.7;
-  text-align: center;
+`
+
+const PopupZarGomb = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.65rem;
+  min-height: 44px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  font-family: ${tema.betu.cim};
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  ${femesAranyGomb}
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease,
+    background-position 0.55s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    ${fokuszKeret}
+  }
 `
 
 type RadioProps = {
@@ -649,11 +729,32 @@ function FeltoltesMezo({
  */
 export function Urlap() {
   const [adat, setAdat] = useState<UrlapAllapot>(kezdoAllapot)
-  const [elkuldve, setElkuldve] = useState(false)
+  const [popupLathato, setPopupLathato] = useState(false)
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
   }, [])
+
+  useEffect(() => {
+    if (!popupLathato) {
+      return
+    }
+
+    const elozoOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    function billentyu(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        setPopupLathato(false)
+      }
+    }
+
+    window.addEventListener('keydown', billentyu)
+    return () => {
+      document.body.style.overflow = elozoOverflow
+      window.removeEventListener('keydown', billentyu)
+    }
+  }, [popupLathato])
 
   function frissit<K extends keyof UrlapAllapot>(kulcs: K, ertek: UrlapAllapot[K]) {
     setAdat((elozo) => ({ ...elozo, [kulcs]: ertek }))
@@ -671,24 +772,11 @@ export function Urlap() {
     if (!adat.adatvedelem || !adat.hozzajarulas) {
       return
     }
-    setElkuldve(true)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    setPopupLathato(true)
   }
 
-  if (elkuldve) {
-    return (
-      <Oldal className="urlap-oldal">
-        <Keret>
-          <Koszonet>
-            <KoszonetCim>Köszönjük jelentkezését!</KoszonetCim>
-            <KoszonetSzoveg>
-              Sikeres előszűrés esetén felvesszük Önnel a kapcsolatot a további
-              lépésekkel kapcsolatban.
-            </KoszonetSzoveg>
-          </Koszonet>
-        </Keret>
-      </Oldal>
-    )
+  function popupBezar() {
+    setPopupLathato(false)
   }
 
   return (
@@ -1360,14 +1448,35 @@ export function Urlap() {
               >
                 Jelentkezés elküldése
               </KuldesGomb>
-              <KoszonetSzoveg>
-                Köszönjük jelentkezését! Sikeres előszűrés esetén felvesszük
-                Önnel a kapcsolatot a további lépésekkel kapcsolatban.
-              </KoszonetSzoveg>
             </KuldesSor>
           </Szekcio>
         </Form>
       </Keret>
+
+      {popupLathato ? (
+        <PopupHatter
+          role="presentation"
+          onClick={popupBezar}
+        >
+          <PopupAblak
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="urlap-koszonet-cim"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <PopupCim id="urlap-koszonet-cim">
+              Köszönjük jelentkezését!
+            </PopupCim>
+            <PopupSzoveg>
+              Sikeres előszűrés esetén felvesszük Önnel a kapcsolatot a további
+              lépésekkel kapcsolatban.
+            </PopupSzoveg>
+            <PopupZarGomb type="button" onClick={popupBezar}>
+              Bezárás
+            </PopupZarGomb>
+          </PopupAblak>
+        </PopupHatter>
+      ) : null}
     </Oldal>
   )
 }
