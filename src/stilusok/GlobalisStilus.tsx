@@ -17,6 +17,7 @@ function globalisStilusok() {
 
     html {
       scroll-behavior: smooth;
+      scroll-padding-top: 1.5rem;
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
     }
@@ -26,6 +27,8 @@ function globalisStilusok() {
       min-height: 100vh;
       min-height: 100dvh;
       overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior-y: contain;
       background: ${tema.hatter.fekete};
       color: ${tema.szin.feher};
       font-family: ${tema.betu.torzs};
@@ -34,6 +37,41 @@ function globalisStilusok() {
       letter-spacing: 0.01em;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
+    }
+
+    /* Finom, pezsgőarany görgetősáv */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(197, 165, 114, 0.45) transparent;
+    }
+
+    *::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    *::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background: linear-gradient(
+        180deg,
+        rgba(232, 215, 181, 0.35),
+        rgba(197, 165, 114, 0.55)
+      );
+      border: 2px solid transparent;
+      background-clip: padding-box;
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(
+        180deg,
+        rgba(232, 215, 181, 0.55),
+        rgba(197, 165, 114, 0.75)
+      );
+      border: 2px solid transparent;
+      background-clip: padding-box;
     }
 
     /* Ambient arany fény — mélység a sötét háttéren */

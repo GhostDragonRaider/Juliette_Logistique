@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { useState, type ChangeEvent, type FormEvent } from 'react'
+import { useState, useEffect, type ChangeEvent, type FormEvent } from 'react'
 import {
   aranyKeret,
   aranySzovegAtmenet,
@@ -443,6 +443,22 @@ const KuldesSor = styled.div`
   padding-top: 0.5rem;
 `
 
+const AdatvedelmiLink = styled.a`
+  color: ${tema.szin.aranyVilagos};
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: ${tema.szin.arany};
+  }
+
+  &:focus-visible {
+    ${fokuszKeret}
+  }
+`
+
 const KuldesGomb = styled.button`
   display: inline-flex;
   align-items: center;
@@ -633,6 +649,10 @@ function FeltoltesMezo({
 export function Urlap() {
   const [adat, setAdat] = useState<UrlapAllapot>(kezdoAllapot)
   const [elkuldve, setElkuldve] = useState(false)
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }, [])
 
   function frissit<K extends keyof UrlapAllapot>(kulcs: K, ertek: UrlapAllapot[K]) {
     setAdat((elozo) => ({ ...elozo, [kulcs]: ertek }))
@@ -1301,7 +1321,15 @@ export function Urlap() {
                 />
                 <Jelolo tipus="checkbox" checked={adat.adatvedelem} aria-hidden="true" />
                 <span>
-                  Elolvastam és elfogadom az adatvédelmi tájékoztatót.
+                  Elolvastam és elfogadom az{' '}
+                  <AdatvedelmiLink
+                    href="/adatvedelmi"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    adatvédelmi tájékoztatót
+                  </AdatvedelmiLink>
+                  .
                 </span>
               </ValaszSor>
               <ValaszSor>
