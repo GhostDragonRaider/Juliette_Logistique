@@ -62,6 +62,22 @@ A koncepció alapján összeállított szerkezet (a főoldal blokkjai már megva
 
 Aloldalak: rólunk, szolgáltatások, partnerek, kapcsolat, karrier, jelentkezés.
 
+### A belépő oldal a karrier lap
+
+A domain gyökere a `/karriere` oldalra irányít át, tehát aki az oldalt megnyitja, először a
+munka bemutatását látja; a marketing főoldal a `/startseite` útvonalon és a menü „Startseite"
+pontján érhető el. Ezt egy helyen, a `src/routes/paths.ts` `landingPath` értékével lehet
+visszaállítani.
+
+Az átirányítás most kliensoldalon történik. Ez működik, de két dolgot érdemes tudni róla:
+
+- A böngésző előbb betölti a React alkalmazást, és csak utána ugrik a karrier oldalra. Ha a
+  hosting szintjén állítunk be egy 302-es átirányítást (Cloudflare Pages `_redirects`,
+  Netlify `netlify.toml`), az egy hálózati kör alatt megtörténik, és a keresők is tisztán
+  látják, hogy a `/` nem önálló tartalom.
+- Ha a marketing főoldalt is indexelni akarjuk, a `/startseite` legyen a kanonikus URL-je, és
+  a `/` ne kapjon saját `canonical` hivatkozást.
+
 ### Amit érdemes hozzátenni
 
 - **Ajánlatkérő űrlap** a kapcsolat oldalra. Ugyanaz a mintázat, mint a jelentkezésnél

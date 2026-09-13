@@ -63,13 +63,18 @@ src/
 
 | Útvonal                | Oldal                                              |
 | ---------------------- | -------------------------------------------------- |
-| `/`                    | főoldal                                            |
+| `/`                    | átirányítás a `/karriere` oldalra                  |
+| `/startseite`          | marketing főoldal                                  |
 | `/ueber-uns`           | rólunk                                             |
 | `/leistungen`          | szolgáltatások                                     |
 | `/partner`             | partnerek                                          |
 | `/kontakt`             | kapcsolat                                          |
 | `/karriere`            | a munka bemutatása (a jelentkezést megelőző lap)   |
 | `/karriere/bewerbung`  | jelentkezési űrlap önéletrajz-feltöltéssel         |
+
+A belépő tartalom a karrier oldal: aki a domaint nyitja meg, a munka bemutatását látja. Ezt a
+`landingPath` állítja be a `src/routes/paths.ts`-ben — ha később a marketing főoldal lesz újra
+a belépő, elég ott átírni `paths.home`-ra.
 
 ## Jelenlegi állapot
 

@@ -1,8 +1,8 @@
 import { lazy, Suspense } from 'react'
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 
 import { RootLayout } from '@/components/layout/RootLayout'
-import { paths } from '@/routes/paths'
+import { landingPath, paths } from '@/routes/paths'
 
 const HomePage = lazy(() => import('@/pages/HomePage'))
 const ServicesPage = lazy(() => import('@/pages/ServicesPage'))
@@ -23,10 +23,11 @@ function withSuspense(element: React.ReactNode) {
 
 export const router = createBrowserRouter([
   {
-    path: paths.home,
+    path: paths.root,
     element: <RootLayout />,
     children: [
-      { index: true, element: withSuspense(<HomePage />) },
+      { index: true, element: <Navigate to={landingPath} replace /> },
+      { path: paths.home, element: withSuspense(<HomePage />) },
       { path: paths.services, element: withSuspense(<ServicesPage />) },
       { path: paths.about, element: withSuspense(<AboutPage />) },
       { path: paths.partners, element: withSuspense(<PartnersPage />) },
