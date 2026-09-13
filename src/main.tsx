@@ -1,18 +1,22 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { RouterProvider } from 'react-router-dom'
+import App from './App.tsx'
 
-import '@/i18n'
-import '@/index.css'
-import { router } from '@/routes/router'
+/**
+ * Elindítja a React alkalmazást a #root elemen.
+ */
+function alkalmazasInditasa() {
+  const gyokerElem = document.getElementById('root')
 
-const container = document.getElementById('root')
-if (!container) {
-  throw new Error('A #root elem nem található az index.html-ben.')
+  if (!gyokerElem) {
+    throw new Error('Nem található a #root elem az index.html-ben.')
+  }
+
+  createRoot(gyokerElem).render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  )
 }
 
-createRoot(container).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>,
-)
+alkalmazasInditasa()

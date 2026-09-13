@@ -1,19 +1,28 @@
-import { fileURLToPath, URL } from 'node:url'
-
-import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
-// https://vite.dev/config/
+/**
+ * A Vite beállítások Emotion JSX támogatással.
+ * Vercel-en és helyi / más static hoston is ugyanúgy működik.
+ */
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-    },
-  },
+  base: '/',
+  plugins: [
+    react({
+      jsxImportSource: '@emotion/react',
+    }),
+  ],
   server: {
+    host: '0.0.0.0',
     port: 5173,
-    host: true,
+  },
+  preview: {
+    host: '0.0.0.0',
+    port: 4173,
+  },
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    sourcemap: false,
   },
 })
