@@ -1,5 +1,5 @@
 import { Global, css } from '@emotion/react'
-import { tema, fokuszKeret } from './tema'
+import { tema, fokuszKeret, premiumBelepKeyframes } from './tema'
 
 /**
  * Az egész oldal alapvető, globális Emotion stílusait adja vissza.
@@ -7,6 +7,8 @@ import { tema, fokuszKeret } from './tema'
  */
 function globalisStilusok() {
   return css`
+    ${premiumBelepKeyframes}
+
     *,
     *::before,
     *::after {

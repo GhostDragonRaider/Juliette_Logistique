@@ -3,7 +3,7 @@ import {
   aranySzovegAtmenet,
   femesAranyGomb,
   fokuszKeret,
-  revealAlap,
+  premiumBelepStilus,
   tema,
 } from '../stilusok/tema'
 import { useState, useEffect } from 'react'
@@ -48,8 +48,23 @@ const Title = styled.div<{ lathato: boolean }>`
   line-height: 1.28;
   text-wrap: balance;
   opacity: ${(props) => (props.lathato ? 1 : 0)};
-  transition: opacity 0.8s ease;
+  transform: ${(props) =>
+    props.lathato
+      ? 'translate3d(0, 0, 0) scale(1)'
+      : 'translate3d(0, 24px, 0) scale(0.985)'};
+  filter: ${(props) => (props.lathato ? 'blur(0)' : 'blur(6px)')};
+  transition:
+    opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.05s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 1.05s cubic-bezier(0.22, 1, 0.36, 1),
+    letter-spacing 1.05s cubic-bezier(0.22, 1, 0.36, 1);
   ${aranySzovegAtmenet}
+
+  @media (prefers-reduced-motion: reduce) {
+    transform: none;
+    filter: none;
+    transition: opacity 0.3s ease;
+  }
 `
 
 const H1Text = styled.h1`
@@ -66,6 +81,7 @@ const H1Text = styled.h1`
   text-transform: uppercase;
   text-wrap: balance;
   ${aranySzovegAtmenet}
+  ${premiumBelepStilus(80, 1200)}
 
   &::after {
     content: '';
@@ -91,7 +107,19 @@ const MunkaDiv = styled.div<{ lathato: boolean }>`
   width: 100%;
   padding: 0.25rem 0 3rem;
   opacity: ${(props) => (props.lathato ? 1 : 0)};
-  transition: opacity 0.8s ease;
+  transform: ${(props) =>
+    props.lathato ? 'translate3d(0, 0, 0)' : 'translate3d(0, 32px, 0)'};
+  filter: ${(props) => (props.lathato ? 'blur(0)' : 'blur(8px)')};
+  transition:
+    opacity 1.15s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.15s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 1.15s cubic-bezier(0.22, 1, 0.36, 1);
+
+  @media (prefers-reduced-motion: reduce) {
+    transform: none;
+    filter: none;
+    transition: opacity 0.3s ease;
+  }
 `
 
 const PText = styled.p`
@@ -107,6 +135,7 @@ const PText = styled.p`
   text-align: center;
   text-wrap: pretty;
   color: ${tema.szin.szurke};
+  ${premiumBelepStilus(220, 1250)}
 `
 
 const H2Text = styled.h2`
@@ -195,6 +224,7 @@ const VideoHely = styled.div`
   box-shadow:
     inset 0 1px 0 rgba(232, 215, 181, 0.08),
     0 18px 40px rgba(0, 0, 0, 0.28);
+  ${premiumBelepStilus(380, 1300)}
 
   &::before {
     content: '';
@@ -266,7 +296,27 @@ const RevealBlokk = styled.div`
   align-items: center;
   width: 100%;
   padding-top: 0.5rem;
-  ${revealAlap}
+  opacity: 0;
+  transform: translate3d(0, 36px, 0) scale(0.985);
+  filter: blur(6px);
+  transition:
+    opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.95s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.95s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform, filter;
+
+  &.lathato {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
 `
 
 type MunkaTartalomTulajdonsagok = {

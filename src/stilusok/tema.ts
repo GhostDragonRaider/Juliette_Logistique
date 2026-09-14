@@ -168,3 +168,53 @@ export const revealAlap = `
     transition: none;
   }
 `
+
+/**
+ * Prémium oldal-/blokk-belépés: finom emelés, scale és blur.
+ */
+export const premiumBelepKeyframes = `
+  @keyframes premiumBelep {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 40px, 0) scale(0.985);
+      filter: blur(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+      filter: blur(0);
+    }
+  }
+
+  @keyframes premiumCimBelep {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 28px, 0);
+      letter-spacing: 0.22em;
+      filter: blur(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      letter-spacing: 0.12em;
+      filter: blur(0);
+    }
+  }
+`
+
+/**
+ * Egy elem prémium belépő animációja (késleltetéssel).
+ */
+export function premiumBelepStilus(kesleltetesMs = 0, idotartamMs = 1100) {
+  return `
+    opacity: 0;
+    animation: premiumBelep ${idotartamMs}ms cubic-bezier(0.22, 1, 0.36, 1) ${kesleltetesMs}ms both;
+
+    @media (prefers-reduced-motion: reduce) {
+      opacity: 1;
+      animation: none;
+      filter: none;
+      transform: none;
+    }
+  `
+}

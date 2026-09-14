@@ -78,7 +78,7 @@ const MarkaAlcim = styled.span`
  */
 export function Logo({ className }: LogoTulajdonsagok) {
   return (
-    <LogoDoboz className={className} to="/" aria-label="Juliette Logistique">
+    <LogoDoboz className={className} to="/fooldal" aria-label="Juliette Logistique">
       <LogoSvg viewBox="0 0 80 80" role="img" aria-hidden="true">
         <text
           x="12"

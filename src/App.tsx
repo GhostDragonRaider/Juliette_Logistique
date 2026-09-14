@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { NyelvSzolgaltato } from './nyelv/NyelvContext'
 import { FoOldal } from './oldalak/FoOldal'
 import { Karrier } from './komponensek/karrier'
@@ -10,6 +10,7 @@ import { HashGorgetes } from './komponensek/HashGorgetes'
 /**
  * Az alkalmazás gyökér komponense.
  * Betölti a globális Emotion stílusokat, a nyelvszolgáltatót és a route-okat.
+ * A gyökér útvonal automatikusan a Karrier oldalra irányít.
  */
 function App() {
   return (
@@ -18,7 +19,8 @@ function App() {
       <BrowserRouter>
         <HashGorgetes />
         <Routes>
-          <Route path="/" element={<FoOldal />} />
+          <Route path="/" element={<Navigate to="/karrier" replace />} />
+          <Route path="/fooldal" element={<FoOldal />} />
           <Route path="/karrier" element={<Karrier />} />
           <Route path="/karrier/jelentkezes" element={<Urlap />} />
           <Route path="/adatvedelmi" element={<AdatvedelmiTajekoztato />} />

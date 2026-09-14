@@ -6,6 +6,7 @@ import {
   aranySzovegAtmenet,
   femesAranyGomb,
   fokuszKeret,
+  premiumBelepStilus,
   tema,
 } from '../stilusok/tema'
 import type { FeltoltesKulcs, UrlapAllapot } from './urlapTipusok'
@@ -182,6 +183,7 @@ const FoCim = styled.h1`
   text-transform: uppercase;
   text-wrap: balance;
   ${aranySzovegAtmenet}
+  ${premiumBelepStilus(180, 1250)}
 `
 
 const Alcim = styled.p`
@@ -191,6 +193,7 @@ const Alcim = styled.p`
   font-style: italic;
   letter-spacing: 0.04em;
   color: ${tema.szin.arany};
+  ${premiumBelepStilus(280, 1200)}
 `
 
 const Bevezeto = styled.p`
@@ -200,6 +203,7 @@ const Bevezeto = styled.p`
   font-size: clamp(0.9rem, 1.5vw, 1rem);
   line-height: 1.7;
   color: ${tema.szin.szurke};
+  ${premiumBelepStilus(380, 1200)}
 `
 
 const SzekcioBevezeto = styled.p`
@@ -222,6 +226,26 @@ const Szekcio = styled.section`
   gap: 1.35rem;
   padding: 2.25rem 0;
   border-top: 1px solid rgba(197, 165, 114, 0.22);
+  opacity: 0;
+  animation: premiumBelep 1.05s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  &:nth-of-type(1) { animation-delay: 0.55s; }
+  &:nth-of-type(2) { animation-delay: 0.68s; }
+  &:nth-of-type(3) { animation-delay: 0.8s; }
+  &:nth-of-type(4) { animation-delay: 0.9s; }
+  &:nth-of-type(5) { animation-delay: 1s; }
+  &:nth-of-type(6) { animation-delay: 1.08s; }
+  &:nth-of-type(7) { animation-delay: 1.16s; }
+  &:nth-of-type(8) { animation-delay: 1.24s; }
+  &:nth-of-type(9) { animation-delay: 1.32s; }
+  &:nth-of-type(10) { animation-delay: 1.4s; }
+  &:nth-of-type(11) { animation-delay: 1.48s; }
+  &:nth-of-type(12) { animation-delay: 1.56s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    animation: none;
+  }
 `
 
 const SzekcioCim = styled.h2`

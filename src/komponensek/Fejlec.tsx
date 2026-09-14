@@ -300,9 +300,10 @@ export function Fejlec({ mindigSticky = false }: FejlecTulajdonsagok) {
   function hashLinkKattintas(cel: string) {
     mobilMenutBezar()
     const hash = cel.includes('#') ? `#${cel.split('#')[1]}` : cel
+    const fooldalUtvonal = cel.startsWith('/fooldal') ? '/fooldal' : '/'
 
-    if (hely.pathname !== '/') {
-      navigal({ pathname: '/', hash: hash.replace(/^#/, '') })
+    if (hely.pathname !== fooldalUtvonal) {
+      navigal({ pathname: fooldalUtvonal, hash: hash.replace(/^#/, '') })
       return
     }
 
