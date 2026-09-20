@@ -186,7 +186,9 @@ const MobilMenuGomb = styled.button<{ nyitva: boolean }>`
     width: 18px;
     height: 1.5px;
     background: ${tema.szin.arany};
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    transition:
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.25s ease;
   }
 
   ${(props) =>
@@ -204,22 +206,86 @@ const MobilMenuGomb = styled.button<{ nyitva: boolean }>`
   `}
 `
 
-/** Lenyíló mobil menü panel */
+/** Lenyíló mobil menü panel — prémium lecsúszó animáció */
 const MobilMenuPanel = styled.div<{ nyitva: boolean }>`
-  display: ${(props) => (props.nyitva ? 'flex' : 'none')};
+  display: flex;
   position: absolute;
-  top: 100%;
+  top: calc(100% - 1px);
   left: 0;
   right: 0;
   flex-direction: column;
-  gap: 0.35rem;
-  padding: 1rem ${tema.oldalsoPadding} 1.4rem;
-  background: rgba(27, 27, 27, 0.97);
-  backdrop-filter: blur(12px);
-  border-bottom: ${aranyKeret};
+  gap: 0.2rem;
+  padding: ${(props) => (props.nyitva ? '0.85rem' : '0')} ${tema.oldalsoPadding}
+    ${(props) => (props.nyitva ? '1.35rem' : '0')};
+  max-height: ${(props) => (props.nyitva ? 'min(70vh, 28rem)' : '0')};
+  overflow: hidden;
+  pointer-events: ${(props) => (props.nyitva ? 'auto' : 'none')};
+  visibility: ${(props) => (props.nyitva ? 'visible' : 'hidden')};
+  opacity: ${(props) => (props.nyitva ? 1 : 0)};
+  transform: translate3d(0, ${(props) => (props.nyitva ? '0' : '-14px')}, 0);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(27, 27, 27, 0.98) 0%,
+      rgba(20, 20, 20, 0.96) 100%
+    );
+  backdrop-filter: blur(16px) saturate(1.15);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15);
+  border-bottom: 1px solid
+    ${(props) =>
+      props.nyitva ? 'rgba(197, 165, 114, 0.28)' : 'transparent'};
+  box-shadow: ${(props) =>
+    props.nyitva ? '0 18px 40px rgba(0, 0, 0, 0.35)' : 'none'};
+  transition:
+    max-height 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    padding 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s ease,
+    box-shadow 0.45s ease,
+    visibility 0.45s;
+
+  a,
+  .mobil-navigacio-link {
+    opacity: ${(props) => (props.nyitva ? 1 : 0)};
+    transform: translate3d(0, ${(props) => (props.nyitva ? '0' : '-10px')}, 0);
+    transition:
+      opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      color 0.2s ease;
+  }
+
+  ${(props) =>
+    props.nyitva
+      ? Array.from(
+          { length: 8 },
+          (_, i) => `
+    a:nth-of-type(${i + 1}),
+    .mobil-navigacio-link:nth-of-type(${i + 1}) {
+      transition-delay: ${70 + i * 55}ms;
+    }
+  `,
+        ).join('')
+      : `
+    a,
+    .mobil-navigacio-link {
+      transition-delay: 0ms;
+    }
+  `}
 
   @media (min-width: ${tema.szelesseg.tablet}) {
     display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    transform: none;
+
+    a,
+    .mobil-navigacio-link {
+      transform: none;
+      transition: opacity 0.2s ease;
+    }
   }
 `
 
@@ -411,6 +477,7 @@ export function Fejlec({ mindigSticky = false }: FejlecTulajdonsagok) {
         nyitva={mobilMenuNyitva}
         role="navigation"
         aria-label={szoveg.navigacioAria}
+        aria-hidden={!mobilMenuNyitva}
       >
         {szoveg.navigacio.map((link) =>
           navigacioLinketRajzol(link, 'mobil-navigacio-link'),

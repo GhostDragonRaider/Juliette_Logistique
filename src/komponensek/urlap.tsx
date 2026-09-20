@@ -1,15 +1,23 @@
 import styled from '@emotion/styled'
-import { useState, useEffect, type ChangeEvent, type FormEvent } from 'react'
+import {
+  useState,
+  useEffect,
+  type ChangeEvent,
+  type FormEvent,
+  type ReactNode,
+} from 'react'
 import { createPortal } from 'react-dom'
 import {
   aranyKeret,
   aranySzovegAtmenet,
   femesAranyGomb,
   fokuszKeret,
+  revealAlap,
   tema,
 } from '../stilusok/tema'
 import type { FeltoltesKulcs, UrlapAllapot } from './urlapTipusok'
 import { ellenorizUrlap, type UrlapHibak } from './urlapEllenorzes'
+import { useScrollReveal } from '../hookok/useScrollReveal'
 
 export type { FeltoltesKulcs, UrlapAllapot } from './urlapTipusok'
 
@@ -170,6 +178,7 @@ const FejlecBlokk = styled.header`
   align-items: center;
   text-align: center;
   margin-bottom: 2.75rem;
+  ${revealAlap}
 `
 
 const FoCim = styled.h1`
@@ -222,6 +231,7 @@ const Szekcio = styled.section`
   gap: 1.35rem;
   padding: 2.25rem 0;
   border-top: 1px solid rgba(197, 165, 114, 0.22);
+  ${revealAlap}
 `
 
 const SzekcioCim = styled.h2`
@@ -737,6 +747,42 @@ function FeltoltesMezo({
 }
 
 /**
+ * Görgetésre felúszó űrlap-szekció.
+ */
+function RevealSzekcio({
+  children,
+  ...rest
+}: {
+  children: ReactNode
+} & React.ComponentProps<typeof Szekcio>) {
+  const { referencia, lathato } = useScrollReveal<HTMLElement>(0.1)
+  return (
+    <Szekcio
+      ref={referencia}
+      className={lathato ? 'lathato' : undefined}
+      {...rest}
+    >
+      {children}
+    </Szekcio>
+  )
+}
+
+/**
+ * Görgetésre felúszó űrlap-fejléc.
+ */
+function RevealFejlec({ children }: { children: ReactNode }) {
+  const { referencia, lathato } = useScrollReveal<HTMLElement>(0.08)
+  return (
+    <FejlecBlokk
+      ref={referencia}
+      className={lathato ? 'lathato' : undefined}
+    >
+      {children}
+    </FejlecBlokk>
+  )
+}
+
+/**
  * Sofőr jelentkezési űrlap — pezsgőarany prémium megjelenés.
  */
 export function Urlap() {
@@ -816,7 +862,7 @@ export function Urlap() {
   return (
     <Oldal className="urlap-oldal">
       <Keret>
-        <FejlecBlokk>
+        <RevealFejlec>
           <FoCim>Sofőr jelentkezési űrlap</FoCim>
           <Alcim>Németországi prémium- és luxusautó-vezető</Alcim>
           <Bevezeto>
@@ -824,10 +870,10 @@ export function Urlap() {
             jelentkezés során megadott adatokat és dokumentumokat a kiválasztási
             folyamat során ellenőrizhetjük.
           </Bevezeto>
-        </FejlecBlokk>
+        </RevealFejlec>
 
         <Form onSubmit={kuldes} noValidate>
-          <Szekcio aria-labelledby="szemelyes-adatok">
+          <RevealSzekcio aria-labelledby="szemelyes-adatok">
             <SzekcioCim id="szemelyes-adatok">1. Személyes adatok</SzekcioCim>
 
             <MezoCsoport data-hiba={hibak.teljesNev ? 'true' : undefined}>
@@ -919,9 +965,9 @@ export function Urlap() {
               </SelectMezo>
               {hibak.orszag ? <HibaUzenet>{hibak.orszag}</HibaUzenet> : null}
             </MezoCsoport>
-          </Szekcio>
+          </RevealSzekcio>
 
-          <Szekcio aria-labelledby="vezetesi-tapasztalat">
+          <RevealSzekcio aria-labelledby="vezetesi-tapasztalat">
             <SzekcioCim id="vezetesi-tapasztalat">
               2. Vezetési tapasztalat
             </SzekcioCim>
@@ -994,9 +1040,9 @@ export function Urlap() {
                 onChange={(v) => frissit('korabbiTerulet', v)}
               />
             </MezoCsoport>
-          </Szekcio>
+          </RevealSzekcio>
 
-          <Szekcio aria-labelledby="premium-tapasztalat">
+          <RevealSzekcio aria-labelledby="premium-tapasztalat">
             <SzekcioCim id="premium-tapasztalat">
               3. Prémium- és luxusautó-tapasztalat
             </SzekcioCim>
@@ -1069,9 +1115,9 @@ export function Urlap() {
                 onChange={(v) => frissit('automataValto', v)}
               />
             </MezoCsoport>
-          </Szekcio>
+          </RevealSzekcio>
 
-          <Szekcio aria-labelledby="nemetorszag">
+          <RevealSzekcio aria-labelledby="nemetorszag">
             <SzekcioCim id="nemetorszag">4. Németországi munkavégzés</SzekcioCim>
 
             <MezoCsoport data-hiba={hibak.munkavallalasiJog ? 'true' : undefined}>
@@ -1131,9 +1177,9 @@ export function Urlap() {
                 onChange={(v) => frissit('rugalmassag', v)}
               />
             </MezoCsoport>
-          </Szekcio>
+          </RevealSzekcio>
 
-          <Szekcio aria-labelledby="jogositvany">
+          <RevealSzekcio aria-labelledby="jogositvany">
             <SzekcioCim id="jogositvany">
               5. Jogosítvány és vezetési előélet
             </SzekcioCim>
@@ -1196,9 +1242,9 @@ export function Urlap() {
                 onChange={(v) => frissit('erkolesi', v)}
               />
             </MezoCsoport>
-          </Szekcio>
+          </RevealSzekcio>
 
-          <Szekcio aria-labelledby="nyelv">
+          <RevealSzekcio aria-labelledby="nyelv">
             <SzekcioCim id="nyelv">6. Nyelvtudás</SzekcioCim>
 
             <MezoCsoport data-hiba={hibak.nemetNyelv ? 'true' : undefined}>
@@ -1234,9 +1280,9 @@ export function Urlap() {
                 onChange={(v) => frissit('angolNyelv', v)}
               />
             </MezoCsoport>
-          </Szekcio>
+          </RevealSzekcio>
 
-          <Szekcio aria-labelledby="keszsegek">
+          <RevealSzekcio aria-labelledby="keszsegek">
             <SzekcioCim id="keszsegek">
               7. Munkavégzéshez szükséges készségek
             </SzekcioCim>
@@ -1280,9 +1326,9 @@ export function Urlap() {
                 onChange={(v) => frissit('gpsKovetes', v)}
               />
             </MezoCsoport>
-          </Szekcio>
+          </RevealSzekcio>
 
-          <Szekcio aria-labelledby="feltetelek">
+          <RevealSzekcio aria-labelledby="feltetelek">
             <SzekcioCim id="feltetelek">8. Munkavállalási feltételek</SzekcioCim>
 
             <MezoCsoport data-hiba={hibak.hosszuUt ? 'true' : undefined}>
@@ -1332,9 +1378,9 @@ export function Urlap() {
                 onChange={(v) => frissit('hetiNapok', v)}
               />
             </MezoCsoport>
-          </Szekcio>
+          </RevealSzekcio>
 
-          <Szekcio aria-labelledby="szurok">
+          <RevealSzekcio aria-labelledby="szurok">
             <SzekcioCim id="szurok">9. Fontos szűrőkérdések</SzekcioCim>
 
             <MezoCsoport data-hiba={hibak.haromEvAktiv ? 'true' : undefined}>
@@ -1415,9 +1461,9 @@ export function Urlap() {
                 onChange={(v) => frissit('ellenorzesElfogadas', v)}
               />
             </MezoCsoport>
-          </Szekcio>
+          </RevealSzekcio>
 
-          <Szekcio aria-labelledby="dokumentumok">
+          <RevealSzekcio aria-labelledby="dokumentumok">
             <SzekcioCim id="dokumentumok">10. Dokumentumok feltöltése</SzekcioCim>
             <SzekcioBevezeto>
               Kérjük, töltse fel az alábbi dokumentumokat.
@@ -1484,9 +1530,9 @@ export function Urlap() {
                 onChange={(f) => feltoltesFrissit('referencia', f)}
               />
             </div>
-          </Szekcio>
+          </RevealSzekcio>
 
-          <Szekcio aria-labelledby="motivacio">
+          <RevealSzekcio aria-labelledby="motivacio">
             <SzekcioCim id="motivacio">11. Motiváció</SzekcioCim>
 
             <MezoCsoport data-hiba={hibak.motivacio ? 'true' : undefined}>
@@ -1517,9 +1563,9 @@ export function Urlap() {
                 <HibaUzenet>{hibak.tapasztalatLeiras}</HibaUzenet>
               ) : null}
             </MezoCsoport>
-          </Szekcio>
+          </RevealSzekcio>
 
-          <Szekcio aria-labelledby="kuldes">
+          <RevealSzekcio aria-labelledby="kuldes">
             <SzekcioCim id="kuldes">12. Jelentkezés elküldése</SzekcioCim>
 
             <ValaszLista>
@@ -1582,7 +1628,7 @@ export function Urlap() {
                 </OsszesitoHiba>
               ) : null}
             </KuldesSor>
-          </Szekcio>
+          </RevealSzekcio>
         </Form>
       </Keret>
 

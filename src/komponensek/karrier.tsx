@@ -3,12 +3,11 @@ import {
   aranySzovegAtmenet,
   femesAranyGomb,
   fokuszKeret,
-  revealAlap,
   tema,
 } from '../stilusok/tema'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useScrollReveal } from '../hookok/useScrollReveal'
+import { RevealBlokk } from './RevealBlokk'
 
 const Container = styled.div`
   display: flex;
@@ -48,8 +47,19 @@ const Title = styled.div<{ lathato: boolean }>`
   line-height: 1.28;
   text-wrap: balance;
   opacity: ${(props) => (props.lathato ? 1 : 0)};
-  transition: opacity 0.8s ease;
+  transform: translate3d(0, ${(props) => (props.lathato ? '0' : '18px')}, 0);
+  filter: blur(${(props) => (props.lathato ? '0' : '3px')});
+  transition:
+    opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.85s cubic-bezier(0.22, 1, 0.36, 1);
   ${aranySzovegAtmenet}
+
+  @media (prefers-reduced-motion: reduce) {
+    transform: none;
+    filter: none;
+    transition: opacity 0.3s ease;
+  }
 `
 
 const H1Text = styled.h1`
@@ -84,20 +94,19 @@ const H1Text = styled.h1`
   }
 `
 
-const MunkaDiv = styled.div<{ lathato: boolean }>`
+const MunkaDiv = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;
   width: 100%;
   padding: 0.25rem 0 3rem;
-  opacity: ${(props) => (props.lathato ? 1 : 0)};
-  transition: opacity 0.8s ease;
+  gap: 1.75rem;
 `
 
 const PText = styled.p`
   width: 100%;
   max-width: 42rem;
-  margin: 0 auto 2rem;
+  margin: 0 auto;
   font-family: ${tema.betu.torzs};
   font-size: clamp(0.98rem, 1.7vw, 1.08rem);
   font-weight: 400;
@@ -177,7 +186,7 @@ const VideoHely = styled.div`
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  margin: 0.25rem 0 2.75rem;
+  margin: 0.25rem 0 0.5rem;
   overflow: hidden;
   background:
     radial-gradient(
@@ -229,7 +238,7 @@ const PremiumButton = styled.button`
   width: fit-content;
   max-width: min(100%, 22rem);
   min-height: 48px;
-  margin: 2.5rem auto 0;
+  margin: 0.75rem auto 0;
   padding: 0.95rem 1.85rem;
   cursor: pointer;
   font-family: ${tema.betu.cim};
@@ -259,46 +268,32 @@ const PremiumButtonText = styled.span`
   color: ${tema.hatter.fekete};
 `
 
-/** Görgetésre felúszó tartalomblokk */
-const RevealBlokk = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  padding-top: 0.5rem;
-  ${revealAlap}
-`
-
-type MunkaTartalomTulajdonsagok = {
-  lathato: boolean
-}
-
 /**
- * A munkakör tartalma: bevezető + videó azonnal,
- * a további szekciók görgetésre áttűnnek.
+ * A munkakör tartalma — minden blokk görgetésre / viewportba érkezésre úszik fel.
  */
-function MunkaTartalom({ lathato }: MunkaTartalomTulajdonsagok) {
+function MunkaTartalom() {
   const navigate = useNavigate()
-  const feladatokReveal = useScrollReveal<HTMLDivElement>(0.2)
-  const elvarasokReveal = useScrollReveal<HTMLDivElement>(0.2)
-  const kinalunkReveal = useScrollReveal<HTMLDivElement>(0.2)
-  const premiumButtonReveal = useScrollReveal<HTMLDivElement>(0.2)
 
   return (
-    <MunkaDiv lathato={lathato}>
-      <H1Text>Járműátvezető / sofőr Juliette Logistique</H1Text>
-      <PText>
-        A Juliette Logistique professzionális gépjármű-átvezetéssel és
-        járműlogisztikával foglalkozik egész Németország területén. Ha
-        megbízhatóan, pontosan és gondosan dolgozol, és fontos számodra a
-        járművek biztonságos kezelése, nálunk a helyed.
-      </PText>
-      <VideoHely className="video-hely" aria-hidden="true" />
+    <MunkaDiv>
+      <RevealBlokk kesleltetesMs={80} kuszob={0.08}>
+        <H1Text>Járműátvezető / sofőr Juliette Logistique</H1Text>
+      </RevealBlokk>
 
-      <RevealBlokk
-        ref={feladatokReveal.referencia}
-        className={feladatokReveal.lathato ? 'lathato' : undefined}
-      >
+      <RevealBlokk kesleltetesMs={180} kuszob={0.08}>
+        <PText>
+          A Juliette Logistique professzionális gépjármű-átvezetéssel és
+          járműlogisztikával foglalkozik egész Németország területén. Ha
+          megbízhatóan, pontosan és gondosan dolgozol, és fontos számodra a
+          járművek biztonságos kezelése, nálunk a helyed.
+        </PText>
+      </RevealBlokk>
+
+      <RevealBlokk kesleltetesMs={280} kuszob={0.1}>
+        <VideoHely className="video-hely" aria-hidden="true" />
+      </RevealBlokk>
+
+      <RevealBlokk listaKeses kuszob={0.12}>
         <H2Text>Mit fogsz csinálni?</H2Text>
         <MunkaLista>
           <MunkaListaItem>
@@ -329,10 +324,7 @@ function MunkaTartalom({ lathato }: MunkaTartalomTulajdonsagok) {
         </MunkaLista>
       </RevealBlokk>
 
-      <RevealBlokk
-        ref={elvarasokReveal.referencia}
-        className={elvarasokReveal.lathato ? 'lathato' : undefined}
-      >
+      <RevealBlokk listaKeses kuszob={0.12}>
         <H2Text>Kit keresünk?</H2Text>
         <MunkaLista>
           <MunkaListaItem>Érvényes B jogosítvány (BE előny)</MunkaListaItem>
@@ -349,10 +341,7 @@ function MunkaTartalom({ lathato }: MunkaTartalomTulajdonsagok) {
         </MunkaLista>
       </RevealBlokk>
 
-      <RevealBlokk
-        ref={kinalunkReveal.referencia}
-        className={kinalunkReveal.lathato ? 'lathato' : undefined}
-      >
+      <RevealBlokk listaKeses kuszob={0.12}>
         <H2Text>Mit kínálunk?</H2Text>
         <MunkaLista>
           <MunkaListaItem>
@@ -366,10 +355,8 @@ function MunkaTartalom({ lathato }: MunkaTartalomTulajdonsagok) {
           </MunkaListaItem>
         </MunkaLista>
       </RevealBlokk>
-      <RevealBlokk
-        ref={premiumButtonReveal.referencia}
-        className={premiumButtonReveal.lathato ? 'lathato' : undefined}
-      >
+
+      <RevealBlokk kuszob={0.15}>
         <PremiumButton
           type="button"
           onClick={() => navigate('/karrier/jelentkezes')}
@@ -377,14 +364,13 @@ function MunkaTartalom({ lathato }: MunkaTartalomTulajdonsagok) {
           <PremiumButtonText>Csatlakoznál hozzánk?</PremiumButtonText>
         </PremiumButton>
       </RevealBlokk>
-
-
     </MunkaDiv>
-
-    
   )
 }
 
+/**
+ * Karrier oldal: két bevezető felirat, majd görgetésre felúszó munkaköri tartalom.
+ */
 export function Karrier() {
   const [lepes, setLepes] = useState(0)
   const [lathato, setLathato] = useState(false)
@@ -428,9 +414,9 @@ export function Karrier() {
           <Title lathato={lathato}>Csatlakoznál hozzánk?</Title>
         ) : lepes === 1 ? (
           <Title lathato={lathato}>Ismerd meg a munkánkat.</Title>
-        ) : lepes === 2 ? (
-          <MunkaTartalom lathato={lathato} />
-        ) : null}
+        ) : (
+          <MunkaTartalom />
+        )}
       </SubContainer>
     </Container>
   )

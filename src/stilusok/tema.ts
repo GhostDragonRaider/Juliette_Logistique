@@ -147,24 +147,63 @@ export const femesAranyGomb = `
 `
 
 /**
- * Scroll-reveal alap: láthatatlan, majd felúszik.
+ * Scroll-reveal alap: láthatatlan, majd elegánsan felúszik.
  */
 export const revealAlap = `
   opacity: 0;
-  transform: translate3d(0, 28px, 0);
+  transform: translate3d(0, 40px, 0);
+  filter: blur(4px);
   transition:
-    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-keses, 0ms);
+  will-change: opacity, transform, filter;
 
   &.lathato {
     opacity: 1;
     transform: translate3d(0, 0, 0);
+    filter: blur(0);
   }
 
   @media (prefers-reduced-motion: reduce) {
     opacity: 1;
     transform: none;
+    filter: none;
     transition: none;
+  }
+`
+
+/**
+ * Lista-elemek (li) lépcsőzetes felúszása, ha a szülő .lathato.
+ */
+export const revealListaKeses = `
+  & li {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0);
+    transition:
+      opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  &.lathato li {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  ${Array.from(
+    { length: 12 },
+    (_, i) => `
+  &.lathato li:nth-of-type(${i + 1}) {
+    transition-delay: ${90 + i * 75}ms;
+  }`,
+  ).join('')}
+
+  @media (prefers-reduced-motion: reduce) {
+    & li {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
 `
