@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import styled from '@emotion/styled'
 import { tema, fokuszKeret } from '../stilusok/tema'
 
@@ -7,7 +8,7 @@ type LogoTulajdonsagok = {
 }
 
 /** A logo külső doboza */
-const LogoDoboz = styled.a`
+const LogoDoboz = styled(Link)`
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
@@ -77,7 +78,7 @@ const MarkaAlcim = styled.span`
  */
 export function Logo({ className }: LogoTulajdonsagok) {
   return (
-    <LogoDoboz className={className} href="#kezdooldal" aria-label="Juliette Logistique">
+    <LogoDoboz className={className} to="/" aria-label="Juliette Logistique">
       <LogoSvg viewBox="0 0 80 80" role="img" aria-hidden="true">
         <text
           x="12"
