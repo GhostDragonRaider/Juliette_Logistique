@@ -56,6 +56,7 @@ const kezdoAllapot: UrlapAllapot = {
   hetvege: '',
   tobbnapos: '',
   hetiNapok: '',
+  utazasMod: '',
   haromEvAktiv: '',
   haromEvProf: '',
   premiumSzuro: '',
@@ -1373,9 +1374,20 @@ export function Urlap() {
               <RadioCsoport
                 nev="hetiNapok"
                 ertek={adat.hetiNapok}
-                opciok={['2–3 nap', '4 nap', '5 nap', '6 vagy több nap']}
+                opciok={['2–3 nap', '4 nap', '5 nap', '6 vagy több nap', 'Hétvégén']}
                 hiba={hibak.hetiNapok}
                 onChange={(v) => frissit('hetiNapok', v)}
+              />
+            </MezoCsoport>
+
+            <MezoCsoport data-hiba={hibak.utazasMod ? 'true' : undefined}>
+              <Cimke as="span">Hogyan vállalja az utazást?</Cimke>
+              <RadioCsoport
+                nev="utazasMod"
+                ertek={adat.utazasMod}
+                opciok={['Sofőr vigyen', 'Tömegközlekedéssel']}
+                hiba={hibak.utazasMod}
+                onChange={(v) => frissit('utazasMod', v)}
               />
             </MezoCsoport>
           </RevealSzekcio>

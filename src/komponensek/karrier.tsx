@@ -182,53 +182,29 @@ const MunkaListaItem = styled.li`
   }
 `
 
-const VideoHely = styled.div`
+/**
+ * Karrier videó forrása. Amíg nincs feltöltött videó, a helyfoglaló sem jelenik meg.
+ */
+const KARRIER_VIDEO_FORRAS: string | null = null
+
+const VideoKeret = styled.div`
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
   margin: 0.25rem 0 0.5rem;
   overflow: hidden;
-  background:
-    radial-gradient(
-      ellipse 55% 50% at 50% 45%,
-      rgba(197, 165, 114, 0.1),
-      transparent 70%
-    ),
-    linear-gradient(
-      165deg,
-      ${tema.hatter.sotet} 0%,
-      ${tema.hatter.emelt} 48%,
-      ${tema.hatter.kartya} 100%
-    );
   border: 1px solid rgba(197, 165, 114, 0.32);
+  background: ${tema.hatter.sotet};
   box-shadow:
     inset 0 1px 0 rgba(232, 215, 181, 0.08),
     0 18px 40px rgba(0, 0, 0, 0.28);
+`
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 3.25rem;
-    height: 3.25rem;
-    border: 1px solid rgba(197, 165, 114, 0.55);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0.85;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: calc(50% + 2px);
-    transform: translate(-40%, -50%);
-    border-style: solid;
-    border-width: 0.55rem 0 0.55rem 0.9rem;
-    border-color: transparent transparent transparent ${tema.szin.arany};
-    opacity: 0.8;
-  }
+const VideoElem = styled.video`
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 `
 
 const PremiumButton = styled.button`
@@ -289,9 +265,19 @@ function MunkaTartalom() {
         </PText>
       </RevealBlokk>
 
-      <RevealBlokk kesleltetesMs={280} kuszob={0.1}>
-        <VideoHely className="video-hely" aria-hidden="true" />
-      </RevealBlokk>
+      {KARRIER_VIDEO_FORRAS ? (
+        <RevealBlokk kesleltetesMs={280} kuszob={0.1}>
+          <VideoKeret className="video-keret">
+            <VideoElem
+              className="karrier-video"
+              src={KARRIER_VIDEO_FORRAS}
+              controls
+              playsInline
+              preload="metadata"
+            />
+          </VideoKeret>
+        </RevealBlokk>
+      ) : null}
 
       <RevealBlokk listaKeses kuszob={0.12}>
         <H2Text>Mit fogsz csinálni?</H2Text>

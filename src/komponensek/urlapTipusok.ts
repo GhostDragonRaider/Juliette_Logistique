@@ -41,6 +41,7 @@ export type UrlapAllapot = {
   hetvege: string
   tobbnapos: string
   hetiNapok: string
+  utazasMod: string
   haromEvAktiv: string
   haromEvProf: string
   premiumSzuro: string

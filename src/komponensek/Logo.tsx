@@ -7,12 +7,12 @@ type LogoTulajdonsagok = {
   className?: string
 }
 
-/** A logo külső doboza */
+/** A logo külső doboza — a rólunk szekció arany brand logóját használja */
 const LogoDoboz = styled(Link)`
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
   min-width: 0;
+  max-width: min(42vw, 11.5rem);
   color: ${tema.szin.arany};
 
   &:focus-visible {
@@ -20,105 +20,36 @@ const LogoDoboz = styled(Link)`
   }
 
   @media (min-width: ${tema.szelesseg.kicsi}) {
-    gap: 0.75rem;
-  }
-`
-
-/** A JL monogram SVG mérete */
-const LogoSvg = styled.svg`
-  display: block;
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-
-  @media (min-width: ${tema.szelesseg.kicsi}) {
-    width: 48px;
-    height: 48px;
+    max-width: 13.5rem;
   }
 
   @media (min-width: ${tema.szelesseg.tablet}) {
-    width: 52px;
-    height: 52px;
+    max-width: 15rem;
   }
 `
 
-/** A logo szöveges része */
-const LogoSzoveg = styled.div`
-  display: none;
-  flex-direction: column;
-  line-height: 1.05;
-  min-width: 0;
-
-  @media (min-width: ${tema.szelesseg.kicsi}) {
-    display: flex;
-  }
-`
-
-/** „Juliette” márkanév */
-const MarkaNev = styled.span`
-  font-family: ${tema.betu.marka};
-  font-size: clamp(1rem, 2vw, 1.15rem);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: ${tema.szin.aranyVilagos};
-`
-
-/** „LOGISTIQUE” alcím */
-const MarkaAlcim = styled.span`
-  font-family: ${tema.betu.cim};
-  font-size: 0.58rem;
-  font-weight: 600;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: ${tema.szin.arany};
+/** A pezsgőarany brand logo kép */
+const LogoKep = styled.img`
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 `
 
 /**
- * A Juliette Logistique arany logóját jeleníti meg (JL monogram + szöveg).
+ * A Juliette Logistique arany brand logóját jeleníti meg a fejlécben
+ * (ugyanaz, mint a rólunk szekció kamionképe sarkában).
  */
 export function Logo({ className }: LogoTulajdonsagok) {
   return (
     <LogoDoboz className={className} to="/" aria-label="Juliette Logistique">
-      <LogoSvg viewBox="0 0 80 80" role="img" aria-hidden="true">
-        <text
-          x="12"
-          y="48"
-          fill={tema.szin.arany}
-          fontFamily="Georgia, serif"
-          fontSize="42"
-          fontWeight="700"
-        >
-          J
-        </text>
-        <text
-          x="36"
-          y="48"
-          fill={tema.szin.aranyVilagos}
-          fontFamily="Georgia, serif"
-          fontSize="42"
-          fontWeight="700"
-        >
-          L
-        </text>
-        <path
-          d="M8 56 C 24 48, 40 62, 72 50"
-          fill="none"
-          stroke={tema.szin.arany}
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
-        <path
-          d="M28 55 C 40 52, 52 56, 64 52"
-          fill="none"
-          stroke={tema.hatter.fekete}
-          strokeWidth="1.2"
-          strokeDasharray="3 3"
-        />
-      </LogoSvg>
-      <LogoSzoveg>
-        <MarkaNev>Juliette</MarkaNev>
-        <MarkaAlcim>Logistique</MarkaAlcim>
-      </LogoSzoveg>
+      <LogoKep
+        src="/brand/logo-arany.png"
+        alt="Juliette Logistique"
+        width={240}
+        height={120}
+        decoding="async"
+      />
     </LogoDoboz>
   )
 }

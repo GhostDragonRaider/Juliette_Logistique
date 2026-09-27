@@ -78,6 +78,7 @@ export function ellenorizUrlap(adat: UrlapAllapot): UrlapHibak {
   if (ures(adat.hetvege)) hibak.hetvege = VALASZ_UZENET
   if (ures(adat.tobbnapos)) hibak.tobbnapos = VALASZ_UZENET
   if (ures(adat.hetiNapok)) hibak.hetiNapok = VALASZ_UZENET
+  if (ures(adat.utazasMod)) hibak.utazasMod = VALASZ_UZENET
 
   if (ures(adat.haromEvAktiv)) hibak.haromEvAktiv = VALASZ_UZENET
   if (ures(adat.haromEvProf)) hibak.haromEvProf = VALASZ_UZENET
