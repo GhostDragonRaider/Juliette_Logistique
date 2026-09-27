@@ -167,7 +167,7 @@ export function RolunkSzekcio() {
           <div>
             <Gomb
               className="rolunk-gomb"
-              href="#kapcsolat"
+              href="/rolunk"
               valtozat="korvonal"
               mutatNyilat
             >
