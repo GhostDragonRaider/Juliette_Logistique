@@ -12,6 +12,71 @@ export type NavigacioLinkForditas = {
   cel: string
 }
 
+/** SEO mezők aloldalakhoz is */
+export type SeoForditas = {
+  cim: string
+  leiras: string
+  kulcsszavak: string
+}
+
+/** Egy értékkártya az aloldalakon */
+export type OldalErtekForditas = {
+  cim: string
+  leiras: string
+}
+
+/** Részletes szolgáltatás az aloldalon */
+export type SzolgaltatasReszletForditas = {
+  azonosito: string
+  cim: string
+  leiras: string
+  pontok: string[]
+}
+
+/** Rólunk / szolgáltatások / partnerek / kapcsolat aloldal-tartalmak */
+export type OldalakForditas = {
+  rolunk: {
+    seo: SeoForditas
+    cim: string
+    alcim: string
+    bekezdesek: string[]
+    ertekekCim: string
+    ertekek: OldalErtekForditas[]
+    folyamatCim: string
+    folyamat: OldalErtekForditas[]
+    cta: string
+  }
+  szolgaltatasok: {
+    seo: SeoForditas
+    cim: string
+    alcim: string
+    bevezeto: string
+    tetelek: SzolgaltatasReszletForditas[]
+    cta: string
+  }
+  partnerek: {
+    seo: SeoForditas
+    cim: string
+    alcim: string
+    bekezdesek: string[]
+    elonyokCim: string
+    elonyok: string[]
+    cta: string
+  }
+  kapcsolat: {
+    seo: SeoForditas
+    cim: string
+    alcim: string
+    bekezdesek: string[]
+    telefonCimke: string
+    teruletCimke: string
+    teruletErtek: string
+    idopontCimke: string
+    idopontErtek: string
+    cta: string
+  }
+}
+
 /**
  * Egy értékpont fordított szövegei.
  */
@@ -43,11 +108,7 @@ export type OldalForditas = {
   menuAria: string
   menuBezaroAria: string
   ugrasATartalomra: string
-  seo: {
-    cim: string
-    leiras: string
-    kulcsszavak: string
-  }
+  seo: SeoForditas
   navigacio: NavigacioLinkForditas[]
   hos: {
     markaNev: string
@@ -74,6 +135,7 @@ export type OldalForditas = {
     gomb: string
     markaLeiras: string
   }
+  oldalak: OldalakForditas
 }
 
 /**
@@ -86,7 +148,7 @@ export const nyelvKapcsolok: { kod: NyelvKod; felirat: string }[] = [
 ]
 
 /** Alapértelmezett nyelv */
-export const alapNyelv: NyelvKod = 'hu'
+export const alapNyelv: NyelvKod = 'de'
 
 /** LocalStorage kulcs a választott nyelvhez */
 export const nyelvTaroloKulcs = 'juliette-nyelv'

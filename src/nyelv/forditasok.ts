@@ -1,4 +1,5 @@
 import type { OldalForditas, NyelvKod } from './nyelvTipusok'
+import { magyarOldalak, angolOldalak, nemetOldalak } from './oldalTartalmak'
 
 /**
  * Magyar fordítások a főoldalhoz.
@@ -18,11 +19,12 @@ const magyar: OldalForditas = {
       'járműszállítás, premium logisztika, autószállítás, Németország, Európa, Juliette Logistique',
   },
   navigacio: [
-    { azonosito: 'kezdo', felirat: 'KEZDŐLAP', cel: '#kezdooldal' },
-    { azonosito: 'rolunk', felirat: 'RÓLUNK', cel: '#rolunk' },
-    { azonosito: 'szolgaltatasok', felirat: 'SZOLGÁLTATÁSOK', cel: '#szolgaltatasok' },
-    { azonosito: 'partnerek', felirat: 'PARTNEREK', cel: '#partnerek' },
-    { azonosito: 'kapcsolat', felirat: 'KAPCSOLAT', cel: '#kapcsolat' },
+    { azonosito: 'kezdo', felirat: 'KEZDŐLAP', cel: '/' },
+    { azonosito: 'rolunk', felirat: 'RÓLUNK', cel: '/rolunk' },
+    { azonosito: 'szolgaltatasok', felirat: 'SZOLGÁLTATÁSOK', cel: '/szolgaltatasok' },
+    { azonosito: 'partnerek', felirat: 'PARTNEREK', cel: '/partnerek' },
+    { azonosito: 'karrier', felirat: 'KARRIER', cel: '/karrier' },
+    { azonosito: 'kapcsolat', felirat: 'KAPCSOLAT', cel: '/kapcsolat' },
   ],
   hos: {
     markaNev: 'JULIETTE LOGISTIQUE',
@@ -129,6 +131,7 @@ const magyar: OldalForditas = {
     gomb: 'KAPCSOLATFELVÉTEL',
     markaLeiras: '— Premium járműszállítás',
   },
+  oldalak: magyarOldalak,
 }
 
 /**
@@ -149,11 +152,12 @@ const angol: OldalForditas = {
       'vehicle transport, premium logistics, car transfer, Germany, Europe, Juliette Logistique',
   },
   navigacio: [
-    { azonosito: 'kezdo', felirat: 'HOME', cel: '#kezdooldal' },
-    { azonosito: 'rolunk', felirat: 'ABOUT', cel: '#rolunk' },
-    { azonosito: 'szolgaltatasok', felirat: 'SERVICES', cel: '#szolgaltatasok' },
-    { azonosito: 'partnerek', felirat: 'PARTNERS', cel: '#partnerek' },
-    { azonosito: 'kapcsolat', felirat: 'CONTACT', cel: '#kapcsolat' },
+    { azonosito: 'kezdo', felirat: 'HOME', cel: '/' },
+    { azonosito: 'rolunk', felirat: 'ABOUT', cel: '/rolunk' },
+    { azonosito: 'szolgaltatasok', felirat: 'SERVICES', cel: '/szolgaltatasok' },
+    { azonosito: 'partnerek', felirat: 'PARTNERS', cel: '/partnerek' },
+    { azonosito: 'karrier', felirat: 'CAREERS', cel: '/karrier' },
+    { azonosito: 'kapcsolat', felirat: 'CONTACT', cel: '/kapcsolat' },
   ],
   hos: {
     markaNev: 'JULIETTE LOGISTIQUE',
@@ -260,6 +264,7 @@ const angol: OldalForditas = {
     gomb: 'CONTACT US',
     markaLeiras: '— Premium vehicle transport',
   },
+  oldalak: angolOldalak,
 }
 
 /**
@@ -280,11 +285,12 @@ const nemet: OldalForditas = {
       'Fahrzeugüberführung, Premium Logistik, Autotransport, Deutschland, Europa, Juliette Logistique',
   },
   navigacio: [
-    { azonosito: 'kezdo', felirat: 'STARTSEITE', cel: '#kezdooldal' },
-    { azonosito: 'rolunk', felirat: 'ÜBER UNS', cel: '#rolunk' },
-    { azonosito: 'szolgaltatasok', felirat: 'LEISTUNGEN', cel: '#szolgaltatasok' },
-    { azonosito: 'partnerek', felirat: 'PARTNER', cel: '#partnerek' },
-    { azonosito: 'kapcsolat', felirat: 'KONTAKT', cel: '#kapcsolat' },
+    { azonosito: 'kezdo', felirat: 'STARTSEITE', cel: '/' },
+    { azonosito: 'rolunk', felirat: 'ÜBER UNS', cel: '/rolunk' },
+    { azonosito: 'szolgaltatasok', felirat: 'LEISTUNGEN', cel: '/szolgaltatasok' },
+    { azonosito: 'partnerek', felirat: 'PARTNER', cel: '/partnerek' },
+    { azonosito: 'karrier', felirat: 'KARRIERE', cel: '/karrier' },
+    { azonosito: 'kapcsolat', felirat: 'KONTAKT', cel: '/kapcsolat' },
   ],
   hos: {
     markaNev: 'JULIETTE LOGISTIQUE',
@@ -391,6 +397,7 @@ const nemet: OldalForditas = {
     gomb: 'KONTAKT AUFNEHMEN',
     markaLeiras: '— Premium Fahrzeugüberführung',
   },
+  oldalak: nemetOldalak,
 }
 
 /**

@@ -1,16 +1,37 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { NyelvSzolgaltato } from './nyelv/NyelvContext'
 import { FoOldal } from './oldalak/FoOldal'
+import { RolunkOldal } from './oldalak/RolunkOldal'
+import { SzolgaltatasokOldal } from './oldalak/SzolgaltatasokOldal'
+import { PartnerekOldal } from './oldalak/PartnerekOldal'
+import { KapcsolatOldal } from './oldalak/KapcsolatOldal'
+import { Karrier } from './komponensek/karrier'
+import { Urlap } from './komponensek/urlap'
+import { AdatvedelmiTajekoztato } from './komponensek/adatvedelmi'
 import { GlobalisStilus } from './stilusok/GlobalisStilus'
+import { HashGorgetes } from './komponensek/HashGorgetes'
 
 /**
  * Az alkalmazás gyökér komponense.
- * Betölti a globális Emotion stílusokat, a nyelvszolgáltatót és a főoldalt.
+ * Betölti a globális Emotion stílusokat, a nyelvszolgáltatót és a route-okat.
  */
 function App() {
   return (
     <NyelvSzolgaltato>
       <GlobalisStilus />
-      <FoOldal />
+      <BrowserRouter>
+        <HashGorgetes />
+        <Routes>
+          <Route path="/" element={<FoOldal />} />
+          <Route path="/rolunk" element={<RolunkOldal />} />
+          <Route path="/szolgaltatasok" element={<SzolgaltatasokOldal />} />
+          <Route path="/partnerek" element={<PartnerekOldal />} />
+          <Route path="/kapcsolat" element={<KapcsolatOldal />} />
+          <Route path="/karrier" element={<Karrier />} />
+          <Route path="/karrier/jelentkezes" element={<Urlap />} />
+          <Route path="/adatvedelmi" element={<AdatvedelmiTajekoztato />} />
+        </Routes>
+      </BrowserRouter>
     </NyelvSzolgaltato>
   )
 }

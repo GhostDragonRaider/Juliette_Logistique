@@ -96,3 +96,114 @@ export const premiumSzamStilus = `
   background-clip: text;
   -webkit-text-fill-color: transparent;
 `
+
+/**
+ * Fémes arany gombkitöltés — csúszó feltöltés hoverhez.
+ */
+export const femesAranyGomb = `
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  color: ${tema.hatter.fekete};
+  border: 1px solid rgba(232, 215, 181, 0.55);
+  background: linear-gradient(
+    135deg,
+    #8f7349 0%,
+    #c5a572 38%,
+    #e8d7b5 52%,
+    #c5a572 68%,
+    #8f7349 100%
+  );
+  background-size: 200% 200%;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 10px 28px rgba(0, 0, 0, 0.35);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    transform: translateX(-105%);
+    background: linear-gradient(
+      105deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.28) 45%,
+      transparent 70%
+    );
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  &:hover {
+    background-position: 100% 50%;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.45),
+      0 14px 34px rgba(197, 165, 114, 0.28);
+  }
+
+  &:hover::before {
+    transform: translateX(105%);
+  }
+`
+
+/**
+ * Scroll-reveal alap: láthatatlan, majd elegánsan felúszik.
+ */
+export const revealAlap = `
+  opacity: 0;
+  transform: translate3d(0, 40px, 0);
+  filter: blur(4px);
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-keses, 0ms);
+  will-change: opacity, transform, filter;
+
+  &.lathato {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+`
+
+/**
+ * Lista-elemek (li) lépcsőzetes felúszása, ha a szülő .lathato.
+ */
+export const revealListaKeses = `
+  & li {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0);
+    transition:
+      opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  &.lathato li {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  ${Array.from(
+    { length: 12 },
+    (_, i) => `
+  &.lathato li:nth-of-type(${i + 1}) {
+    transition-delay: ${90 + i * 75}ms;
+  }`,
+  ).join('')}
+
+  @media (prefers-reduced-motion: reduce) {
+    & li {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+`

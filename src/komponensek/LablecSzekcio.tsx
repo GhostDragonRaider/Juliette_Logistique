@@ -93,7 +93,7 @@ export function LablecSzekcio() {
           </LablecKerdes>
           <Gomb
             className="lablec-kapcsolat-gomb"
-            href={`tel:${telefonszam.replace(/\s/g, '')}`}
+            href="/kapcsolat"
             valtozat="telitett"
             mutatNyilat
             ariaLabel={`${szoveg.lablec.gomb}: ${telefonszam}`}
