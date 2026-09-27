@@ -7,33 +7,35 @@ type LogoTulajdonsagok = {
   className?: string
 }
 
-/** A logo külső doboza — a rólunk szekció arany brand logóját használja */
+/** A logo külső doboza — az eredeti fejléc-mérettel */
 const LogoDoboz = styled(Link)`
   display: inline-flex;
   align-items: center;
-  min-width: 0;
-  max-width: min(42vw, 11.5rem);
+  flex-shrink: 0;
   color: ${tema.szin.arany};
 
   &:focus-visible {
     ${fokuszKeret}
   }
+`
+
+/**
+ * A pezsgőarany brand logo — magasság az eredeti JL monogrammérettel
+ * (40 / 48 / 52 px).
+ */
+const LogoKep = styled.img`
+  display: block;
+  width: auto;
+  height: 40px;
+  object-fit: contain;
 
   @media (min-width: ${tema.szelesseg.kicsi}) {
-    max-width: 13.5rem;
+    height: 48px;
   }
 
   @media (min-width: ${tema.szelesseg.tablet}) {
-    max-width: 15rem;
+    height: 52px;
   }
-`
-
-/** A pezsgőarany brand logo kép */
-const LogoKep = styled.img`
-  display: block;
-  width: 100%;
-  height: auto;
-  object-fit: contain;
 `
 
 /**
@@ -46,8 +48,8 @@ export function Logo({ className }: LogoTulajdonsagok) {
       <LogoKep
         src="/brand/logo-arany.png"
         alt="Juliette Logistique"
-        width={240}
-        height={120}
+        width={104}
+        height={52}
         decoding="async"
       />
     </LogoDoboz>
