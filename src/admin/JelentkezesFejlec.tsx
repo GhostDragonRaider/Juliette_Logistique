@@ -1,23 +1,20 @@
 import styled from '@emotion/styled'
 import type { JelentkezesReszlet } from '../api/jelentkezesApi'
 import { jelentkezesMezoTerkep } from './karrierKovetelmenyek'
-import { GombSor, KisGomb } from './adminStilus'
-import { tema } from '../stilusok/tema'
+import { GombSor } from './adminStilus'
+import { aranySzovegAtmenet, femesAranyGomb, tema } from '../stilusok/tema'
+import { premiumKartya } from './adminPremiumStilus'
 
 const FejlecSav = styled.header`
-  margin-top: 1.25rem;
-  padding: 1.15rem 1.25rem 1.05rem;
-  background:
-    linear-gradient(135deg, rgba(197, 165, 114, 0.14), rgba(197, 165, 114, 0.03)),
-    ${tema.hatter.kartya};
-  border: 1px solid rgba(197, 165, 114, 0.35);
-  box-shadow: ${tema.arnyek.kartya};
+  ${premiumKartya}
+  margin-top: 1.5rem;
+  padding: 1.35rem 1.45rem 1.2rem;
 `
 
 const FejlecRacs = styled.div`
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 1rem 1.5rem;
+  grid-template-columns: 1.45fr 1fr;
+  gap: 1.25rem 2rem;
   align-items: start;
 
   @media (max-width: ${tema.szelesseg.tablet}) {
@@ -26,57 +23,122 @@ const FejlecRacs = styled.div`
 `
 
 const Nev = styled.h2`
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.4rem;
   font-family: ${tema.betu.cim};
-  font-size: clamp(1.15rem, 2.5vw, 1.55rem);
-  letter-spacing: 0.06em;
+  font-size: clamp(1.2rem, 2.8vw, 1.65rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
   text-transform: uppercase;
-  color: ${tema.szin.aranyVilagos};
+  ${aranySzovegAtmenet}
+`
+
+const Alcím = styled.p`
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: ${tema.szin.szurkeSotet};
 `
 
 const Azonosito = styled.p`
-  margin: 0;
-  font-size: 0.78rem;
-  letter-spacing: 0.06em;
-  color: ${tema.szin.szurkeSotet};
+  margin: 0.35rem 0 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: ${tema.szin.szurke};
+  font-variant-numeric: tabular-nums;
 `
 
 const ChipSor = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem 0.55rem;
-  margin-top: 0.75rem;
+  gap: 0.5rem 0.6rem;
+  margin-top: 1rem;
 `
 
 const Chip = styled.span`
   display: inline-flex;
   align-items: center;
-  padding: 0.35rem 0.65rem;
-  font-size: 0.75rem;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.74rem;
   letter-spacing: 0.04em;
   color: ${tema.szin.feher};
-  background: rgba(0, 0, 0, 0.28);
-  border: 1px solid rgba(197, 165, 114, 0.25);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.2));
+  border: 1px solid rgba(197, 165, 114, 0.28);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  &::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border: 1px solid ${tema.szin.arany};
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
 `
 
 const MetaOszlop = styled.div`
+  ${premiumKartya}
+  padding: 0.85rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.55rem;
   font-size: 0.82rem;
   color: ${tema.szin.szurke};
+  box-shadow: none;
 `
 
 const MetaSor = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
   gap: 1rem;
-  padding-bottom: 0.35rem;
-  border-bottom: 1px solid rgba(197, 165, 114, 0.12);
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid rgba(197, 165, 114, 0.1);
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  span {
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 0.68rem;
+    color: ${tema.szin.szurkeSotet};
+  }
 
   strong {
     color: ${tema.szin.aranyVilagos};
     font-weight: 600;
+    text-align: right;
+  }
+`
+
+const StatuszGomb = styled.button<{ $aktiv?: boolean }>`
+  font-family: ${tema.betu.torzs};
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.55rem 0.95rem;
+  cursor: pointer;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+
+  ${(p) =>
+    p.$aktiv
+      ? femesAranyGomb
+      : `
+    color: ${tema.szin.aranyVilagos};
+    background: rgba(197, 165, 114, 0.1);
+    border: 1px solid rgba(197, 165, 114, 0.32);
+  `}
+
+  &:hover {
+    transform: translateY(-1px);
   }
 `
 
@@ -93,11 +155,13 @@ export function JelentkezesFejlec({ reszlet, id, statuszAllit }: Props) {
   const beerkezett = reszlet.erkezett
     ? new Date(reszlet.erkezett).toLocaleString('hu-HU')
     : '—'
+  const statusz = (reszlet.statusz || '').toLowerCase()
 
   return (
     <FejlecSav>
       <FejlecRacs>
         <div>
+          <Alcím>Jelentkező</Alcím>
           <Nev>{nev}</Nev>
           <Azonosito>{id}</Azonosito>
           <ChipSor>
@@ -122,10 +186,24 @@ export function JelentkezesFejlec({ reszlet, id, statuszAllit }: Props) {
           </MetaSor>
         </MetaOszlop>
       </FejlecRacs>
-      <GombSor style={{ marginTop: '1rem', marginBottom: 0 }}>
-        <KisGomb type="button" onClick={() => statuszAllit('uj')}>Új</KisGomb>
-        <KisGomb type="button" onClick={() => statuszAllit('folyamatban')}>Folyamatban</KisGomb>
-        <KisGomb type="button" onClick={() => statuszAllit('lezart')}>Lezárt</KisGomb>
+      <GombSor style={{ marginTop: '1.15rem', marginBottom: 0 }}>
+        <StatuszGomb type="button" $aktiv={statusz === 'uj'} onClick={() => statuszAllit('uj')}>
+          Új
+        </StatuszGomb>
+        <StatuszGomb
+          type="button"
+          $aktiv={statusz === 'folyamatban'}
+          onClick={() => statuszAllit('folyamatban')}
+        >
+          Folyamatban
+        </StatuszGomb>
+        <StatuszGomb
+          type="button"
+          $aktiv={statusz === 'lezart'}
+          onClick={() => statuszAllit('lezart')}
+        >
+          Lezárt
+        </StatuszGomb>
       </GombSor>
     </FejlecSav>
   )
