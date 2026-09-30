@@ -59,6 +59,7 @@ const META_KULCSOK = new Set([
   'telefon',
   'email',
   'adat',
+  'mezok',
   'fajlok',
   'feltoltesek',
 ])
@@ -90,17 +91,26 @@ export function jelentkezesTablaSorok(reszlet: Record<string, unknown>): TablaSo
 
   for (const [kulcs, ertek] of meta) {
     if (ertek !== undefined && ertek !== null && ertek !== '') {
-      sorok.push({ kulcs, cimke: mezoCimke(kulcs), ertek: ertekSzoveg(ertek) })
+      let szoveg = ertekSzoveg(ertek)
+      if (kulcs === 'erkezett' && typeof ertek === 'string') {
+        const datum = new Date(ertek)
+        if (!Number.isNaN(datum.getTime())) {
+          szoveg = datum.toLocaleString('hu-HU')
+        }
+      }
+      sorok.push({ kulcs, cimke: mezoCimke(kulcs), ertek: szoveg })
     }
   }
 
-  const adat =
-    reszlet.adat && typeof reszlet.adat === 'object' && !Array.isArray(reszlet.adat)
-      ? (reszlet.adat as Record<string, unknown>)
-      : null
+  const mezoBlokk =
+    reszlet.mezok && typeof reszlet.mezok === 'object' && !Array.isArray(reszlet.mezok)
+      ? (reszlet.mezok as Record<string, unknown>)
+      : reszlet.adat && typeof reszlet.adat === 'object' && !Array.isArray(reszlet.adat)
+        ? (reszlet.adat as Record<string, unknown>)
+        : null
 
-  if (adat) {
-    for (const [kulcs, ertek] of Object.entries(adat)) {
+  if (mezoBlokk) {
+    for (const [kulcs, ertek] of Object.entries(mezoBlokk)) {
       if (kulcs === 'feltoltesek') continue
       sorok.push({ kulcs, cimke: mezoCimke(kulcs), ertek: ertekSzoveg(ertek) })
     }

@@ -32,6 +32,7 @@ export type JelentkezesReszlet = {
   telefon?: string
   email?: string
   adat?: Record<string, unknown>
+  mezok?: Record<string, unknown>
   fajlok?: JelentkezesFajl[]
 }
 

@@ -5,6 +5,8 @@ import { adminTokenOlvas } from './auth'
 import { AdminLink, GombSor, KisGomb, UzenetSav } from './adminStilus'
 import { JelentkezesAdatTabla } from './JelentkezesAdatTabla'
 import { FajlMegtekinto } from './FajlMegtekinto'
+import { KovetelmenyPanel } from './KovetelmenyPanel'
+import { ertekelesJelentkezes } from './karrierKovetelmenyek'
 
 export function AdminJelentkezesReszlet() {
   const { id = '' } = useParams()
@@ -39,6 +41,7 @@ export function AdminJelentkezesReszlet() {
             <KisGomb type="button" onClick={() => void statuszAllit('lezart')}>Lezárt</KisGomb>
           </GombSor>
 
+          <KovetelmenyPanel osszegzes={ertekelesJelentkezes(reszlet as Record<string, unknown>)} />
           <JelentkezesAdatTabla reszlet={reszlet} />
           <FajlMegtekinto fajlok={reszlet.fajlok ?? []} />
         </>
