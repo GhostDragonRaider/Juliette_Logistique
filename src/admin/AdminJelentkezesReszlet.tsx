@@ -2,11 +2,20 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { jelentkezesReszletei, jelentkezesStatusz } from '../api/jelentkezesApi'
 import { adminTokenOlvas } from './auth'
-import { AdminLink, GombSor, KisGomb, UzenetSav } from './adminStilus'
+import styled from '@emotion/styled'
+import { AdminLink, UzenetSav } from './adminStilus'
 import { JelentkezesAdatTabla } from './JelentkezesAdatTabla'
+import { JelentkezesFejlec } from './JelentkezesFejlec'
 import { FajlMegtekinto } from './FajlMegtekinto'
 import { KovetelmenyPanel } from './KovetelmenyPanel'
 import { ertekelesJelentkezes } from './karrierKovetelmenyek'
+import { tema } from '../stilusok/tema'
+
+const ReszletKeret = styled.div`
+  width: min(100%, ${tema.maxTartalom});
+  margin: 0 auto;
+`
+
 
 export function AdminJelentkezesReszlet() {
   const { id = '' } = useParams()
@@ -29,23 +38,23 @@ export function AdminJelentkezesReszlet() {
   }
 
   return (
-    <div>
+    <ReszletKeret>
       <AdminLink to="/admin/jelentkezesek">← Vissza a listához</AdminLink>
-      <h2 style={{ marginTop: '1rem' }}>{id}</h2>
       {hiba ? <UzenetSav hiba>{hiba}</UzenetSav> : null}
       {reszlet ? (
         <>
-          <GombSor>
-            <KisGomb type="button" onClick={() => void statuszAllit('uj')}>Új</KisGomb>
-            <KisGomb type="button" onClick={() => void statuszAllit('folyamatban')}>Folyamatban</KisGomb>
-            <KisGomb type="button" onClick={() => void statuszAllit('lezart')}>Lezárt</KisGomb>
-          </GombSor>
-
-          <KovetelmenyPanel osszegzes={ertekelesJelentkezes(reszlet as Record<string, unknown>)} />
+          <JelentkezesFejlec
+            reszlet={reszlet}
+            id={id}
+            statuszAllit={(s) => void statuszAllit(s)}
+          />
+          <KovetelmenyPanel
+            osszegzes={ertekelesJelentkezes(reszlet as Record<string, unknown>)}
+          />
           <JelentkezesAdatTabla reszlet={reszlet} />
           <FajlMegtekinto fajlok={reszlet.fajlok ?? []} />
         </>
       ) : null}
-    </div>
+    </ReszletKeret>
   )
 }

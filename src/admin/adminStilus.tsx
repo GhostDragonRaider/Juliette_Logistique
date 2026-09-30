@@ -12,7 +12,7 @@ export const AdminKeret = styled.div`
 `
 
 export const AdminPanel = styled.div`
-  width: min(100%, 1100px);
+  width: min(100%, ${tema.maxTartalom});
   margin: 0 auto;
 `
 

@@ -123,3 +123,126 @@ export function jelentkezesTablaSorok(reszlet: Record<string, unknown>): TablaSo
 
   return sorok
 }
+
+export type JelentkezesSzekcio = {
+  id: string
+  cim: string
+  sorok: TablaSor[]
+}
+
+/** Űrlap-szekciók szerinti csoportosítás a prémium oszlopos nézethez. */
+export const SZEKCIO_MEZOK: { id: string; cim: string; mezok: string[] }[] = [
+  {
+    id: 'beerkezes',
+    cim: 'Beérkezés',
+    mezok: ['id', 'erkezett', 'statusz', 'nev', 'telefon', 'email'],
+  },
+  {
+    id: 'szemelyes',
+    cim: 'Személyes adatok',
+    mezok: ['teljesNev', 'szuletesiDatum', 'lakhely', 'orszag'],
+  },
+  {
+    id: 'vezetes',
+    cim: 'Vezetési tapasztalat',
+    mezok: [
+      'bJogositvanyEve',
+      'professzionalisEv',
+      'soforkentNemetorszag',
+      'korabbiTerulet',
+      'korabbiTeruletEgyeb',
+    ],
+  },
+  {
+    id: 'premium',
+    cim: 'Prémium tapasztalat',
+    mezok: [
+      'premiumTapasztalat',
+      'premiumMarkak',
+      'premiumMarkaEgyeb',
+      'premiumGyakorisag',
+      'automataValto',
+    ],
+  },
+  {
+    id: 'nemetorszag',
+    cim: 'Németországi munkavégzés',
+    mezok: ['munkavallalasiJog', 'nemetorszagiCim', 'munkabaAllas', 'rugalmassag'],
+  },
+  {
+    id: 'jogositvany',
+    cim: 'Jogosítvány és előélet',
+    mezok: [
+      'jogositvanyKategoria',
+      'jogositvanyEgyeb',
+      'jogositvanyErvenyes',
+      'eltiltas',
+      'erkolesi',
+    ],
+  },
+  {
+    id: 'nyelv',
+    cim: 'Nyelvtudás',
+    mezok: ['nemetNyelv', 'angolNyelv'],
+  },
+  {
+    id: 'keszsegek',
+    cim: 'Munkavégzéshez szükséges készségek',
+    mezok: ['okostelefon', 'navigacio', 'gpsKovetes'],
+  },
+  {
+    id: 'feltetelek',
+    cim: 'Munkavállalási feltételek',
+    mezok: ['hosszuUt', 'hetvege', 'tobbnapos', 'hetiNapok', 'utazasMod'],
+  },
+  {
+    id: 'szurok',
+    cim: 'Fontos szűrőkérdések',
+    mezok: [
+      'haromEvAktiv',
+      'haromEvProf',
+      'premiumSzuro',
+      'biztonsagosVezetes',
+      'gondosKezeles',
+      'ellenorzesElfogadas',
+    ],
+  },
+  {
+    id: 'motivacio',
+    cim: 'Motiváció',
+    mezok: ['motivacio', 'tapasztalatLeiras'],
+  },
+  {
+    id: 'hozzajarulas',
+    cim: 'Hozzájárulások',
+    mezok: ['adatvedelem', 'hozzajarulas'],
+  },
+]
+
+export function jelentkezesSzekcioCsoportok(reszlet: Record<string, unknown>): JelentkezesSzekcio[] {
+  const sorok = jelentkezesTablaSorok(reszlet)
+  const sorMap = new Map(sorok.map((s) => [s.kulcs, s]))
+  const hasznalt = new Set<string>()
+  const szekciok: JelentkezesSzekcio[] = []
+
+  for (const def of SZEKCIO_MEZOK) {
+    const blokk: TablaSor[] = []
+    for (const kulcs of def.mezok) {
+      const sor = sorMap.get(kulcs)
+      if (sor) {
+        blokk.push(sor)
+        hasznalt.add(kulcs)
+      }
+    }
+    if (blokk.length > 0) {
+      szekciok.push({ id: def.id, cim: def.cim, sorok: blokk })
+    }
+  }
+
+  const egyeb = sorok.filter((s) => !hasznalt.has(s.kulcs))
+  if (egyeb.length > 0) {
+    szekciok.push({ id: 'egyeb', cim: 'További adatok', sorok: egyeb })
+  }
+
+  return szekciok
+}
