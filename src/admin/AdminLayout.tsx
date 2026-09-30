@@ -26,6 +26,7 @@ export function AdminLayout() {
           <AdminLink to="/admin">Áttekintés</AdminLink>
           <AdminLink to="/admin/tartalom">Tartalom</AdminLink>
           <AdminLink to="/admin/jelentkezesek">Jelentkezések</AdminLink>
+          <AdminLink to="/admin/naplo">Napló</AdminLink>
           <AdminLink to="/">Weboldal</AdminLink>
           <button type="button" onClick={kilepes} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer' }}>
             Kilépés

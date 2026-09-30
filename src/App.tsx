@@ -12,6 +12,7 @@ import { AdminAttekintes } from './admin/AdminAttekintes'
 import { AdminTartalom } from './admin/AdminTartalom'
 import { AdminJelentkezesLista } from './admin/AdminJelentkezesLista'
 import { AdminJelentkezesReszlet } from './admin/AdminJelentkezesReszlet'
+import { AdminNaplo } from './admin/AdminNaplo'
 
 /**
  * Az alkalmazás gyökér komponense.
@@ -34,6 +35,7 @@ function App() {
             <Route path="tartalom" element={<AdminTartalom />} />
             <Route path="jelentkezesek" element={<AdminJelentkezesLista />} />
             <Route path="jelentkezesek/:id" element={<AdminJelentkezesReszlet />} />
+            <Route path="naplo" element={<AdminNaplo />} />
           </Route>
         </Routes>
       </BrowserRouter>

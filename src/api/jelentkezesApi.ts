@@ -156,6 +156,44 @@ export async function tartalomBetoltese(token: string): Promise<SzerkeszthetoTar
   return body
 }
 
+export type NaploBejegyzes = {
+  id: string
+  idopont: string
+  kategoria: string
+  esemeny: string
+  uzenet: string
+  adat: Record<string, unknown>
+  felhasznalo: string | null
+  ip: string
+}
+
+export type NaploValasz = {
+  osszesen: number
+  limit: number
+  offset: number
+  naplo: NaploBejegyzes[]
+}
+
+export async function naploLekeres(
+  token: string,
+  params: { limit?: number; offset?: number; kategoria?: string; esemeny?: string } = {},
+): Promise<NaploValasz> {
+  const query = new URLSearchParams()
+  if (params.limit != null) query.set('limit', String(params.limit))
+  if (params.offset != null) query.set('offset', String(params.offset))
+  if (params.kategoria) query.set('kategoria', params.kategoria)
+  if (params.esemeny) query.set('esemeny', params.esemeny)
+
+  const response = await fetch(`${apiBase}/admin/naplo?${query.toString()}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  const body = await response.json()
+  if (!response.ok) {
+    throw new Error(body.hiba || 'A napló betöltése sikertelen.')
+  }
+  return body
+}
+
 export async function tartalomMentese(
   token: string,
   tartalom: SzerkeszthetoTartalom,
