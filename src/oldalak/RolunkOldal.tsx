@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { Gomb } from '../komponensek/Gomb'
+import { GorgetesReveal } from '../komponensek/GorgetesReveal'
 import {
   TartalomOldalKeret,
   OldalBelso,
@@ -62,37 +63,48 @@ export function RolunkOldal() {
   return (
     <TartalomOldalKeret seo={oldal.seo}>
       <OldalBelso>
-        <OldalCim>{oldal.cim}</OldalCim>
-        <OldalAlcim>{oldal.alcim}</OldalAlcim>
-        {oldal.bekezdesek.map((bekezdes) => (
-          <OldalBekezdes key={bekezdes.slice(0, 24)}>{bekezdes}</OldalBekezdes>
-        ))}
+        <GorgetesReveal>
+          <OldalCim>{oldal.cim}</OldalCim>
+          <OldalAlcim>{oldal.alcim}</OldalAlcim>
+        </GorgetesReveal>
 
-        <OldalSzekcioCim>{oldal.ertekekCim}</OldalSzekcioCim>
-        <KartyaRac>
-          {oldal.ertekek.map((ertek) => (
-            <Kartya key={ertek.cim}>
-              <KartyaCim>{ertek.cim}</KartyaCim>
-              <KartyaSzoveg>{ertek.leiras}</KartyaSzoveg>
-            </Kartya>
+        <GorgetesReveal>
+          {oldal.bekezdesek.map((bekezdes) => (
+            <OldalBekezdes key={bekezdes.slice(0, 24)}>{bekezdes}</OldalBekezdes>
           ))}
-        </KartyaRac>
+        </GorgetesReveal>
 
-        <OldalSzekcioCim>{oldal.folyamatCim}</OldalSzekcioCim>
-        <KartyaRac>
-          {oldal.folyamat.map((lepes) => (
-            <Kartya key={lepes.cim}>
-              <KartyaCim>{lepes.cim}</KartyaCim>
-              <KartyaSzoveg>{lepes.leiras}</KartyaSzoveg>
-            </Kartya>
-          ))}
-        </KartyaRac>
+        <GorgetesReveal>
+          <OldalSzekcioCim>{oldal.ertekekCim}</OldalSzekcioCim>
+          <KartyaRac>
+            {oldal.ertekek.map((ertek) => (
+              <Kartya key={ertek.cim}>
+                <KartyaCim>{ertek.cim}</KartyaCim>
+                <KartyaSzoveg>{ertek.leiras}</KartyaSzoveg>
+              </Kartya>
+            ))}
+          </KartyaRac>
+        </GorgetesReveal>
 
-        <CtaSor>
-          <Gomb href="/kapcsolat" valtozat="telitett" mutatNyilat>
-            {oldal.cta}
-          </Gomb>
-        </CtaSor>
+        <GorgetesReveal>
+          <OldalSzekcioCim>{oldal.folyamatCim}</OldalSzekcioCim>
+          <KartyaRac>
+            {oldal.folyamat.map((lepes) => (
+              <Kartya key={lepes.cim}>
+                <KartyaCim>{lepes.cim}</KartyaCim>
+                <KartyaSzoveg>{lepes.leiras}</KartyaSzoveg>
+              </Kartya>
+            ))}
+          </KartyaRac>
+        </GorgetesReveal>
+
+        <GorgetesReveal>
+          <CtaSor>
+            <Gomb href="/kapcsolat" valtozat="telitett" mutatNyilat>
+              {oldal.cta}
+            </Gomb>
+          </CtaSor>
+        </GorgetesReveal>
       </OldalBelso>
     </TartalomOldalKeret>
   )

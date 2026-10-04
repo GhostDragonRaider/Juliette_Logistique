@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import { telefonszam } from '../adatok/fooldalAdatok'
 import { Gomb } from '../komponensek/Gomb'
 import { PremiumSzam } from '../komponensek/PremiumSzam'
+import { GorgetesReveal } from '../komponensek/GorgetesReveal'
 import {
   TartalomOldalKeret,
   OldalBelso,
@@ -55,33 +56,39 @@ export function KapcsolatOldal() {
   return (
     <TartalomOldalKeret seo={oldal.seo}>
       <OldalBelso>
-        <OldalCim>{oldal.cim}</OldalCim>
-        <OldalAlcim>{oldal.alcim}</OldalAlcim>
-        {oldal.bekezdesek.map((bekezdes) => (
-          <OldalBekezdes key={bekezdes.slice(0, 24)}>{bekezdes}</OldalBekezdes>
-        ))}
+        <GorgetesReveal>
+          <OldalCim>{oldal.cim}</OldalCim>
+          <OldalAlcim>{oldal.alcim}</OldalAlcim>
+          {oldal.bekezdesek.map((bekezdes) => (
+            <OldalBekezdes key={bekezdes.slice(0, 24)}>{bekezdes}</OldalBekezdes>
+          ))}
+        </GorgetesReveal>
 
-        <InfoRac>
-          <InfoCimke>{oldal.telefonCimke}</InfoCimke>
-          <InfoErtek>
-            <PremiumSzam>{telefonszam}</PremiumSzam>
-          </InfoErtek>
-          <InfoCimke>{oldal.teruletCimke}</InfoCimke>
-          <InfoErtek>{oldal.teruletErtek}</InfoErtek>
-          <InfoCimke>{oldal.idopontCimke}</InfoCimke>
-          <InfoErtek>{oldal.idopontErtek}</InfoErtek>
-        </InfoRac>
+        <GorgetesReveal>
+          <InfoRac>
+            <InfoCimke>{oldal.telefonCimke}</InfoCimke>
+            <InfoErtek>
+              <PremiumSzam>{telefonszam}</PremiumSzam>
+            </InfoErtek>
+            <InfoCimke>{oldal.teruletCimke}</InfoCimke>
+            <InfoErtek>{oldal.teruletErtek}</InfoErtek>
+            <InfoCimke>{oldal.idopontCimke}</InfoCimke>
+            <InfoErtek>{oldal.idopontErtek}</InfoErtek>
+          </InfoRac>
+        </GorgetesReveal>
 
-        <CtaSor>
-          <Gomb
-            href={`tel:${telefonszam.replace(/\s/g, '')}`}
-            valtozat="telitett"
-            mutatTelefont
-            ariaLabel={telefonszam}
-          >
-            {oldal.cta}
-          </Gomb>
-        </CtaSor>
+        <GorgetesReveal>
+          <CtaSor>
+            <Gomb
+              href={`tel:${telefonszam.replace(/\s/g, '')}`}
+              valtozat="telitett"
+              mutatTelefont
+              ariaLabel={telefonszam}
+            >
+              {oldal.cta}
+            </Gomb>
+          </CtaSor>
+        </GorgetesReveal>
       </OldalBelso>
     </TartalomOldalKeret>
   )

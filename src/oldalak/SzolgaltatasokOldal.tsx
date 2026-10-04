@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { Gomb } from '../komponensek/Gomb'
+import { GorgetesReveal } from '../komponensek/GorgetesReveal'
 import {
   TartalomOldalKeret,
   OldalBelso,
@@ -67,39 +68,45 @@ export function SzolgaltatasokOldal() {
   return (
     <TartalomOldalKeret seo={oldal.seo}>
       <OldalBelso>
-        <OldalCim>{oldal.cim}</OldalCim>
-        <OldalAlcim>{oldal.alcim}</OldalAlcim>
-        <OldalBekezdes>{oldal.bevezeto}</OldalBekezdes>
+        <GorgetesReveal>
+          <OldalCim>{oldal.cim}</OldalCim>
+          <OldalAlcim>{oldal.alcim}</OldalAlcim>
+          <OldalBekezdes>{oldal.bevezeto}</OldalBekezdes>
+        </GorgetesReveal>
 
         <SzolgaltatasLista>
           {oldal.tetelek.map((tetel) => (
-            <SzolgaltatasKartya key={tetel.azonosito}>
-              <div>
-                <SzolgaltatasCim>{tetel.cim}</SzolgaltatasCim>
-                <OldalBekezdes>{tetel.leiras}</OldalBekezdes>
-                <OldalLista>
-                  {tetel.pontok.map((pont) => (
-                    <OldalListaPont key={pont}>{pont}</OldalListaPont>
-                  ))}
-                </OldalLista>
-              </div>
-              {kepek[tetel.azonosito] ? (
-                <SzolgaltatasKep
-                  src={kepek[tetel.azonosito]}
-                  alt={tetel.cim}
-                  loading="lazy"
-                  decoding="async"
-                />
-              ) : null}
-            </SzolgaltatasKartya>
+            <GorgetesReveal key={tetel.azonosito}>
+              <SzolgaltatasKartya>
+                <div>
+                  <SzolgaltatasCim>{tetel.cim}</SzolgaltatasCim>
+                  <OldalBekezdes>{tetel.leiras}</OldalBekezdes>
+                  <OldalLista>
+                    {tetel.pontok.map((pont) => (
+                      <OldalListaPont key={pont}>{pont}</OldalListaPont>
+                    ))}
+                  </OldalLista>
+                </div>
+                {kepek[tetel.azonosito] ? (
+                  <SzolgaltatasKep
+                    src={kepek[tetel.azonosito]}
+                    alt={tetel.cim}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : null}
+              </SzolgaltatasKartya>
+            </GorgetesReveal>
           ))}
         </SzolgaltatasLista>
 
-        <CtaSor>
-          <Gomb href="/kapcsolat" valtozat="telitett" mutatNyilat>
-            {oldal.cta}
-          </Gomb>
-        </CtaSor>
+        <GorgetesReveal>
+          <CtaSor>
+            <Gomb href="/kapcsolat" valtozat="telitett" mutatNyilat>
+              {oldal.cta}
+            </Gomb>
+          </CtaSor>
+        </GorgetesReveal>
       </OldalBelso>
     </TartalomOldalKeret>
   )
