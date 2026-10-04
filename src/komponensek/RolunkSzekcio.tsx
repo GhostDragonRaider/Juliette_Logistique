@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { Gomb } from './Gomb'
+import { Logo } from './Logo'
 import { useNyelv } from '../nyelv/useNyelv'
 import { tema, aranySzovegAtmenet } from '../stilusok/tema'
 
@@ -52,19 +53,11 @@ const LogoJelveny = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(78px, 16vw, 118px);
-  padding: 0.45rem 0.55rem;
+  max-width: calc(100% - 1.5rem);
+  padding: 0.4rem 0.5rem;
   background: rgba(0, 0, 0, 0.55);
   border: 1px solid rgba(197, 165, 114, 0.4);
   backdrop-filter: blur(2px);
-`
-
-/** A mellékelt, pezsgőaranyra konvertált brand logo */
-const LogoJelvenyKep = styled.img`
-  display: block;
-  width: 100%;
-  height: auto;
-  object-fit: contain;
 `
 
 /** A jobb oldali szöveges rész */
@@ -140,11 +133,7 @@ export function RolunkSzekcio() {
             decoding="async"
           />
           <LogoJelveny className="rolunk-logo-jelveny">
-            <LogoJelvenyKep
-              className="rolunk-logo-kep"
-              src="/brand/logo-arany.png"
-              alt="Juliette Logistique"
-            />
+            <Logo className="rolunk-logo-jelveny-marka" meret="jelveny" linkKel={false} />
           </LogoJelveny>
         </KepOldal>
 

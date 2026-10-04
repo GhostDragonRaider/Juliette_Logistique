@@ -148,7 +148,7 @@ export const nyelvKapcsolok: { kod: NyelvKod; felirat: string }[] = [
 ]
 
 /** Alapértelmezett nyelv */
-export const alapNyelv: NyelvKod = 'hu'
+export const alapNyelv: NyelvKod = 'de'
 
 /** LocalStorage kulcs a választott nyelvhez */
 export const nyelvTaroloKulcs = 'juliette-nyelv'
