@@ -131,11 +131,17 @@ const KOVETELMENY_DEFINICIOK: KovetelmenyDef[] = [
       if (rug === 'Csak a lakóhelyem közelében') {
         return { allapot: 'nem_megfelel', indok: 'Csak helyi munkavégzés vállalása – nem elég rugalmas.' }
       }
-      const utazasRendben =
-        rug === 'Németországon belül rugalmas vagyok' ||
-        rug === 'Egész Németországban vállalok munkát'
-      if (!utazasRendben) {
-        return { allapot: 'nem_megfelel', indok: 'A rugalmasság válasz nem felel meg az elvárásnak.' }
+      /** Csak az űrlap „rugalmassag” mezője számít; a hosszú út / hétvége / többnapos külön kérdések. */
+      const orszagosRugalmassag = new Set([
+        'Németországon belül rugalmas vagyok',
+        'Egész Németországban vállalok munkát',
+        'Országosan rugalmas',
+      ])
+      if (!orszagosRugalmassag.has(String(rug))) {
+        return {
+          allapot: 'nem_megfelel',
+          indok: `A rugalmasság válasza („${rug}”) nem egyezik az elfogadott országos opciókkal.`,
+        }
       }
       return { allapot: 'megfelel', indok: 'Országos / regionális rugalmasság rendben.' }
     },
