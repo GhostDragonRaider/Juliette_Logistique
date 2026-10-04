@@ -1,37 +1,40 @@
 import styled from '@emotion/styled'
 import { Gomb } from '../komponensek/Gomb'
-import { GorgetesReveal } from '../komponensek/GorgetesReveal'
 import {
   TartalomOldalKeret,
-  OldalBelso,
   OldalCim,
   OldalAlcim,
   OldalBekezdes,
-  OldalLista,
   OldalListaPont,
 } from '../komponensek/TartalomOldalKeret'
 import { useNyelv } from '../nyelv/useNyelv'
 import { tema, aranySzovegAtmenet } from '../stilusok/tema'
+import {
+  KozepreIgazitottBelso,
+  TeljesSzelessegReveal,
+  KozepreCtaSor,
+  KozepreLista,
+} from './kozepreIgazitottOldalStilus'
 
 const SzolgaltatasLista = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 1.5rem;
+  width: 100%;
   margin: 1.75rem 0 2rem;
 `
 
 const SzolgaltatasKartya = styled.article`
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 40rem;
+  gap: 1.25rem;
   padding: 1.5rem 0;
   border-top: 1px solid rgba(197, 165, 114, 0.22);
-
-  @media (min-width: ${tema.szelesseg.tablet}) {
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-    gap: 2rem;
-    align-items: start;
-  }
+  text-align: center;
 `
 
 const SzolgaltatasCim = styled.h2`
@@ -45,14 +48,11 @@ const SzolgaltatasCim = styled.h2`
 
 const SzolgaltatasKep = styled.img`
   display: block;
-  width: 100%;
+  width: min(100%, 32rem);
+  margin: 0 auto;
   aspect-ratio: 16 / 10;
   object-fit: cover;
   border: 1px solid rgba(197, 165, 114, 0.25);
-`
-
-const CtaSor = styled.div`
-  margin-top: 1rem;
 `
 
 /**
@@ -67,25 +67,25 @@ export function SzolgaltatasokOldal() {
 
   return (
     <TartalomOldalKeret seo={oldal.seo}>
-      <OldalBelso>
-        <GorgetesReveal>
+      <KozepreIgazitottBelso>
+        <TeljesSzelessegReveal>
           <OldalCim>{oldal.cim}</OldalCim>
           <OldalAlcim>{oldal.alcim}</OldalAlcim>
           <OldalBekezdes>{oldal.bevezeto}</OldalBekezdes>
-        </GorgetesReveal>
+        </TeljesSzelessegReveal>
 
         <SzolgaltatasLista>
           {oldal.tetelek.map((tetel) => (
-            <GorgetesReveal key={tetel.azonosito}>
+            <TeljesSzelessegReveal key={tetel.azonosito}>
               <SzolgaltatasKartya>
                 <div>
                   <SzolgaltatasCim>{tetel.cim}</SzolgaltatasCim>
                   <OldalBekezdes>{tetel.leiras}</OldalBekezdes>
-                  <OldalLista>
+                  <KozepreLista>
                     {tetel.pontok.map((pont) => (
                       <OldalListaPont key={pont}>{pont}</OldalListaPont>
                     ))}
-                  </OldalLista>
+                  </KozepreLista>
                 </div>
                 {kepek[tetel.azonosito] ? (
                   <SzolgaltatasKep
@@ -96,18 +96,18 @@ export function SzolgaltatasokOldal() {
                   />
                 ) : null}
               </SzolgaltatasKartya>
-            </GorgetesReveal>
+            </TeljesSzelessegReveal>
           ))}
         </SzolgaltatasLista>
 
-        <GorgetesReveal>
-          <CtaSor>
+        <TeljesSzelessegReveal>
+          <KozepreCtaSor>
             <Gomb href="/kapcsolat" valtozat="telitett" mutatNyilat>
               {oldal.cta}
             </Gomb>
-          </CtaSor>
-        </GorgetesReveal>
-      </OldalBelso>
+          </KozepreCtaSor>
+        </TeljesSzelessegReveal>
+      </KozepreIgazitottBelso>
     </TartalomOldalKeret>
   )
 }

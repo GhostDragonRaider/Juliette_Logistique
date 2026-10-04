@@ -2,32 +2,33 @@ import styled from '@emotion/styled'
 import { telefonszam } from '../adatok/fooldalAdatok'
 import { Gomb } from '../komponensek/Gomb'
 import { PremiumSzam } from '../komponensek/PremiumSzam'
-import { GorgetesReveal } from '../komponensek/GorgetesReveal'
 import {
   TartalomOldalKeret,
-  OldalBelso,
   OldalCim,
   OldalAlcim,
   OldalBekezdes,
 } from '../komponensek/TartalomOldalKeret'
 import { useNyelv } from '../nyelv/useNyelv'
 import { tema, aranySzovegAtmenet } from '../stilusok/tema'
+import {
+  KozepreIgazitottBelso,
+  TeljesSzelessegReveal,
+  KozepreCtaSor,
+} from './kozepreIgazitottOldalStilus'
 
 const InfoRac = styled.dl`
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.15rem 2rem;
-  margin: 2rem 0;
-  max-width: 36rem;
-
-  @media (min-width: ${tema.szelesseg.kicsi}) {
-    grid-template-columns: 10rem 1fr;
-    align-items: baseline;
-  }
+  gap: 0.35rem 0;
+  width: 100%;
+  max-width: 28rem;
+  margin: 2rem auto;
+  text-align: center;
+  justify-items: center;
 `
 
 const InfoCimke = styled.dt`
-  margin: 0;
+  margin: 1rem 0 0.25rem;
   font-family: ${tema.betu.cim};
   font-size: 0.78rem;
   letter-spacing: 0.12em;
@@ -42,10 +43,6 @@ const InfoErtek = styled.dd`
   line-height: 1.5;
 `
 
-const CtaSor = styled.div`
-  margin-top: 1.5rem;
-`
-
 /**
  * Kapcsolat tartalomoldal.
  */
@@ -55,16 +52,16 @@ export function KapcsolatOldal() {
 
   return (
     <TartalomOldalKeret seo={oldal.seo}>
-      <OldalBelso>
-        <GorgetesReveal>
+      <KozepreIgazitottBelso>
+        <TeljesSzelessegReveal>
           <OldalCim>{oldal.cim}</OldalCim>
           <OldalAlcim>{oldal.alcim}</OldalAlcim>
           {oldal.bekezdesek.map((bekezdes) => (
             <OldalBekezdes key={bekezdes.slice(0, 24)}>{bekezdes}</OldalBekezdes>
           ))}
-        </GorgetesReveal>
+        </TeljesSzelessegReveal>
 
-        <GorgetesReveal>
+        <TeljesSzelessegReveal>
           <InfoRac>
             <InfoCimke>{oldal.telefonCimke}</InfoCimke>
             <InfoErtek>
@@ -75,10 +72,10 @@ export function KapcsolatOldal() {
             <InfoCimke>{oldal.idopontCimke}</InfoCimke>
             <InfoErtek>{oldal.idopontErtek}</InfoErtek>
           </InfoRac>
-        </GorgetesReveal>
+        </TeljesSzelessegReveal>
 
-        <GorgetesReveal>
-          <CtaSor>
+        <TeljesSzelessegReveal>
+          <KozepreCtaSor>
             <Gomb
               href={`tel:${telefonszam.replace(/\s/g, '')}`}
               valtozat="telitett"
@@ -87,9 +84,9 @@ export function KapcsolatOldal() {
             >
               {oldal.cta}
             </Gomb>
-          </CtaSor>
-        </GorgetesReveal>
-      </OldalBelso>
+          </KozepreCtaSor>
+        </TeljesSzelessegReveal>
+      </KozepreIgazitottBelso>
     </TartalomOldalKeret>
   )
 }

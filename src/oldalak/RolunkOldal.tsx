@@ -1,9 +1,7 @@
 import styled from '@emotion/styled'
 import { Gomb } from '../komponensek/Gomb'
-import { GorgetesReveal } from '../komponensek/GorgetesReveal'
 import {
   TartalomOldalKeret,
-  OldalBelso,
   OldalCim,
   OldalAlcim,
   OldalBekezdes,
@@ -11,26 +9,11 @@ import {
 } from '../komponensek/TartalomOldalKeret'
 import { useNyelv } from '../nyelv/useNyelv'
 import { tema } from '../stilusok/tema'
-
-/** Rólunk oldal: középre igazított tartalom */
-const RolunkBelso = styled(OldalBelso)`
-  text-align: center;
-
-  h1,
-  h2,
-  h3 {
-    text-align: center;
-  }
-
-  p {
-    margin-left: auto;
-    margin-right: auto;
-  }
-`
-
-const TeljesSzelessegReveal = styled(GorgetesReveal)`
-  width: 100%;
-`
+import {
+  KozepreIgazitottBelso,
+  TeljesSzelessegReveal,
+  KozepreCtaSor,
+} from './kozepreIgazitottOldalStilus'
 
 const KartyaRac = styled.div`
   width: 100%;
@@ -71,13 +54,6 @@ const KartyaSzoveg = styled.p`
   line-height: 1.6;
 `
 
-const CtaSor = styled.div`
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-top: 2rem;
-`
-
 /**
  * Rólunk tartalomoldal.
  */
@@ -87,7 +63,7 @@ export function RolunkOldal() {
 
   return (
     <TartalomOldalKeret seo={oldal.seo}>
-      <RolunkBelso>
+      <KozepreIgazitottBelso>
         <TeljesSzelessegReveal>
           <OldalCim>{oldal.cim}</OldalCim>
           <OldalAlcim>{oldal.alcim}</OldalAlcim>
@@ -124,13 +100,13 @@ export function RolunkOldal() {
         </TeljesSzelessegReveal>
 
         <TeljesSzelessegReveal>
-          <CtaSor>
+          <KozepreCtaSor>
             <Gomb href="/kapcsolat" valtozat="telitett" mutatNyilat>
               {oldal.cta}
             </Gomb>
-          </CtaSor>
+          </KozepreCtaSor>
         </TeljesSzelessegReveal>
-      </RolunkBelso>
+      </KozepreIgazitottBelso>
     </TartalomOldalKeret>
   )
 }

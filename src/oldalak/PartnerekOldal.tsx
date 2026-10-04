@@ -1,25 +1,29 @@
 import styled from '@emotion/styled'
 import { partnerLogok } from '../adatok/fooldalAdatok'
 import { Gomb } from '../komponensek/Gomb'
-import { GorgetesReveal } from '../komponensek/GorgetesReveal'
 import {
   TartalomOldalKeret,
-  OldalBelso,
   OldalCim,
   OldalAlcim,
   OldalBekezdes,
   OldalSzekcioCim,
-  OldalLista,
   OldalListaPont,
 } from '../komponensek/TartalomOldalKeret'
 import { useNyelv } from '../nyelv/useNyelv'
+import {
+  KozepreIgazitottBelso,
+  TeljesSzelessegReveal,
+  KozepreCtaSor,
+  KozepreLista,
+} from './kozepreIgazitottOldalStilus'
 
 const PartnerSor = styled.ul`
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   gap: 1.75rem 2.5rem;
+  width: 100%;
   margin: 1.75rem 0 2rem;
   padding: 0;
   list-style: none;
@@ -41,10 +45,6 @@ const PartnerLogoKep = styled.img`
   object-position: center;
 `
 
-const CtaSor = styled.div`
-  margin-top: 2rem;
-`
-
 /**
  * Partnerek tartalomoldal.
  */
@@ -54,16 +54,16 @@ export function PartnerekOldal() {
 
   return (
     <TartalomOldalKeret seo={oldal.seo}>
-      <OldalBelso>
-        <GorgetesReveal>
+      <KozepreIgazitottBelso>
+        <TeljesSzelessegReveal>
           <OldalCim>{oldal.cim}</OldalCim>
           <OldalAlcim>{oldal.alcim}</OldalAlcim>
           {oldal.bekezdesek.map((bekezdes) => (
             <OldalBekezdes key={bekezdes.slice(0, 24)}>{bekezdes}</OldalBekezdes>
           ))}
-        </GorgetesReveal>
+        </TeljesSzelessegReveal>
 
-        <GorgetesReveal>
+        <TeljesSzelessegReveal>
           <PartnerSor>
             {partnerLogok.map((partner) => (
               <PartnerLogoDoboz key={partner.azonosito}>
@@ -76,25 +76,25 @@ export function PartnerekOldal() {
               </PartnerLogoDoboz>
             ))}
           </PartnerSor>
-        </GorgetesReveal>
+        </TeljesSzelessegReveal>
 
-        <GorgetesReveal>
+        <TeljesSzelessegReveal>
           <OldalSzekcioCim>{oldal.elonyokCim}</OldalSzekcioCim>
-          <OldalLista>
+          <KozepreLista>
             {oldal.elonyok.map((elony) => (
               <OldalListaPont key={elony}>{elony}</OldalListaPont>
             ))}
-          </OldalLista>
-        </GorgetesReveal>
+          </KozepreLista>
+        </TeljesSzelessegReveal>
 
-        <GorgetesReveal>
-          <CtaSor>
+        <TeljesSzelessegReveal>
+          <KozepreCtaSor>
             <Gomb href="/kapcsolat" valtozat="telitett" mutatNyilat>
               {oldal.cta}
             </Gomb>
-          </CtaSor>
-        </GorgetesReveal>
-      </OldalBelso>
+          </KozepreCtaSor>
+        </TeljesSzelessegReveal>
+      </KozepreIgazitottBelso>
     </TartalomOldalKeret>
   )
 }
