@@ -1,4 +1,5 @@
 import type { OldalForditas, NyelvKod } from './nyelvTipusok'
+import { magyarOldalak, angolOldalak, nemetOldalak } from './oldalTartalmak'
 
 /**
  * Magyar fordítások a főoldalhoz.
@@ -130,6 +131,7 @@ const magyar: OldalForditas = {
     gomb: 'KAPCSOLATFELVÉTEL',
     markaLeiras: '— Premium járműszállítás',
   },
+  oldalak: magyarOldalak,
 }
 
 /**
@@ -262,6 +264,7 @@ const angol: OldalForditas = {
     gomb: 'CONTACT US',
     markaLeiras: '— Premium vehicle transport',
   },
+  oldalak: angolOldalak,
 }
 
 /**
@@ -394,6 +397,7 @@ const nemet: OldalForditas = {
     gomb: 'KONTAKT AUFNEHMEN',
     markaLeiras: '— Premium Fahrzeugüberführung',
   },
+  oldalak: nemetOldalak,
 }
 
 /**

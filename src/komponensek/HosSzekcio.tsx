@@ -126,7 +126,7 @@ export function HosSzekcio() {
         <GombSor className="hos-gomb-sor">
           <Gomb
             className="hos-elsodleges-gomb"
-            href="#kapcsolat"
+            href="/kapcsolat"
             valtozat="telitett"
             mutatNyilat
           >
@@ -134,7 +134,7 @@ export function HosSzekcio() {
           </Gomb>
           <Gomb
             className="hos-masodlagos-gomb"
-            href="#rolunk"
+            href="/rolunk"
             valtozat="korvonal"
             mutatNyilat
           >

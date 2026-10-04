@@ -1,12 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { NyelvSzolgaltato } from './nyelv/NyelvContext'
 import { FoOldal } from './oldalak/FoOldal'
-import {
-  RolunkOldal,
-  SzolgaltatasokOldal,
-  PartnerekOldal,
-  KapcsolatOldal,
-} from './oldalak/MarketingOldalak'
+import { RolunkOldal } from './oldalak/RolunkOldal'
+import { SzolgaltatasokOldal } from './oldalak/SzolgaltatasokOldal'
+import { PartnerekOldal } from './oldalak/PartnerekOldal'
+import { KapcsolatOldal } from './oldalak/KapcsolatOldal'
 import { Karrier } from './komponensek/karrier'
 import { Urlap } from './komponensek/urlap'
 import { AdatvedelmiTajekoztato } from './komponensek/adatvedelmi'

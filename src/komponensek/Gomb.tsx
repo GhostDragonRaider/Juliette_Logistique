@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import styled from '@emotion/styled'
 import { css } from '@emotion/react'
 import { AranyIkon } from './AranyIkon'
@@ -69,8 +70,7 @@ const telefonStilus = css`
   }
 `
 
-/** A gomb közös alapja */
-const GombAlap = styled.a<{ valtozat: GombValtozat }>`
+const gombAlapCss = css`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -88,11 +88,30 @@ const GombAlap = styled.a<{ valtozat: GombValtozat }>`
   &:focus-visible {
     ${fokuszKeret}
   }
+`
 
+/** Külső / hash / tel link */
+const GombAnchor = styled.a<{ valtozat: GombValtozat }>`
+  ${gombAlapCss}
   ${(props) => props.valtozat === 'telitett' && telitettStilus}
   ${(props) => props.valtozat === 'korvonal' && korvonalStilus}
   ${(props) => props.valtozat === 'telefon' && telefonStilus}
 `
+
+/** Belső SPA route link */
+const GombRouterLink = styled(Link)<{ valtozat: GombValtozat }>`
+  ${gombAlapCss}
+  ${(props) => props.valtozat === 'telitett' && telitettStilus}
+  ${(props) => props.valtozat === 'korvonal' && korvonalStilus}
+  ${(props) => props.valtozat === 'telefon' && telefonStilus}
+`
+
+/**
+ * Eldönti, hogy a cél belső SPA útvonal-e.
+ */
+function belsoUtvonalE(href: string) {
+  return href.startsWith('/') && !href.startsWith('//') && !href.startsWith('/#')
+}
 
 /**
  * Egységes pezsgőarany gombot rajzol ki (telített, keretes vagy telefonos változat).
@@ -107,17 +126,37 @@ export function Gomb({
   mutatTelefont = false,
   ariaLabel,
 }: GombTulajdonsagok) {
+  const tartalom = (
+    <>
+      {mutatTelefont ? <AranyIkon tipus="telefon" meret={16} /> : null}
+      <span>{children}</span>
+      {mutatNyilat ? <AranyIkon tipus="nyil" meret={16} /> : null}
+    </>
+  )
+
+  if (belsoUtvonalE(href)) {
+    return (
+      <GombRouterLink
+        className={className}
+        to={href}
+        valtozat={valtozat}
+        onClick={onClick}
+        aria-label={ariaLabel}
+      >
+        {tartalom}
+      </GombRouterLink>
+    )
+  }
+
   return (
-    <GombAlap
+    <GombAnchor
       className={className}
       href={href}
       valtozat={valtozat}
       onClick={onClick}
       aria-label={ariaLabel}
     >
-      {mutatTelefont ? <AranyIkon tipus="telefon" meret={16} /> : null}
-      <span>{children}</span>
-      {mutatNyilat ? <AranyIkon tipus="nyil" meret={16} /> : null}
-    </GombAlap>
+      {tartalom}
+    </GombAnchor>
   )
 }

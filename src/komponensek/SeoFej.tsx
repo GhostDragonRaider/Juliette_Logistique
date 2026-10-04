@@ -51,7 +51,7 @@ function jsonLdBeallitas(adat: Record<string, unknown>) {
   script.textContent = JSON.stringify(adat)
 }
 
-type SeoFeluliras = {
+export type SeoFeluliras = {
   cim?: string
   leiras?: string
   kulcsszavak?: string
