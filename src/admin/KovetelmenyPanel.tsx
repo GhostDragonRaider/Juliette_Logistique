@@ -50,17 +50,71 @@ const Osszegzo = styled.span<{ $tipus: 'ok' | 'hiba' | 'resz' }>`
   color: ${tema.szin.feher};
 `
 
-const Lista = styled.ul`
-  list-style: none;
-  margin: 0;
-  padding: 0;
+const KetOszlop = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.65rem 0.85rem;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem 1.25rem;
+  align-items: start;
 
   @media (max-width: ${tema.szelesseg.tablet}) {
     grid-template-columns: 1fr;
   }
+`
+
+const Oszlop = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  min-width: 0;
+`
+
+const OszlopCim = styled.h4<{ $hang: 'ok' | 'hiba' }>`
+  margin: 0 0 0.15rem;
+  padding-bottom: 0.45rem;
+  font-family: ${tema.betu.cim};
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: ${(p) => (p.$hang === 'ok' ? '#8fd4a8' : '#e8a0a0')};
+  border-bottom: 1px solid
+    ${(p) =>
+      p.$hang === 'ok' ? 'rgba(88, 175, 110, 0.35)' : 'rgba(210, 95, 95, 0.35)'};
+`
+
+const Lista = styled.ul`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+`
+
+const UresOszlop = styled.p`
+  margin: 0;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.78rem;
+  font-style: italic;
+  color: ${tema.szin.szurke};
+  border: 1px dashed rgba(197, 165, 114, 0.2);
+  border-radius: 2px;
+`
+
+const SemlegesSzekcio = styled.div`
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(197, 165, 114, 0.15);
+`
+
+const SemlegesCim = styled.h4`
+  margin: 0 0 0.5rem;
+  font-family: ${tema.betu.cim};
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: ${tema.szin.aranyVilagos};
 `
 
 const Elem = styled.li<{ allapot: string }>`
@@ -120,6 +174,30 @@ type Props = {
   osszegzes: KovetelmenyOsszegzes
 }
 
+function KovetelmenyElemek({
+  elemek,
+}: {
+  elemek: KovetelmenyOsszegzes['eredmenyek']
+}) {
+  if (elemek.length === 0) {
+    return <UresOszlop>Nincs megjeleníthető pont ebben a csoportban.</UresOszlop>
+  }
+
+  return (
+    <Lista>
+      {elemek.map((e) => (
+        <Elem key={e.id} allapot={e.allapot}>
+          <ElemCim>
+            <Jelolo allapot={e.allapot} aria-hidden />
+            {e.cimke}
+          </ElemCim>
+          {e.indok}
+        </Elem>
+      ))}
+    </Lista>
+  )
+}
+
 export function KovetelmenyPanel({ osszegzes }: Props) {
   const osszegzoTipus = osszegzes.teljesMegfeleles
     ? 'ok'
@@ -133,23 +211,34 @@ export function KovetelmenyPanel({ osszegzes }: Props) {
       ? 'Van hiányosság'
       : 'Részben / ellenőrizendő'
 
+  const megfelel = osszegzes.eredmenyek.filter((e) => e.allapot === 'megfelel')
+  const nemMegfelel = osszegzes.eredmenyek.filter((e) => e.allapot === 'nem_megfelel')
+  const nemEllenorizheto = osszegzes.eredmenyek.filter(
+    (e) => e.allapot === 'nem_ellenorizheto',
+  )
+
   return (
     <Panel>
       <FejlecSor>
         <Cim>Karrier követelmények</Cim>
         <Osszegzo $tipus={osszegzoTipus}>{osszegzoSzoveg}</Osszegzo>
       </FejlecSor>
-      <Lista>
-        {osszegzes.eredmenyek.map((e) => (
-          <Elem key={e.id} allapot={e.allapot}>
-            <ElemCim>
-              <Jelolo allapot={e.allapot} aria-hidden />
-              {e.cimke}
-            </ElemCim>
-            {e.indok}
-          </Elem>
-        ))}
-      </Lista>
+      <KetOszlop>
+        <Oszlop>
+          <OszlopCim $hang="ok">Megfelel / előny</OszlopCim>
+          <KovetelmenyElemek elemek={megfelel} />
+        </Oszlop>
+        <Oszlop>
+          <OszlopCim $hang="hiba">Nem teljesített / hátrány</OszlopCim>
+          <KovetelmenyElemek elemek={nemMegfelel} />
+        </Oszlop>
+      </KetOszlop>
+      {nemEllenorizheto.length > 0 ? (
+        <SemlegesSzekcio>
+          <SemlegesCim>Nem automatikusan ellenőrizhető</SemlegesCim>
+          <KovetelmenyElemek elemek={nemEllenorizheto} />
+        </SemlegesSzekcio>
+      ) : null}
     </Panel>
   )
 }
