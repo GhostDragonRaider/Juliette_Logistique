@@ -15,13 +15,10 @@ type FejlecTulajdonsagok = {
   mindigSticky?: boolean
 }
 
-/** A fejléc — mindig fix, soha nem absolute / görgető */
+/** Fejléc sáv — a #fejlec-portal fix rétegén belül */
 const FejlecSav = styled.header`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;

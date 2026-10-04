@@ -1,0 +1,30 @@
+name: Deploy frontend (VPS)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci && npm run build
+      - name: Rsync to VPS
+        env:
+          SSH_HOST: ${{ secrets.JL_DEPLOY_HOST }}
+          SSH_USER: ${{ secrets.JL_DEPLOY_USER }}
+          SSH_KEY: ${{ secrets.JL_DEPLOY_SSH_KEY }}
+          REMOTE_PATH: ${{ secrets.JL_DEPLOY_PATH }}
+        run: |
+          test -n "$SSH_HOST" && test -n "$SSH_KEY"
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          REMOTE_PATH="${REMOTE_PATH:-/var/www/juliettelogistique.de}"
+          USER="${SSH_USER:-root}"
+          rsync -avz --delete -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new" \
+            dist/ "${USER}@${SSH_HOST}:${REMOTE_PATH}/"
