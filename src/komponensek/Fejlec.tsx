@@ -10,13 +10,13 @@ import { nyelvKapcsolok, type NyelvKod } from '../nyelv/nyelvTipusok'
 import { tema, aranyKeret, fokuszKeret } from '../stilusok/tema'
 
 type FejlecTulajdonsagok = {
-  /** Ha true, a fejléc mindig sticky üveg stílusú (pl. karrier oldal) */
+  /** Kompatibilitás — a fejléc minden oldalon fix */
   mindigSticky?: boolean
 }
 
-/** A fejléc — scroll után sticky üveg hatás */
-const FejlecSav = styled.header<{ sticky: boolean }>`
-  position: ${(props) => (props.sticky ? 'fixed' : 'absolute')};
+/** A fejléc — mindig fix pozíció, görgetéskor nem vált */
+const FejlecSav = styled.header`
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -29,21 +29,11 @@ const FejlecSav = styled.header<{ sticky: boolean }>`
   padding-bottom: 1.1rem;
   padding-left: ${tema.oldalsoPadding};
   padding-right: max(1rem, env(safe-area-inset-right, 0px), min(4vw, 3rem));
-  background: ${(props) =>
-    props.sticky
-      ? 'rgba(20, 20, 20, 0.72)'
-      : 'linear-gradient(180deg, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0) 100%)'};
-  backdrop-filter: ${(props) => (props.sticky ? 'blur(14px) saturate(1.2)' : 'none')};
-  -webkit-backdrop-filter: ${(props) => (props.sticky ? 'blur(14px) saturate(1.2)' : 'none')};
-  border-bottom: ${(props) =>
-    props.sticky ? '1px solid rgba(197, 165, 114, 0.18)' : '1px solid transparent'};
-  box-shadow: ${(props) =>
-    props.sticky ? '0 10px 28px rgba(0, 0, 0, 0.28)' : 'none'};
-  transition:
-    background 0.35s ease,
-    border-color 0.35s ease,
-    box-shadow 0.35s ease,
-    backdrop-filter 0.35s ease;
+  background: rgba(20, 20, 20, 0.72);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border-bottom: 1px solid rgba(197, 165, 114, 0.18);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
 `
 
 /** Asztali navigációs lista */
@@ -234,12 +224,11 @@ function routeCel(cel: string) {
 /**
  * A főoldal fejlécét rajzolja ki: logo, navigáció, nyelvkapcsoló és telefon gomb.
  */
-export function Fejlec({ mindigSticky = false }: FejlecTulajdonsagok) {
+export function Fejlec(_props: FejlecTulajdonsagok = {}) {
   const { nyelv, szoveg, nyelvetValaszt } = useNyelv()
   const hely = useLocation()
   const navigal = useNavigate()
   const [mobilMenuNyitva, setMobilMenuNyitva] = useState(false)
-  const [sticky, setSticky] = useState(mindigSticky)
   const menuAzonosito = useId()
 
   useEffect(() => {
@@ -255,24 +244,6 @@ export function Fejlec({ mindigSticky = false }: FejlecTulajdonsagok) {
     window.addEventListener('keydown', escapeFigyelo)
     return () => window.removeEventListener('keydown', escapeFigyelo)
   }, [])
-
-  useEffect(() => {
-    if (mindigSticky) {
-      setSticky(true)
-      return
-    }
-
-    /**
-     * A hero alsó része után aktiválja a sticky üveg státuszt.
-     */
-    function stickyFigyelo() {
-      setSticky(window.scrollY > 72)
-    }
-
-    stickyFigyelo()
-    window.addEventListener('scroll', stickyFigyelo, { passive: true })
-    return () => window.removeEventListener('scroll', stickyFigyelo)
-  }, [mindigSticky])
 
   /**
    * Megnyitja vagy bezárja a mobil menüt.
@@ -349,7 +320,7 @@ export function Fejlec({ mindigSticky = false }: FejlecTulajdonsagok) {
   }
 
   return (
-    <FejlecSav className="fejlec-sav" sticky={sticky || mindigSticky}>
+    <FejlecSav className="fejlec-sav">
       <Logo className="fejlec-logo" />
 
       <NavigacioLista className="navigacio-lista" aria-label={szoveg.navigacioAria}>
