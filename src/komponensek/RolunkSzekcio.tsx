@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { Gomb } from './Gomb'
+import { MARKA_LOGO_ARANY } from './Logo'
 import { useNyelv } from '../nyelv/useNyelv'
 import { tema, aranySzovegAtmenet } from '../stilusok/tema'
 
@@ -142,7 +143,7 @@ export function RolunkSzekcio() {
           <LogoJelveny className="rolunk-logo-jelveny">
             <LogoJelvenyKep
               className="rolunk-logo-kep"
-              src="/brand/logo-arany.png"
+              src={MARKA_LOGO_ARANY}
               alt="Juliette Logistique"
             />
           </LogoJelveny>
