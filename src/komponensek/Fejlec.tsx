@@ -1,4 +1,5 @@
 import { useEffect, useId, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import styled from '@emotion/styled'
 import { Logo } from './Logo'
@@ -14,7 +15,7 @@ type FejlecTulajdonsagok = {
   mindigSticky?: boolean
 }
 
-/** A fejléc — mindig fix pozíció, görgetéskor nem vált */
+/** A fejléc — fix a viewport tetején (portál a body-ra, nem overflow szülő alatt) */
 const FejlecSav = styled.header`
   position: fixed;
   top: 0;
@@ -29,11 +30,12 @@ const FejlecSav = styled.header`
   padding-bottom: 1.1rem;
   padding-left: ${tema.oldalsoPadding};
   padding-right: max(1rem, env(safe-area-inset-right, 0px), min(4vw, 3rem));
-  background: rgba(20, 20, 20, 0.72);
-  backdrop-filter: blur(14px) saturate(1.2);
-  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  background: rgba(20, 20, 20, 0.94);
   border-bottom: 1px solid rgba(197, 165, 114, 0.18);
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 `
 
 /** Asztali navigációs lista */
@@ -319,7 +321,7 @@ export function Fejlec(_props: FejlecTulajdonsagok = {}) {
     )
   }
 
-  return (
+  const fejlecTartalom = (
     <FejlecSav className="fejlec-sav">
       <Logo className="fejlec-logo" />
 
@@ -390,4 +392,10 @@ export function Fejlec(_props: FejlecTulajdonsagok = {}) {
       </MobilMenuPanel>
     </FejlecSav>
   )
+
+  if (typeof document === 'undefined') {
+    return fejlecTartalom
+  }
+
+  return createPortal(fejlecTartalom, document.body)
 }

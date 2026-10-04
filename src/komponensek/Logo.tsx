@@ -31,19 +31,19 @@ const LogoMarkaKep = styled.img`
   display: block;
   flex-shrink: 0;
   width: auto;
-  height: 42px;
+  height: 40px;
   object-fit: contain;
   object-position: left center;
   transform: scale(1.38);
   transform-origin: left center;
 
   @media (min-width: ${tema.szelesseg.kicsi}) {
-    height: 46px;
+    height: 42px;
     transform: scale(1.42);
   }
 
   @media (min-width: ${tema.szelesseg.tablet}) {
-    height: 48px;
+    height: 44px;
     transform: scale(1.45);
   }
 `
