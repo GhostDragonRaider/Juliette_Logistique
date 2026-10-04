@@ -174,6 +174,8 @@ const MunkaListaItem = styled.li`
 `
 
 const VideoHely = styled.div`
+  /* Videó később — helykitöltő rejtve */
+  display: none;
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
