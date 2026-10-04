@@ -1,4 +1,5 @@
 import type { UrlapAllapot, FeltoltesKulcs } from './urlapTipusok'
+import { ellenorizFeltoltesFajl } from './urlapFajl'
 
 export type UrlapHibak = Partial<Record<string, string>>
 
@@ -106,8 +107,14 @@ export function ellenorizUrlap(adat: UrlapAllapot): UrlapHibak {
     ) {
       continue
     }
-    if (!adat.feltoltesek[kulcs]) {
+    const fajl = adat.feltoltesek[kulcs]
+    if (!fajl) {
       hibak[`feltoltes.${kulcs}`] = FAJL_UZENET
+      continue
+    }
+    const tipusHiba = ellenorizFeltoltesFajl(kulcs, fajl)
+    if (tipusHiba) {
+      hibak[`feltoltes.${kulcs}`] = tipusHiba
     }
   }
 

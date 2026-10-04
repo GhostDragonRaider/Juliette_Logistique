@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import { useState, useEffect, type ChangeEvent, type FormEvent } from 'react'
 import { createPortal } from 'react-dom'
+import { useNavigate } from 'react-router-dom'
 import {
   aranyKeret,
   aranySzovegAtmenet,
@@ -11,6 +12,10 @@ import {
 import { bekuldesJelentkezes } from '../api/jelentkezesApi'
 import type { FeltoltesKulcs, UrlapAllapot } from './urlapTipusok'
 import { ellenorizUrlap, type UrlapHibak } from './urlapEllenorzes'
+import {
+  ellenorizFeltoltesFajl,
+  profilkepNormalizal,
+} from './urlapFajl'
 
 export type { FeltoltesKulcs, UrlapAllapot } from './urlapTipusok'
 
@@ -270,6 +275,19 @@ const DatumMezo = styled.input<{ $hibas?: boolean }>`
 const SelectMezo = styled.select<{ $hibas?: boolean }>`
   ${mezoHatter}
   appearance: none;
+  color: ${tema.szin.feher};
+  background-color: rgba(255, 255, 255, 0.035);
+  color-scheme: dark;
+
+  option {
+    color: ${tema.szin.feher};
+    background-color: ${tema.hatter.emelt};
+  }
+
+  option[value=''] {
+    color: ${tema.szin.szurke};
+  }
+
   background-image: linear-gradient(
       45deg,
       transparent 50%,
@@ -703,7 +721,7 @@ type FeltoltesProps = {
   seged?: string
   fajl: File | null
   accept?: string
-  onChange: (fajl: File | null) => void
+  onChange: (fajl: File | null) => void | Promise<void>
   hiba?: string
   kotelezo?: boolean
 }
@@ -718,8 +736,10 @@ function FeltoltesMezo({
   hiba,
   kotelezo = true,
 }: FeltoltesProps) {
-  function kezel(e: ChangeEvent<HTMLInputElement>) {
-    onChange(e.target.files?.[0] ?? null)
+  async function kezel(e: ChangeEvent<HTMLInputElement>) {
+    const kivalasztott = e.target.files?.[0] ?? null
+    e.target.value = ''
+    await onChange(kivalasztott)
   }
 
   return (
@@ -744,15 +764,22 @@ function FeltoltesMezo({
  * Sofőr jelentkezési űrlap — pezsgőarany prémium megjelenés.
  */
 export function Urlap() {
+  const navigate = useNavigate()
   const [adat, setAdat] = useState<UrlapAllapot>(kezdoAllapot)
   const [hibak, setHibak] = useState<UrlapHibak>({})
   const [popupLathato, setPopupLathato] = useState(false)
   const [kuldesFut, setKuldesFut] = useState(false)
   const [kuldesHiba, setKuldesHiba] = useState('')
+  const [feltoltesFut, setFeltoltesFut] = useState(false)
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
   }, [])
+
+  function popupBezarEsKezdooldal() {
+    setPopupLathato(false)
+    navigate('/')
+  }
 
   useEffect(() => {
     if (!popupLathato) {
@@ -764,7 +791,7 @@ export function Urlap() {
 
     function billentyu(e: KeyboardEvent) {
       if (e.key === 'Escape') {
-        setPopupLathato(false)
+        popupBezarEsKezdooldal()
       }
     }
 
@@ -773,7 +800,7 @@ export function Urlap() {
       document.body.style.overflow = elozoOverflow
       window.removeEventListener('keydown', billentyu)
     }
-  }, [popupLathato])
+  }, [popupLathato, navigate])
 
   function torolHiba(kulcs: string) {
     setHibak((elozo) => {
@@ -789,10 +816,42 @@ export function Urlap() {
     torolHiba(String(kulcs))
   }
 
-  function feltoltesFrissit(kulcs: FeltoltesKulcs, fajl: File | null) {
+  async function feltoltesFrissit(kulcs: FeltoltesKulcs, fajl: File | null) {
+    if (!fajl) {
+      setAdat((elozo) => ({
+        ...elozo,
+        feltoltesek: { ...elozo.feltoltesek, [kulcs]: null },
+      }))
+      torolHiba(`feltoltes.${kulcs}`)
+      return
+    }
+
+    const tipusHiba = ellenorizFeltoltesFajl(kulcs, fajl)
+    if (tipusHiba) {
+      setHibak((elozo) => ({ ...elozo, [`feltoltes.${kulcs}`]: tipusHiba }))
+      return
+    }
+
+    let vegleges = fajl
+    if (kulcs === 'profilkep') {
+      setFeltoltesFut(true)
+      try {
+        vegleges = await profilkepNormalizal(fajl)
+      } catch (err) {
+        setHibak((elozo) => ({
+          ...elozo,
+          [`feltoltes.${kulcs}`]:
+            err instanceof Error ? err.message : 'A profilkép feldolgozása sikertelen.',
+        }))
+        return
+      } finally {
+        setFeltoltesFut(false)
+      }
+    }
+
     setAdat((elozo) => ({
       ...elozo,
-      feltoltesek: { ...elozo.feltoltesek, [kulcs]: fajl },
+      feltoltesek: { ...elozo.feltoltesek, [kulcs]: vegleges },
     }))
     torolHiba(`feltoltes.${kulcs}`)
   }
@@ -825,10 +884,6 @@ export function Urlap() {
     } finally {
       setKuldesFut(false)
     }
-  }
-
-  function popupBezar() {
-    setPopupLathato(false)
   }
 
   const hibaDarab = Object.keys(hibak).length
@@ -1447,6 +1502,7 @@ export function Urlap() {
               <FeltoltesMezo
                 cim="Személyazonosító okmány"
                 leiras="Személyi igazolvány vagy útlevél feltöltése"
+                accept=".pdf,.jpg,.jpeg,.png,.webp,image/*,application/pdf"
                 fajl={adat.feltoltesek.szemelyi}
                 hiba={hibak['feltoltes.szemelyi']}
                 onChange={(f) => feltoltesFrissit('szemelyi', f)}
@@ -1456,6 +1512,7 @@ export function Urlap() {
               <FeltoltesMezo
                 cim="Jogosítvány"
                 leiras="Érvényes vezetői engedély mindkét oldalának feltöltése"
+                accept=".pdf,.jpg,.jpeg,.png,.webp,image/*,application/pdf"
                 fajl={adat.feltoltesek.jogositvany}
                 hiba={hibak['feltoltes.jogositvany']}
                 onChange={(f) => feltoltesFrissit('jogositvany', f)}
@@ -1467,6 +1524,7 @@ export function Urlap() {
               <FeltoltesMezo
                 cim="Führungszeugnis / erkölcsi bizonyítvány"
                 leiras="Führungszeugnis feltöltése"
+                accept=".pdf,.jpg,.jpeg,.png,.webp,image/*,application/pdf"
                 seged="Ha még nincs, a jelentkezés során jelezze."
                 fajl={adat.feltoltesek.fuehrungszeugnis}
                 hiba={hibak['feltoltes.fuehrungszeugnis']}
@@ -1480,6 +1538,7 @@ export function Urlap() {
               <FeltoltesMezo
                 cim="Önéletrajz"
                 leiras="CV / Lebenslauf feltöltése"
+                accept=".pdf,application/pdf"
                 fajl={adat.feltoltesek.oneletrajz}
                 hiba={hibak['feltoltes.oneletrajz']}
                 onChange={(f) => feltoltesFrissit('oneletrajz', f)}
@@ -1489,7 +1548,8 @@ export function Urlap() {
               <FeltoltesMezo
                 cim="Profilkép"
                 leiras="Aktuális profilkép feltöltése"
-                accept=".jpg,.jpeg,.png,.webp"
+                accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                seged="Csak kép. Nagy fájl esetén igazolvány-méretre optimalizáljuk."
                 fajl={adat.feltoltesek.profilkep}
                 hiba={hibak['feltoltes.profilkep']}
                 onChange={(f) => feltoltesFrissit('profilkep', f)}
@@ -1499,6 +1559,7 @@ export function Urlap() {
               <FeltoltesMezo
                 cim="Referencia / munkáltatói igazolás"
                 leiras="Korábbi munkáltatói referencia vagy munkaviszony igazolása"
+                accept=".pdf,application/pdf"
                 fajl={adat.feltoltesek.referencia}
                 hiba={hibak['feltoltes.referencia']}
                 onChange={(f) => feltoltesFrissit('referencia', f)}
@@ -1594,8 +1655,12 @@ export function Urlap() {
             </ValaszLista>
 
             <KuldesSor>
-              <KuldesGomb type="submit" disabled={kuldesFut}>
-                {kuldesFut ? 'Küldés…' : 'Jelentkezés elküldése'}
+              <KuldesGomb type="submit" disabled={kuldesFut || feltoltesFut}>
+                {kuldesFut
+                  ? 'Küldés…'
+                  : feltoltesFut
+                    ? 'Kép feldolgozása…'
+                    : 'Jelentkezés elküldése'}
               </KuldesGomb>
               {kuldesHiba ? <OsszesitoHiba>{kuldesHiba}</OsszesitoHiba> : null}
               {hibaDarab > 0 ? (
@@ -1611,7 +1676,7 @@ export function Urlap() {
 
       {popupLathato
         ? createPortal(
-            <PopupHatter role="presentation" onClick={popupBezar}>
+            <PopupHatter role="presentation" onClick={popupBezarEsKezdooldal}>
               <PopupAblak
                 role="dialog"
                 aria-modal="true"
@@ -1625,7 +1690,7 @@ export function Urlap() {
                   Sikeres előszűrés esetén felvesszük Önnel a kapcsolatot a
                   további lépésekkel kapcsolatban.
                 </PopupSzoveg>
-                <PopupZarGomb type="button" onClick={popupBezar}>
+                <PopupZarGomb type="button" onClick={popupBezarEsKezdooldal}>
                   Bezárás
                 </PopupZarGomb>
               </PopupAblak>
