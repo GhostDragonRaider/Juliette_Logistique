@@ -8,9 +8,12 @@ import { telefonszam } from '../adatok/fooldalAdatok'
 import { tema, aranySzovegAtmenet } from '../stilusok/tema'
 import { useNyelv } from '../nyelv/useNyelv'
 
-/** Teljes oldalkeret */
+/** Teljes oldalkeret — flex: a lábléc a viewport alján marad rövid tartalomnál is */
 const Keret = styled.div`
+  display: flex;
+  flex-direction: column;
   min-height: 100%;
+  min-height: 100svh;
   overflow-x: clip;
   background: ${tema.hatter.fekete};
   color: ${tema.szin.feher};
@@ -19,6 +22,7 @@ const Keret = styled.div`
 /** Fő tartalom */
 const FoTartalom = styled.main`
   display: block;
+  flex: 1 0 auto;
   padding-top: clamp(5.5rem, 12vh, 7rem);
   padding-bottom: clamp(3rem, 8vh, 5rem);
 `
@@ -107,6 +111,8 @@ export const OldalListaPont = styled.li`
 
 /** Alsó kapcsolat-sáv */
 const AlsoSav = styled.footer`
+  flex-shrink: 0;
+  margin-top: auto;
   border-top: 1px solid rgba(197, 165, 114, 0.22);
   padding: 1.75rem ${tema.oldalsoPadding} 2.25rem;
   background: ${tema.hatter.sotet};
