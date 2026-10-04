@@ -22,16 +22,13 @@ function globalisStilusok() {
       text-size-adjust: 100%;
     }
 
+    /* Csak mount pont — a .fejlec-sav maga fixed */
     #fejlec-portal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      width: 100%;
-      max-width: 100vw;
+      position: static;
+      width: 0;
+      height: 0;
+      overflow: visible;
       pointer-events: none;
-      transform: translateZ(0);
     }
 
     #fejlec-portal > * {
@@ -63,12 +60,16 @@ function globalisStilusok() {
     }
 
     .fejlec-sav {
-      position: relative;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
       width: 100%;
       max-width: 100vw;
       box-sizing: border-box;
       transform: none;
       transition: none;
+      animation: none;
     }
 
     a {
