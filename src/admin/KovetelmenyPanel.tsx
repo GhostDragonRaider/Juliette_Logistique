@@ -150,6 +150,53 @@ const ElemCim = styled.strong`
   ${aranySzovegAtmenet}
 `
 
+const IndokSzoveg = styled.p`
+  margin: 0 0 0.5rem;
+`
+
+const ValaszBlokk = styled.div`
+  margin-top: 0.55rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+`
+
+const ValaszFejlec = styled.p`
+  margin: 0 0 0.4rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: ${tema.szin.aranyVilagos};
+`
+
+const ValaszLista = styled.ul`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+`
+
+const ValaszSor = styled.li`
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: ${tema.szin.feher};
+`
+
+const ValaszCimke = styled.span`
+  display: block;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: ${tema.szin.szurke};
+  margin-bottom: 0.1rem;
+`
+
+const ValaszErtek = styled.span`
+  display: block;
+  word-break: break-word;
+`
+
 const Jelolo = styled.span<{ allapot: string }>`
   width: 7px;
   height: 7px;
@@ -176,8 +223,10 @@ type Props = {
 
 function KovetelmenyElemek({
   elemek,
+  mutatKitoltoValaszok = false,
 }: {
   elemek: KovetelmenyOsszegzes['eredmenyek']
+  mutatKitoltoValaszok?: boolean
 }) {
   if (elemek.length === 0) {
     return <UresOszlop>Nincs megjeleníthető pont ebben a csoportban.</UresOszlop>
@@ -191,7 +240,20 @@ function KovetelmenyElemek({
             <Jelolo allapot={e.allapot} aria-hidden />
             {e.cimke}
           </ElemCim>
-          {e.indok}
+          <IndokSzoveg>{e.indok}</IndokSzoveg>
+          {mutatKitoltoValaszok && e.kitoltoValaszok.length > 0 ? (
+            <ValaszBlokk>
+              <ValaszFejlec>Kitöltő válasza a kérdőívben</ValaszFejlec>
+              <ValaszLista>
+                {e.kitoltoValaszok.map((v) => (
+                  <ValaszSor key={v.mezo}>
+                    <ValaszCimke>{v.cimke}</ValaszCimke>
+                    <ValaszErtek>{v.ertek}</ValaszErtek>
+                  </ValaszSor>
+                ))}
+              </ValaszLista>
+            </ValaszBlokk>
+          ) : null}
         </Elem>
       ))}
     </Lista>
@@ -230,7 +292,7 @@ export function KovetelmenyPanel({ osszegzes }: Props) {
         </Oszlop>
         <Oszlop>
           <OszlopCim $hang="hiba">Nem teljesített / hátrány</OszlopCim>
-          <KovetelmenyElemek elemek={nemMegfelel} />
+          <KovetelmenyElemek elemek={nemMegfelel} mutatKitoltoValaszok />
         </Oszlop>
       </KetOszlop>
       {nemEllenorizheto.length > 0 ? (

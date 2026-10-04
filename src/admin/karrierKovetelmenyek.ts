@@ -3,7 +3,15 @@
  * A szubjektív pontokhoz a jelentkezési űrlap kapcsolódó mezői szolgálnak proxyként.
  */
 
+import { ertekSzoveg, mezoCimke } from './jelentkezesMezok'
+
 export type KovetelmenyAllapot = 'megfelel' | 'nem_megfelel' | 'nem_ellenorizheto'
+
+export type KovetelmenyKitoltoValasz = {
+  mezo: string
+  cimke: string
+  ertek: string
+}
 
 export type KovetelmenyEredmeny = {
   id: string
@@ -12,6 +20,8 @@ export type KovetelmenyEredmeny = {
   allapot: KovetelmenyAllapot
   mezok: string[]
   indok: string
+  /** A kapcsolódó kérdőívmezők kitöltő által adott válaszai */
+  kitoltoValaszok: KovetelmenyKitoltoValasz[]
 }
 
 export type KovetelmenyOsszegzes = {
@@ -34,6 +44,17 @@ function nyelvMegfelel(szint: unknown): boolean {
 
 function igenErtek(ertek: unknown): boolean {
   return ertek === 'Igen'
+}
+
+function kitoltoValaszokSorok(
+  mezok: string[],
+  adat: Record<string, unknown>,
+): KovetelmenyKitoltoValasz[] {
+  return mezok.map((mezo) => ({
+    mezo,
+    cimke: mezoCimke(mezo),
+    ertek: ertekSzoveg(adat[mezo]),
+  }))
 }
 
 const KOVETELMENY_DEFINICIOK: KovetelmenyDef[] = [
@@ -174,6 +195,7 @@ export function ertekelesJelentkezes(
       allapot,
       mezok: def.mezok,
       indok,
+      kitoltoValaszok: kitoltoValaszokSorok(def.mezok, adat),
     }
   })
 
