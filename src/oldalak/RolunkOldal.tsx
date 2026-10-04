@@ -12,7 +12,28 @@ import {
 import { useNyelv } from '../nyelv/useNyelv'
 import { tema } from '../stilusok/tema'
 
+/** Rólunk oldal: középre igazított tartalom */
+const RolunkBelso = styled(OldalBelso)`
+  text-align: center;
+
+  h1,
+  h2,
+  h3 {
+    text-align: center;
+  }
+
+  p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+`
+
+const TeljesSzelessegReveal = styled(GorgetesReveal)`
+  width: 100%;
+`
+
 const KartyaRac = styled.div`
+  width: 100%;
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.25rem;
@@ -31,6 +52,7 @@ const Kartya = styled.article`
   padding: 1.35rem 1.25rem;
   border: 1px solid rgba(197, 165, 114, 0.22);
   background: rgba(255, 255, 255, 0.02);
+  text-align: center;
 `
 
 const KartyaCim = styled.h3`
@@ -50,6 +72,9 @@ const KartyaSzoveg = styled.p`
 `
 
 const CtaSor = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
   margin-top: 2rem;
 `
 
@@ -62,19 +87,19 @@ export function RolunkOldal() {
 
   return (
     <TartalomOldalKeret seo={oldal.seo}>
-      <OldalBelso>
-        <GorgetesReveal>
+      <RolunkBelso>
+        <TeljesSzelessegReveal>
           <OldalCim>{oldal.cim}</OldalCim>
           <OldalAlcim>{oldal.alcim}</OldalAlcim>
-        </GorgetesReveal>
+        </TeljesSzelessegReveal>
 
-        <GorgetesReveal>
+        <TeljesSzelessegReveal>
           {oldal.bekezdesek.map((bekezdes) => (
             <OldalBekezdes key={bekezdes.slice(0, 24)}>{bekezdes}</OldalBekezdes>
           ))}
-        </GorgetesReveal>
+        </TeljesSzelessegReveal>
 
-        <GorgetesReveal>
+        <TeljesSzelessegReveal>
           <OldalSzekcioCim>{oldal.ertekekCim}</OldalSzekcioCim>
           <KartyaRac>
             {oldal.ertekek.map((ertek) => (
@@ -84,9 +109,9 @@ export function RolunkOldal() {
               </Kartya>
             ))}
           </KartyaRac>
-        </GorgetesReveal>
+        </TeljesSzelessegReveal>
 
-        <GorgetesReveal>
+        <TeljesSzelessegReveal>
           <OldalSzekcioCim>{oldal.folyamatCim}</OldalSzekcioCim>
           <KartyaRac>
             {oldal.folyamat.map((lepes) => (
@@ -96,16 +121,16 @@ export function RolunkOldal() {
               </Kartya>
             ))}
           </KartyaRac>
-        </GorgetesReveal>
+        </TeljesSzelessegReveal>
 
-        <GorgetesReveal>
+        <TeljesSzelessegReveal>
           <CtaSor>
             <Gomb href="/kapcsolat" valtozat="telitett" mutatNyilat>
               {oldal.cta}
             </Gomb>
           </CtaSor>
-        </GorgetesReveal>
-      </OldalBelso>
+        </TeljesSzelessegReveal>
+      </RolunkBelso>
     </TartalomOldalKeret>
   )
 }
