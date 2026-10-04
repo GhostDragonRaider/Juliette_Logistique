@@ -60,6 +60,10 @@ const Lapozo = styled.div`
 `
 
 const LapGomb = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   padding: 0.4rem 0.75rem;
   font-size: 0.75rem;
   letter-spacing: 0.06em;

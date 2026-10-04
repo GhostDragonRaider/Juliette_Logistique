@@ -98,9 +98,20 @@ export const premiumSzamStilus = `
 `
 
 /**
+ * Gombfelirat középre — inline-flex + text-align (minden gombhoz).
+ */
+export const gombFeliratKozep = `
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+`
+
+/**
  * Fémes arany gombkitöltés — csúszó feltöltés hoverhez.
  */
 export const femesAranyGomb = `
+  ${gombFeliratKozep}
   position: relative;
   overflow: hidden;
   isolation: isolate;

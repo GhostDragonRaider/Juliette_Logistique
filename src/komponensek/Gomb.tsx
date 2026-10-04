@@ -74,7 +74,7 @@ const gombAlapCss = css`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.55rem;
+  gap: 0;
   min-height: 44px;
   padding: 0.85rem 1.25rem;
   font-family: ${tema.betu.cim};
@@ -151,20 +151,17 @@ export function Gomb({
   mutatTelefont = false,
   ariaLabel,
 }: GombTulajdonsagok) {
-  const tartalom =
-    mutatTelefont || mutatNyilat ? (
-      <GombBelso>
-        <IkonHely aria-hidden={!mutatTelefont}>
-          {mutatTelefont ? <AranyIkon tipus="telefon" meret={16} /> : null}
-        </IkonHely>
-        <GombSzoveg>{children}</GombSzoveg>
-        <IkonHely aria-hidden={!mutatNyilat}>
-          {mutatNyilat ? <AranyIkon tipus="nyil" meret={16} /> : null}
-        </IkonHely>
-      </GombBelso>
-    ) : (
-      <GombSzoveg as="span">{children}</GombSzoveg>
-    )
+  const tartalom = (
+    <GombBelso>
+      <IkonHely aria-hidden={!mutatTelefont}>
+        {mutatTelefont ? <AranyIkon tipus="telefon" meret={16} /> : null}
+      </IkonHely>
+      <GombSzoveg>{children}</GombSzoveg>
+      <IkonHely aria-hidden={!mutatNyilat}>
+        {mutatNyilat ? <AranyIkon tipus="nyil" meret={16} /> : null}
+      </IkonHely>
+    </GombBelso>
+  )
 
   if (belsoUtvonalE(href)) {
     return (

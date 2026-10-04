@@ -117,6 +117,10 @@ const MetaSor = styled.div`
 `
 
 const StatuszGomb = styled.button<{ $aktiv?: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   font-family: ${tema.betu.torzs};
   font-size: 0.72rem;
   letter-spacing: 0.1em;

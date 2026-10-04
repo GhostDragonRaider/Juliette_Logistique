@@ -57,6 +57,13 @@ function globalisStilusok() {
       cursor: pointer;
       border: none;
       background: none;
+      text-align: center;
+    }
+
+    input[type='submit'],
+    input[type='button'],
+    input[type='reset'] {
+      text-align: center;
     }
 
     ul {

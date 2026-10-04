@@ -30,11 +30,11 @@ const FajlRacs = styled.div`
 const FajlGomb = styled.button`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.25rem;
   width: 100%;
   padding: 0.75rem 0.85rem;
-  text-align: left;
+  text-align: center;
   cursor: pointer;
   font-family: ${tema.betu.torzs};
   color: ${tema.szin.feher};
@@ -115,6 +115,10 @@ const ModalPanel = styled.div`
 `
 
 const BezarasGomb = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   font-family: ${tema.betu.torzs};
   font-size: 0.72rem;
   letter-spacing: 0.1em;

@@ -256,6 +256,8 @@ const PremiumButton = styled.button`
 const PremiumButtonText = styled.span`
   position: relative;
   z-index: 1;
+  width: 100%;
+  text-align: center;
   color: ${tema.hatter.fekete};
 `
 

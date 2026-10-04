@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
-import { tema } from '../stilusok/tema'
+import { gombFeliratKozep, tema } from '../stilusok/tema'
 
 export const AdminKeret = styled.div`
   min-height: 100vh;
@@ -103,6 +103,7 @@ export const GombSor = styled.div`
 `
 
 export const KisGomb = styled.button`
+  ${gombFeliratKozep}
   font-family: ${tema.betu.torzs};
   font-size: 0.78rem;
   letter-spacing: 0.08em;

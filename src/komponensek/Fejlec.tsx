@@ -126,6 +126,7 @@ const NyelvValaszto = styled.div`
 
 /** Egy nyelv gombja a kapcsolóban */
 const NyelvGomb = styled.button<{ aktiv: boolean }>`
+  text-align: center;
   min-width: 36px;
   min-height: 36px;
   color: ${(props) => (props.aktiv ? tema.szin.aranyVilagos : tema.szin.szurke)};

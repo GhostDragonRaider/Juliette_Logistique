@@ -390,6 +390,7 @@ const FeltoltesGomb = styled.label<{ $hibas?: boolean }>`
   min-height: 44px;
   padding: 0.7rem 1.15rem;
   cursor: pointer;
+  text-align: center;
   color: ${tema.szin.aranyVilagos};
   font-family: ${tema.betu.cim};
   font-size: 0.78rem;
@@ -455,6 +456,7 @@ const KuldesGomb = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
   width: fit-content;
   max-width: min(100%, 22rem);
   min-height: 50px;
@@ -570,6 +572,7 @@ const PopupZarGomb = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
   margin-top: 0.65rem;
   min-height: 44px;
   padding: 0.75rem 1.5rem;
