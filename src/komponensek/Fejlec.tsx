@@ -15,27 +15,23 @@ type FejlecTulajdonsagok = {
   mindigSticky?: boolean
 }
 
-/** A fejléc — fix a viewport tetején (portál a body-ra, nem overflow szülő alatt) */
+/** A fejléc sávja — a #fejlec-portal fix rétegén belül, maga nem görget */
 const FejlecSav = styled.header`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 40;
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+  width: 100%;
+  box-sizing: border-box;
   padding-top: max(0.85rem, env(safe-area-inset-top, 0px));
   padding-bottom: 1.1rem;
   padding-left: ${tema.oldalsoPadding};
   padding-right: max(1rem, env(safe-area-inset-right, 0px), min(4vw, 3rem));
-  background: rgba(20, 20, 20, 0.94);
+  background: rgba(20, 20, 20, 0.97);
   border-bottom: 1px solid rgba(197, 165, 114, 0.18);
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
-  transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
 `
 
 /** Asztali navigációs lista */
@@ -397,5 +393,8 @@ export function Fejlec(_props: FejlecTulajdonsagok = {}) {
     return fejlecTartalom
   }
 
-  return createPortal(fejlecTartalom, document.body)
+  const portalGyoker =
+    document.getElementById('fejlec-portal') ?? document.body
+
+  return createPortal(fejlecTartalom, portalGyoker)
 }

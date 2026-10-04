@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 import styled from '@emotion/styled'
-import { Fejlec } from './Fejlec'
 import { SeoFej, type SeoFeluliras } from './SeoFej'
 import { UgrasATartalomra } from './UgrasATartalomra'
 import { Gomb } from './Gomb'
@@ -13,7 +12,7 @@ import { useNyelv } from '../nyelv/useNyelv'
 const Keret = styled.div`
   min-height: 100vh;
   min-height: 100dvh;
-  overflow-x: hidden;
+  overflow-x: clip;
   background: ${tema.hatter.fekete};
   color: ${tema.szin.feher};
 `
@@ -136,7 +135,7 @@ type TartalomOldalKeretTulajdonsagok = {
 }
 
 /**
- * Közös keret a tartalomoldalakhoz: sticky fejléc, SEO, alsó kapcsolat-sáv.
+ * Közös keret a tartalomoldalakhoz: SEO, alsó kapcsolat-sáv (fejléc a NyilvanosLayout-ban).
  */
 export function TartalomOldalKeret({ children, seo }: TartalomOldalKeretTulajdonsagok) {
   const { szoveg } = useNyelv()
@@ -145,7 +144,6 @@ export function TartalomOldalKeret({ children, seo }: TartalomOldalKeretTulajdon
     <Keret className="tartalom-oldal-keret">
       <SeoFej feluliras={seo} />
       <UgrasATartalomra />
-      <Fejlec mindigSticky />
       <FoTartalom className="tartalom-fo" id="fo-tartalom">
         {children}
       </FoTartalom>

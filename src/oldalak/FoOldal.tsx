@@ -1,5 +1,4 @@
 import styled from '@emotion/styled'
-import { Fejlec } from '../komponensek/Fejlec'
 import { HosSzekcio } from '../komponensek/HosSzekcio'
 import { ErtekekSav } from '../komponensek/ErtekekSav'
 import { SzolgaltatasokSzekcio } from '../komponensek/SzolgaltatasokSzekcio'
@@ -14,7 +13,7 @@ import { tema } from '../stilusok/tema'
 const FoOldalKeret = styled.div`
   min-height: 100vh;
   min-height: 100dvh;
-  overflow-x: hidden;
+  overflow-x: clip;
   background: ${tema.hatter.fekete};
   color: ${tema.szin.feher};
 `
@@ -35,9 +34,6 @@ export function FoOldal() {
 
       {/* Akadálymentes ugrás a tartalomra */}
       <UgrasATartalomra />
-
-      {/* Fejléc: logo, menü, nyelv, telefon */}
-      <Fejlec />
 
       <FoTartalom className="fo-tartalom" id="fo-tartalom">
         {/* Hero: háttérkép + márkanév + CTA */}

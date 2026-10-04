@@ -10,6 +10,7 @@ import { Urlap } from './komponensek/urlap'
 import { AdatvedelmiTajekoztato } from './komponensek/adatvedelmi'
 import { GlobalisStilus } from './stilusok/GlobalisStilus'
 import { HashGorgetes } from './komponensek/HashGorgetes'
+import { NyilvanosLayout } from './komponensek/NyilvanosLayout'
 import { AdminLayout } from './admin/AdminLayout'
 import { AdminBelepes } from './admin/AdminBelepes'
 import { AdminAttekintes } from './admin/AdminAttekintes'
@@ -29,14 +30,16 @@ function App() {
       <BrowserRouter>
         <HashGorgetes />
         <Routes>
-          <Route path="/" element={<FoOldal />} />
-          <Route path="/rolunk" element={<RolunkOldal />} />
-          <Route path="/szolgaltatasok" element={<SzolgaltatasokOldal />} />
-          <Route path="/partnerek" element={<PartnerekOldal />} />
-          <Route path="/kapcsolat" element={<KapcsolatOldal />} />
-          <Route path="/karrier" element={<Karrier />} />
-          <Route path="/karrier/jelentkezes" element={<Urlap />} />
-          <Route path="/adatvedelmi" element={<AdatvedelmiTajekoztato />} />
+          <Route element={<NyilvanosLayout />}>
+            <Route path="/" element={<FoOldal />} />
+            <Route path="/rolunk" element={<RolunkOldal />} />
+            <Route path="/szolgaltatasok" element={<SzolgaltatasokOldal />} />
+            <Route path="/partnerek" element={<PartnerekOldal />} />
+            <Route path="/kapcsolat" element={<KapcsolatOldal />} />
+            <Route path="/karrier" element={<Karrier />} />
+            <Route path="/karrier/jelentkezes" element={<Urlap />} />
+            <Route path="/adatvedelmi" element={<AdatvedelmiTajekoztato />} />
+          </Route>
           <Route path="/admin/belepes" element={<AdminBelepes />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminAttekintes />} />

@@ -19,12 +19,29 @@ function globalisStilusok() {
       scroll-behavior: smooth;
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
+      overscroll-behavior-y: none;
+    }
+
+    #fejlec-portal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      width: 100%;
+      max-width: 100vw;
+      pointer-events: none;
+    }
+
+    #fejlec-portal > * {
+      pointer-events: auto;
     }
 
     body {
       min-height: 100vh;
       min-height: 100dvh;
-      overflow-x: hidden;
+      overflow-x: clip;
+      overscroll-behavior-y: none;
       background: ${tema.hatter.fekete};
       color: ${tema.szin.feher};
       font-family: ${tema.betu.torzs};
@@ -36,8 +53,17 @@ function globalisStilusok() {
     }
 
     #root {
-      overflow-x: hidden;
+      overflow-x: clip;
       min-width: 0;
+    }
+
+    .fejlec-sav {
+      position: relative;
+      width: 100%;
+      max-width: 100vw;
+      box-sizing: border-box;
+      transform: none;
+      transition: none;
     }
 
     a {
