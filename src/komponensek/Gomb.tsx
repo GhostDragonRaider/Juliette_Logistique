@@ -106,6 +106,31 @@ const GombRouterLink = styled(Link)<{ valtozat: GombValtozat }>`
   ${(props) => props.valtozat === 'telefon' && telefonStilus}
 `
 
+/** Ikon + szöveg + ikon elrendezés — a felirat vizuálisan középen marad */
+const GombBelso = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  width: 100%;
+`
+
+const GombSzoveg = styled.span`
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+`
+
+/** Fix szélességű ikon-hely (bal/jobb), hogy a szöveg ne csússzon el */
+const IkonHely = styled.span`
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+`
+
 /**
  * Eldönti, hogy a cél belső SPA útvonal-e.
  */
@@ -126,13 +151,20 @@ export function Gomb({
   mutatTelefont = false,
   ariaLabel,
 }: GombTulajdonsagok) {
-  const tartalom = (
-    <>
-      {mutatTelefont ? <AranyIkon tipus="telefon" meret={16} /> : null}
-      <span>{children}</span>
-      {mutatNyilat ? <AranyIkon tipus="nyil" meret={16} /> : null}
-    </>
-  )
+  const tartalom =
+    mutatTelefont || mutatNyilat ? (
+      <GombBelso>
+        <IkonHely aria-hidden={!mutatTelefont}>
+          {mutatTelefont ? <AranyIkon tipus="telefon" meret={16} /> : null}
+        </IkonHely>
+        <GombSzoveg>{children}</GombSzoveg>
+        <IkonHely aria-hidden={!mutatNyilat}>
+          {mutatNyilat ? <AranyIkon tipus="nyil" meret={16} /> : null}
+        </IkonHely>
+      </GombBelso>
+    ) : (
+      <GombSzoveg as="span">{children}</GombSzoveg>
+    )
 
   if (belsoUtvonalE(href)) {
     return (
