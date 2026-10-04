@@ -13,7 +13,10 @@ type LogoTulajdonsagok = {
 const LogoDoboz = styled(Link)`
   display: inline-flex;
   align-items: center;
+  align-self: center;
+  height: 44px;
   min-width: 0;
+  overflow: visible;
   color: ${tema.szin.arany};
 
   &:focus-visible {
@@ -22,24 +25,26 @@ const LogoDoboz = styled(Link)`
 `
 
 /**
- * Fejléc logó — a korábbi JL SVG dobozával megegyező méret (header nem nő).
+ * Fejléc logó — vizuálisan nagyobb (scale), layout doboz változatlan → header nem nő.
  */
 const LogoMarkaKep = styled.img`
   display: block;
   flex-shrink: 0;
-  width: 40px;
-  height: 40px;
+  width: auto;
+  height: 42px;
   object-fit: contain;
   object-position: left center;
+  transform: scale(1.38);
+  transform-origin: left center;
 
   @media (min-width: ${tema.szelesseg.kicsi}) {
-    width: 48px;
-    height: 48px;
+    height: 46px;
+    transform: scale(1.42);
   }
 
   @media (min-width: ${tema.szelesseg.tablet}) {
-    width: 52px;
-    height: 52px;
+    height: 48px;
+    transform: scale(1.45);
   }
 `
 
