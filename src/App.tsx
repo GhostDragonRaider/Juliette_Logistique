@@ -1,6 +1,12 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { NyelvSzolgaltato } from './nyelv/NyelvContext'
 import { FoOldal } from './oldalak/FoOldal'
+import {
+  RolunkOldal,
+  SzolgaltatasokOldal,
+  PartnerekOldal,
+  KapcsolatOldal,
+} from './oldalak/MarketingOldalak'
 import { Karrier } from './komponensek/karrier'
 import { Urlap } from './komponensek/urlap'
 import { AdatvedelmiTajekoztato } from './komponensek/adatvedelmi'
@@ -26,6 +32,10 @@ function App() {
         <HashGorgetes />
         <Routes>
           <Route path="/" element={<FoOldal />} />
+          <Route path="/rolunk" element={<RolunkOldal />} />
+          <Route path="/szolgaltatasok" element={<SzolgaltatasokOldal />} />
+          <Route path="/partnerek" element={<PartnerekOldal />} />
+          <Route path="/kapcsolat" element={<KapcsolatOldal />} />
           <Route path="/karrier" element={<Karrier />} />
           <Route path="/karrier/jelentkezes" element={<Urlap />} />
           <Route path="/adatvedelmi" element={<AdatvedelmiTajekoztato />} />

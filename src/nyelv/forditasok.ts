@@ -19,11 +19,11 @@ const magyar: OldalForditas = {
   },
   navigacio: [
     { azonosito: 'kezdo', felirat: 'KEZDŐLAP', cel: '/' },
-    { azonosito: 'rolunk', felirat: 'RÓLUNK', cel: '/#rolunk' },
-    { azonosito: 'szolgaltatasok', felirat: 'SZOLGÁLTATÁSOK', cel: '/#szolgaltatasok' },
-    { azonosito: 'partnerek', felirat: 'PARTNEREK', cel: '/#partnerek' },
+    { azonosito: 'rolunk', felirat: 'RÓLUNK', cel: '/rolunk' },
+    { azonosito: 'szolgaltatasok', felirat: 'SZOLGÁLTATÁSOK', cel: '/szolgaltatasok' },
+    { azonosito: 'partnerek', felirat: 'PARTNEREK', cel: '/partnerek' },
     { azonosito: 'karrier', felirat: 'KARRIER', cel: '/karrier' },
-    { azonosito: 'kapcsolat', felirat: 'KAPCSOLAT', cel: '/#kapcsolat' },
+    { azonosito: 'kapcsolat', felirat: 'KAPCSOLAT', cel: '/kapcsolat' },
   ],
   hos: {
     markaNev: 'JULIETTE LOGISTIQUE',
@@ -151,11 +151,11 @@ const angol: OldalForditas = {
   },
   navigacio: [
     { azonosito: 'kezdo', felirat: 'HOME', cel: '/' },
-    { azonosito: 'rolunk', felirat: 'ABOUT', cel: '/#rolunk' },
-    { azonosito: 'szolgaltatasok', felirat: 'SERVICES', cel: '/#szolgaltatasok' },
-    { azonosito: 'partnerek', felirat: 'PARTNERS', cel: '/#partnerek' },
+    { azonosito: 'rolunk', felirat: 'ABOUT', cel: '/rolunk' },
+    { azonosito: 'szolgaltatasok', felirat: 'SERVICES', cel: '/szolgaltatasok' },
+    { azonosito: 'partnerek', felirat: 'PARTNERS', cel: '/partnerek' },
     { azonosito: 'karrier', felirat: 'CAREERS', cel: '/karrier' },
-    { azonosito: 'kapcsolat', felirat: 'CONTACT', cel: '/#kapcsolat' },
+    { azonosito: 'kapcsolat', felirat: 'CONTACT', cel: '/kapcsolat' },
   ],
   hos: {
     markaNev: 'JULIETTE LOGISTIQUE',
@@ -283,11 +283,11 @@ const nemet: OldalForditas = {
   },
   navigacio: [
     { azonosito: 'kezdo', felirat: 'STARTSEITE', cel: '/' },
-    { azonosito: 'rolunk', felirat: 'ÜBER UNS', cel: '/#rolunk' },
-    { azonosito: 'szolgaltatasok', felirat: 'LEISTUNGEN', cel: '/#szolgaltatasok' },
-    { azonosito: 'partnerek', felirat: 'PARTNER', cel: '/#partnerek' },
+    { azonosito: 'rolunk', felirat: 'ÜBER UNS', cel: '/rolunk' },
+    { azonosito: 'szolgaltatasok', felirat: 'LEISTUNGEN', cel: '/szolgaltatasok' },
+    { azonosito: 'partnerek', felirat: 'PARTNER', cel: '/partnerek' },
     { azonosito: 'karrier', felirat: 'KARRIERE', cel: '/karrier' },
-    { azonosito: 'kapcsolat', felirat: 'KONTAKT', cel: '/#kapcsolat' },
+    { azonosito: 'kapcsolat', felirat: 'KONTAKT', cel: '/kapcsolat' },
   ],
   hos: {
     markaNev: 'JULIETTE LOGISTIQUE',

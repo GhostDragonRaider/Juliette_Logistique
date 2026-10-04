@@ -51,31 +51,42 @@ function jsonLdBeallitas(adat: Record<string, unknown>) {
   script.textContent = JSON.stringify(adat)
 }
 
+type SeoFeluliras = {
+  cim?: string
+  leiras?: string
+  kulcsszavak?: string
+}
+
 /**
  * A kiválasztott nyelvhez igazítja a SEO meta adatokat és a JSON-LD-t.
+ * Opcionálisan felülírható aloldal-specifikus címmel és leírással.
  */
-export function SeoFej() {
+export function SeoFej({ feluliras }: { feluliras?: SeoFeluliras }) {
   const { nyelv, szoveg } = useNyelv()
+
+  const seoCim = feluliras?.cim ?? szoveg.seo.cim
+  const seoLeiras = feluliras?.leiras ?? szoveg.seo.leiras
+  const seoKulcsszavak = feluliras?.kulcsszavak ?? szoveg.seo.kulcsszavak
 
   useEffect(() => {
     const oldalUrl = window.location.origin + window.location.pathname
     const kepUrl = `${window.location.origin}/kepek/hos-hatter.png`
 
-    document.title = szoveg.seo.cim
-    metaBeallitas('description', szoveg.seo.leiras)
-    metaBeallitas('keywords', szoveg.seo.kulcsszavak)
+    document.title = seoCim
+    metaBeallitas('description', seoLeiras)
+    metaBeallitas('keywords', seoKulcsszavak)
     metaBeallitas('robots', 'index, follow')
     metaBeallitas('theme-color', '#141414')
     metaBeallitas('og:type', 'website', 'property')
     metaBeallitas('og:site_name', 'Juliette Logistique', 'property')
-    metaBeallitas('og:title', szoveg.seo.cim, 'property')
-    metaBeallitas('og:description', szoveg.seo.leiras, 'property')
+    metaBeallitas('og:title', seoCim, 'property')
+    metaBeallitas('og:description', seoLeiras, 'property')
     metaBeallitas('og:locale', nyelv === 'hu' ? 'hu_HU' : nyelv === 'de' ? 'de_DE' : 'en_US', 'property')
     metaBeallitas('og:url', oldalUrl, 'property')
     metaBeallitas('og:image', kepUrl, 'property')
     metaBeallitas('twitter:card', 'summary_large_image')
-    metaBeallitas('twitter:title', szoveg.seo.cim)
-    metaBeallitas('twitter:description', szoveg.seo.leiras)
+    metaBeallitas('twitter:title', seoCim)
+    metaBeallitas('twitter:description', seoLeiras)
     metaBeallitas('twitter:image', kepUrl)
     linkBeallitas('canonical', oldalUrl)
 
@@ -86,7 +97,7 @@ export function SeoFej() {
       url: oldalUrl,
       logo: `${window.location.origin}/brand/logo.png`,
       image: kepUrl,
-      description: szoveg.seo.leiras,
+      description: seoLeiras,
       telephone: telefonszam,
       areaServed: ['DE', 'EU'],
       sameAs: [],
@@ -97,7 +108,7 @@ export function SeoFej() {
         availableLanguage: ['hu', 'en', 'de'],
       },
     })
-  }, [nyelv, szoveg])
+  }, [nyelv, seoCim, seoLeiras, seoKulcsszavak])
 
   return null
 }
