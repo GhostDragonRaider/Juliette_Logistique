@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
+import { oldalTetejereGorget } from '../lib/gorgetes'
 
 /**
  * Route-váltáskor a megfelelő pozícióra görget:
@@ -27,7 +28,7 @@ export function HashGorgetes() {
       return () => window.clearTimeout(idozito)
     }
 
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+    oldalTetejereGorget('auto')
   }, [hely.pathname, hely.hash, hely.key])
 
   return null

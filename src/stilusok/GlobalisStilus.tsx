@@ -16,10 +16,10 @@ function globalisStilusok() {
     }
 
     html {
-      scroll-behavior: smooth;
+      height: 100%;
+      overflow: hidden;
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
-      overscroll-behavior-y: none;
     }
 
     #fejlec-portal {
@@ -31,6 +31,7 @@ function globalisStilusok() {
       width: 100%;
       max-width: 100vw;
       pointer-events: none;
+      transform: translateZ(0);
     }
 
     #fejlec-portal > * {
@@ -38,10 +39,8 @@ function globalisStilusok() {
     }
 
     body {
-      min-height: 100vh;
-      min-height: 100dvh;
-      overflow-x: clip;
-      overscroll-behavior-y: none;
+      height: 100%;
+      overflow: hidden;
       background: ${tema.hatter.fekete};
       color: ${tema.szin.feher};
       font-family: ${tema.betu.torzs};
@@ -53,8 +52,14 @@ function globalisStilusok() {
     }
 
     #root {
-      overflow-x: clip;
+      height: 100%;
       min-width: 0;
+      overflow-x: clip;
+      overflow-y: auto;
+      overscroll-behavior-y: none;
+      scroll-behavior: smooth;
+      scroll-padding-top: clamp(5rem, 12vh, 6.5rem);
+      -webkit-overflow-scrolling: touch;
     }
 
     .fejlec-sav {
@@ -101,7 +106,7 @@ function globalisStilusok() {
     }
 
     @media (prefers-reduced-motion: reduce) {
-      html {
+      #root {
         scroll-behavior: auto;
       }
 

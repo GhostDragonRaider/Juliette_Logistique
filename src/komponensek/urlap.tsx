@@ -16,6 +16,7 @@ import {
   ellenorizFeltoltesFajl,
   profilkepNormalizal,
 } from './urlapFajl'
+import { oldalTetejereGorget } from '../lib/gorgetes'
 
 export type { FeltoltesKulcs, UrlapAllapot } from './urlapTipusok'
 
@@ -773,7 +774,7 @@ export function Urlap() {
   const [feltoltesFut, setFeltoltesFut] = useState(false)
 
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+    oldalTetejereGorget('auto')
   }, [])
 
   function popupBezarEsKezdooldal() {

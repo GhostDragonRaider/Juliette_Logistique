@@ -10,8 +10,7 @@ import { useNyelv } from '../nyelv/useNyelv'
 
 /** Teljes oldalkeret */
 const Keret = styled.div`
-  min-height: 100vh;
-  min-height: 100dvh;
+  min-height: 100%;
   overflow-x: clip;
   background: ${tema.hatter.fekete};
   color: ${tema.szin.feher};

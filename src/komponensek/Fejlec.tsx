@@ -29,7 +29,7 @@ const FejlecSav = styled.header`
   padding-bottom: 1.1rem;
   padding-left: ${tema.oldalsoPadding};
   padding-right: max(1rem, env(safe-area-inset-right, 0px), min(4vw, 3rem));
-  background: rgba(20, 20, 20, 0.97);
+  background: ${tema.hatter.fekete};
   border-bottom: 1px solid rgba(197, 165, 114, 0.18);
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
 `

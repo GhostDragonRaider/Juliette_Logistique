@@ -11,8 +11,7 @@ import { tema } from '../stilusok/tema'
 
 /** A teljes főoldal gyökér konténere */
 const FoOldalKeret = styled.div`
-  min-height: 100vh;
-  min-height: 100dvh;
+  min-height: 100%;
   overflow-x: clip;
   background: ${tema.hatter.fekete};
   color: ${tema.szin.feher};
