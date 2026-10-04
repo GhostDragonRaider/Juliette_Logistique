@@ -23,7 +23,6 @@ export function AdminLayout() {
       <AdminPanel>
         <AdminCim>Admin</AdminCim>
         <AdminNav>
-          <AdminLink to="/admin">Áttekintés</AdminLink>
           <AdminLink to="/admin/tartalom">Tartalom</AdminLink>
           <AdminLink to="/admin/jelentkezesek">Jelentkezések</AdminLink>
           <AdminLink to="/admin/naplo">Napló</AdminLink>

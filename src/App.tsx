@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { NyelvSzolgaltato } from './nyelv/NyelvContext'
 import { FoOldal } from './oldalak/FoOldal'
 import { RolunkOldal } from './oldalak/RolunkOldal'
@@ -13,7 +13,6 @@ import { HashGorgetes } from './komponensek/HashGorgetes'
 import { NyilvanosLayout } from './komponensek/NyilvanosLayout'
 import { AdminLayout } from './admin/AdminLayout'
 import { AdminBelepes } from './admin/AdminBelepes'
-import { AdminAttekintes } from './admin/AdminAttekintes'
 import { AdminTartalom } from './admin/AdminTartalom'
 import { AdminJelentkezesLista } from './admin/AdminJelentkezesLista'
 import { AdminJelentkezesReszlet } from './admin/AdminJelentkezesReszlet'
@@ -42,7 +41,7 @@ function App() {
           </Route>
           <Route path="/admin/belepes" element={<AdminBelepes />} />
           <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<AdminAttekintes />} />
+            <Route index element={<Navigate to="jelentkezesek" replace />} />
             <Route path="tartalom" element={<AdminTartalom />} />
             <Route path="jelentkezesek" element={<AdminJelentkezesLista />} />
             <Route path="jelentkezesek/:id" element={<AdminJelentkezesReszlet />} />

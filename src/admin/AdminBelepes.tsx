@@ -13,7 +13,7 @@ export function AdminBelepes() {
 
   useEffect(() => {
     if (adminTokenOlvas()) {
-      navigate('/admin', { replace: true })
+      navigate('/admin/jelentkezesek', { replace: true })
     }
   }, [navigate])
 
@@ -24,7 +24,7 @@ export function AdminBelepes() {
     try {
       const { token } = await adminBejelentkezes(felhasznalo, jelszo)
       adminTokenMent(token)
-      navigate('/admin')
+      navigate('/admin/jelentkezesek')
     } catch (err) {
       setHiba(err instanceof Error ? err.message : 'Hiba')
     } finally {
