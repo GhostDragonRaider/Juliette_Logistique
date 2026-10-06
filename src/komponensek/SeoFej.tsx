@@ -87,7 +87,7 @@ export function SeoFej({ feluliras }: { feluliras?: SeoFeluliras }) {
     metaBeallitas('og:locale', nyelv === 'hu' ? 'hu_HU' : nyelv === 'de' ? 'de_DE' : 'en_US', 'property')
     metaBeallitas('og:url', oldalUrl, 'property')
     metaBeallitas('og:image', kepUrl, 'property')
-    metaBeallitas('twitter:card', 'summary_large_image')
+    metaBeallitas('twitter:card', 'summary')
     metaBeallitas('twitter:title', seoCim)
     metaBeallitas('twitter:description', seoLeiras)
     metaBeallitas('twitter:image', kepUrl)
