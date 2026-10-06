@@ -2,6 +2,11 @@ import type { OldalForditas, NyelvKod } from './nyelvTipusok'
 import { magyarOldalak, angolOldalak, nemetOldalak } from './oldalTartalmak'
 import { magyarKarrier, angolKarrier, nemetKarrier } from './karrierTartalmak'
 import { jelentkezesForditasok } from './jelentkezes'
+import {
+  magyarAdatvedelmi,
+  angolAdatvedelmi,
+  nemetAdatvedelmi,
+} from './adatvedelmiTartalmak'
 
 /**
  * Magyar fordítások a főoldalhoz.
@@ -136,6 +141,7 @@ const magyar: OldalForditas = {
   oldalak: magyarOldalak,
   karrier: magyarKarrier,
   jelentkezes: jelentkezesForditasok.hu,
+  adatvedelmi: magyarAdatvedelmi,
 }
 
 /**
@@ -271,6 +277,7 @@ const angol: OldalForditas = {
   oldalak: angolOldalak,
   karrier: angolKarrier,
   jelentkezes: jelentkezesForditasok.en,
+  adatvedelmi: angolAdatvedelmi,
 }
 
 /**
@@ -406,6 +413,7 @@ const nemet: OldalForditas = {
   oldalak: nemetOldalak,
   karrier: nemetKarrier,
   jelentkezes: jelentkezesForditasok.de,
+  adatvedelmi: nemetAdatvedelmi,
 }
 
 /**
