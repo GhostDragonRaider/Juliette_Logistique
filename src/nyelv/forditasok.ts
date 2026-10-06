@@ -364,8 +364,8 @@ const nemet: OldalForditas = {
     },
     {
       azonosito: 'tavolsag',
-      cim: 'KURZ- & LANGSTRECKE',
-      leiras: 'Von regionalen Fahrten bis europaweite Routen.',
+      cim: 'KURZ- & LANGSTRECKEN',
+      leiras: 'Von regionalen Fahrten bis hin zu europaweiten Routen.',
       kep: '/kepek/szolgaltatas-tavolsag.png',
       ikon: 'ut',
     },

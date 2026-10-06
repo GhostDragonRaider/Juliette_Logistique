@@ -465,9 +465,8 @@ export const nemetOldalak: OldalakForditas = {
       },
       {
         azonosito: 'tavolsag',
-        cim: 'KURZ- & LANGSTRECKE',
-        leiras:
-          'Zuverlässig von regionalen Fahrten bis bundesweite und europäische Routen.',
+        cim: 'KURZ- & LANGSTRECKEN',
+        leiras: 'Von regionalen Fahrten bis hin zu europaweiten Routen.',
         pontok: [
           'Kurzstreckenüberführungen',
           'Mehrtägige Touren',
