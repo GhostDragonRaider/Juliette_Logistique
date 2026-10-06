@@ -4,7 +4,7 @@ import { SeoFej, type SeoFeluliras } from './SeoFej'
 import { UgrasATartalomra } from './UgrasATartalomra'
 import { Gomb } from './Gomb'
 import { PremiumSzam } from './PremiumSzam'
-import { telefonszam } from '../adatok/fooldalAdatok'
+import { useTelefonszam } from '../tartalom/WeboldalTartalomContext'
 import { tema, aranySzovegAtmenet } from '../stilusok/tema'
 import { useNyelv } from '../nyelv/useNyelv'
 
@@ -143,6 +143,7 @@ type TartalomOldalKeretTulajdonsagok = {
  * Közös keret a tartalomoldalakhoz: SEO, alsó kapcsolat-sáv (fejléc a NyilvanosLayout-ban).
  */
 export function TartalomOldalKeret({ children, seo }: TartalomOldalKeretTulajdonsagok) {
+  const telefonszam = useTelefonszam()
   const { szoveg } = useNyelv()
 
   return (

@@ -145,6 +145,16 @@ export async function bekuldesJelentkezes(
   return body
 }
 
+/** Nyilvános weboldal tartalom (telefon, e-mail, cím…) — nincs auth. */
+export async function nyilvanosTartalomBetoltese(): Promise<SzerkeszthetoTartalom> {
+  const response = await fetch(`${apiBase}/content`)
+  const body = await response.json()
+  if (!response.ok) {
+    throw new Error(body.hiba || 'A tartalom betöltése sikertelen.')
+  }
+  return body
+}
+
 export async function tartalomBetoltese(token: string): Promise<SzerkeszthetoTartalom> {
   const response = await fetch(`${apiBase}/admin/content`, {
     headers: { Authorization: `Bearer ${token}` },

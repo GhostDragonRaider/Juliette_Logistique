@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { telefonszam } from '../adatok/fooldalAdatok'
+import { useTelefonszam } from '../tartalom/WeboldalTartalomContext'
 import { useNyelv } from '../nyelv/useNyelv'
 
 /**
@@ -62,6 +62,7 @@ export type SeoFeluliras = {
  * Opcionálisan felülírható aloldal-specifikus címmel és leírással.
  */
 export function SeoFej({ feluliras }: { feluliras?: SeoFeluliras }) {
+  const telefonszam = useTelefonszam()
   const { nyelv, szoveg } = useNyelv()
 
   const seoCim = feluliras?.cim ?? szoveg.seo.cim
@@ -108,7 +109,7 @@ export function SeoFej({ feluliras }: { feluliras?: SeoFeluliras }) {
         availableLanguage: ['hu', 'en', 'de'],
       },
     })
-  }, [nyelv, seoCim, seoLeiras, seoKulcsszavak])
+  }, [nyelv, seoCim, seoLeiras, seoKulcsszavak, telefonszam])
 
   return null
 }

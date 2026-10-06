@@ -11,6 +11,7 @@ import { AdatvedelmiTajekoztato } from './komponensek/adatvedelmi'
 import { GlobalisStilus } from './stilusok/GlobalisStilus'
 import { HashGorgetes } from './komponensek/HashGorgetes'
 import { NyilvanosLayout } from './komponensek/NyilvanosLayout'
+import { WeboldalTartalomSzolgaltato } from './tartalom/WeboldalTartalomContext'
 import { AdminLayout } from './admin/AdminLayout'
 import { AdminBelepes } from './admin/AdminBelepes'
 import { AdminTartalom } from './admin/AdminTartalom'
@@ -27,6 +28,7 @@ function App() {
     <NyelvSzolgaltato>
       <GlobalisStilus />
       <BrowserRouter>
+        <WeboldalTartalomSzolgaltato>
         <HashGorgetes />
         <Routes>
           <Route element={<NyilvanosLayout />}>
@@ -48,6 +50,7 @@ function App() {
             <Route path="naplo" element={<AdminNaplo />} />
           </Route>
         </Routes>
+        </WeboldalTartalomSzolgaltato>
       </BrowserRouter>
     </NyelvSzolgaltato>
   )

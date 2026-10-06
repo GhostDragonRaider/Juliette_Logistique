@@ -5,7 +5,7 @@ import styled from '@emotion/styled'
 import { Logo } from './Logo'
 import { Gomb } from './Gomb'
 import { PremiumSzam } from './PremiumSzam'
-import { telefonszam } from '../adatok/fooldalAdatok'
+import { useTelefonszam } from '../tartalom/WeboldalTartalomContext'
 import { useNyelv } from '../nyelv/useNyelv'
 import { nyelvKapcsolok, type NyelvKod } from '../nyelv/nyelvTipusok'
 import { tema, aranyKeret, fokuszKeret } from '../stilusok/tema'
@@ -223,6 +223,7 @@ function routeCel(cel: string) {
  * A főoldal fejlécét rajzolja ki: logo, navigáció, nyelvkapcsoló és telefon gomb.
  */
 export function Fejlec(_props: FejlecTulajdonsagok = {}) {
+  const telefonszam = useTelefonszam()
   const { nyelv, szoveg, nyelvetValaszt } = useNyelv()
   const hely = useLocation()
   const navigal = useNavigate()

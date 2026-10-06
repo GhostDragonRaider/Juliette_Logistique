@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { telefonszam } from '../adatok/fooldalAdatok'
+import { useTelefonszam } from '../tartalom/WeboldalTartalomContext'
 import { Gomb } from '../komponensek/Gomb'
 import { PremiumSzam } from '../komponensek/PremiumSzam'
 import {
@@ -47,6 +47,7 @@ const InfoErtek = styled.dd`
  * Kapcsolat tartalomoldal.
  */
 export function KapcsolatOldal() {
+  const telefonszam = useTelefonszam()
   const { szoveg } = useNyelv()
   const oldal = szoveg.oldalak.kapcsolat
 

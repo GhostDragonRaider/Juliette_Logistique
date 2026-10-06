@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import { Gomb } from './Gomb'
 import { PremiumSzam } from './PremiumSzam'
-import { telefonszam } from '../adatok/fooldalAdatok'
+import { useTelefonszam } from '../tartalom/WeboldalTartalomContext'
 import { useNyelv } from '../nyelv/useNyelv'
 import { tema, aranySzovegAtmenet } from '../stilusok/tema'
 
@@ -78,6 +78,7 @@ const TelefonLink = styled.a`
  * A záró kapcsolatfelvételi sávot és a láblécet jeleníti meg a kiválasztott nyelven.
  */
 export function LablecSzekcio() {
+  const telefonszam = useTelefonszam()
   const { szoveg } = useNyelv()
 
   return (

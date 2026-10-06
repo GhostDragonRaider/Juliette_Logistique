@@ -2,8 +2,10 @@
  * Nyelvfüggetlen állandó adatok a főoldalhoz.
  */
 
-/** Telefonszám a fejlécben és a kapcsolatnál */
-export const telefonszam = '+49 157 35 88 47 88'
+import { weboldalTartalomAlap } from '../tartalom/weboldalTartalomAlap'
+
+/** Statikus fallback; élő oldalon a `useTelefonszam()` az API-ból jön. */
+export const telefonszam = weboldalTartalomAlap.telefonszam
 
 /** Egy partner logó adatai */
 export type PartnerLogo = {
