@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useWeboldalTartalom } from '../tartalom/WeboldalTartalomContext'
 import { useNyelv } from '../nyelv/useNyelv'
+import { MARKA_LOGO_ARANY } from './Logo'
 
 /**
  * Beállítja vagy létrehozza a megadott meta elemet a document head-ben.
@@ -71,7 +72,8 @@ export function SeoFej({ feluliras }: { feluliras?: SeoFeluliras }) {
 
   useEffect(() => {
     const oldalUrl = window.location.origin + window.location.pathname
-    const kepUrl = `${window.location.origin}/kepek/hos-hatter.png`
+    const logoUrl = `${window.location.origin}${MARKA_LOGO_ARANY}`
+    const kepUrl = logoUrl
 
     document.title = seoCim
     metaBeallitas('description', seoLeiras)
@@ -96,8 +98,8 @@ export function SeoFej({ feluliras }: { feluliras?: SeoFeluliras }) {
       '@type': 'Organization',
       name: cegnev,
       url: window.location.origin,
-      logo: `${window.location.origin}/brand/logo.png`,
-      image: kepUrl,
+      logo: logoUrl,
+      image: logoUrl,
       description: seoLeiras,
       telephone: telefonszam,
       areaServed: ['DE', 'EU'],
