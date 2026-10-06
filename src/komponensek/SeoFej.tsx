@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useTelefonszam } from '../tartalom/WeboldalTartalomContext'
+import { useWeboldalTartalom } from '../tartalom/WeboldalTartalomContext'
 import { useNyelv } from '../nyelv/useNyelv'
 
 /**
@@ -62,7 +62,7 @@ export type SeoFeluliras = {
  * Opcionálisan felülírható aloldal-specifikus címmel és leírással.
  */
 export function SeoFej({ feluliras }: { feluliras?: SeoFeluliras }) {
-  const telefonszam = useTelefonszam()
+  const { telefonszam, cegnev, email, cim } = useWeboldalTartalom()
   const { nyelv, szoveg } = useNyelv()
 
   const seoCim = feluliras?.cim ?? szoveg.seo.cim
@@ -79,7 +79,7 @@ export function SeoFej({ feluliras }: { feluliras?: SeoFeluliras }) {
     metaBeallitas('robots', 'index, follow')
     metaBeallitas('theme-color', '#141414')
     metaBeallitas('og:type', 'website', 'property')
-    metaBeallitas('og:site_name', 'Juliette Logistique', 'property')
+    metaBeallitas('og:site_name', cegnev, 'property')
     metaBeallitas('og:title', seoCim, 'property')
     metaBeallitas('og:description', seoLeiras, 'property')
     metaBeallitas('og:locale', nyelv === 'hu' ? 'hu_HU' : nyelv === 'de' ? 'de_DE' : 'en_US', 'property')
@@ -91,11 +91,11 @@ export function SeoFej({ feluliras }: { feluliras?: SeoFeluliras }) {
     metaBeallitas('twitter:image', kepUrl)
     linkBeallitas('canonical', oldalUrl)
 
-    jsonLdBeallitas({
+    const szervezet: Record<string, unknown> = {
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      name: 'Juliette Logistique',
-      url: oldalUrl,
+      name: cegnev,
+      url: window.location.origin,
       logo: `${window.location.origin}/brand/logo.png`,
       image: kepUrl,
       description: seoLeiras,
@@ -107,9 +107,21 @@ export function SeoFej({ feluliras }: { feluliras?: SeoFeluliras }) {
         telephone: telefonszam,
         contactType: 'customer service',
         availableLanguage: ['hu', 'en', 'de'],
+        ...(email ? { email } : {}),
       },
-    })
-  }, [nyelv, seoCim, seoLeiras, seoKulcsszavak, telefonszam])
+    }
+    if (email) {
+      szervezet.email = email
+    }
+    if (cim) {
+      szervezet.address = {
+        '@type': 'PostalAddress',
+        streetAddress: cim,
+      }
+    }
+
+    jsonLdBeallitas(szervezet)
+  }, [nyelv, seoCim, seoLeiras, seoKulcsszavak, telefonszam, cegnev, email, cim])
 
   return null
 }

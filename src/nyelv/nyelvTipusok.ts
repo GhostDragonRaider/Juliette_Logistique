@@ -69,6 +69,8 @@ export type OldalakForditas = {
     alcim: string
     bekezdesek: string[]
     telefonCimke: string
+    emailCimke: string
+    cimCimke: string
     teruletCimke: string
     teruletErtek: string
     idopontCimke: string

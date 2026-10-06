@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
-import { useTelefonszam } from '../tartalom/WeboldalTartalomContext'
+import { useTelefonszam, useWeboldalTartalom } from '../tartalom/WeboldalTartalomContext'
+import { kapcsolatMegjelenitettErtekek } from '../tartalom/kapcsolatMegjelenites'
 import { Gomb } from '../komponensek/Gomb'
 import { PremiumSzam } from '../komponensek/PremiumSzam'
 import {
@@ -46,10 +47,21 @@ const InfoErtek = styled.dd`
 /**
  * Kapcsolat tartalomoldal.
  */
+const EmailLink = styled.a`
+  color: ${tema.szin.aranyVilagos};
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
 export function KapcsolatOldal() {
   const telefonszam = useTelefonszam()
+  const tartalom = useWeboldalTartalom()
   const { szoveg } = useNyelv()
   const oldal = szoveg.oldalak.kapcsolat
+  const kapcsolat = kapcsolatMegjelenitettErtekek(tartalom, oldal)
 
   return (
     <TartalomOldalKeret seo={oldal.seo}>
@@ -68,10 +80,24 @@ export function KapcsolatOldal() {
             <InfoErtek>
               <PremiumSzam>{telefonszam}</PremiumSzam>
             </InfoErtek>
+            {kapcsolat.email ? (
+              <>
+                <InfoCimke>{oldal.emailCimke}</InfoCimke>
+                <InfoErtek>
+                  <EmailLink href={`mailto:${kapcsolat.email}`}>{kapcsolat.email}</EmailLink>
+                </InfoErtek>
+              </>
+            ) : null}
+            {kapcsolat.cim ? (
+              <>
+                <InfoCimke>{oldal.cimCimke}</InfoCimke>
+                <InfoErtek>{kapcsolat.cim}</InfoErtek>
+              </>
+            ) : null}
             <InfoCimke>{oldal.teruletCimke}</InfoCimke>
-            <InfoErtek>{oldal.teruletErtek}</InfoErtek>
+            <InfoErtek>{kapcsolat.terulet}</InfoErtek>
             <InfoCimke>{oldal.idopontCimke}</InfoCimke>
-            <InfoErtek>{oldal.idopontErtek}</InfoErtek>
+            <InfoErtek>{kapcsolat.elerhetoseg}</InfoErtek>
           </InfoRac>
         </TeljesSzelessegReveal>
 

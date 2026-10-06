@@ -147,7 +147,7 @@ export async function bekuldesJelentkezes(
 
 /** Nyilvános weboldal tartalom (telefon, e-mail, cím…) — nincs auth. */
 export async function nyilvanosTartalomBetoltese(): Promise<SzerkeszthetoTartalom> {
-  const response = await fetch(`${apiBase}/content`)
+  const response = await fetch(`${apiBase}/content`, { cache: 'no-store' })
   const body = await response.json()
   if (!response.ok) {
     throw new Error(body.hiba || 'A tartalom betöltése sikertelen.')

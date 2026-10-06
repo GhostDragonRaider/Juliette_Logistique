@@ -35,20 +35,37 @@ export function WeboldalTartalomSzolgaltato({ children }: { children: ReactNode 
 
   useEffect(() => {
     let elvetve = false
-    nyilvanosTartalomBetoltese()
-      .then((api) => {
-        if (!elvetve) {
-          setTartalom(egyesitettTartalom(api))
-          setBetoltve(true)
-        }
-      })
-      .catch(() => {
-        if (!elvetve) {
-          setBetoltve(true)
-        }
-      })
+
+    function frissit() {
+      nyilvanosTartalomBetoltese()
+        .then((api) => {
+          if (!elvetve) {
+            setTartalom(egyesitettTartalom(api))
+            setBetoltve(true)
+          }
+        })
+        .catch(() => {
+          if (!elvetve) {
+            setBetoltve(true)
+          }
+        })
+    }
+
+    frissit()
+
+    function lathatosagValtozas() {
+      if (document.visibilityState === 'visible') {
+        frissit()
+      }
+    }
+
+    window.addEventListener('focus', frissit)
+    document.addEventListener('visibilitychange', lathatosagValtozas)
+
     return () => {
       elvetve = true
+      window.removeEventListener('focus', frissit)
+      document.removeEventListener('visibilitychange', lathatosagValtozas)
     }
   }, [])
 

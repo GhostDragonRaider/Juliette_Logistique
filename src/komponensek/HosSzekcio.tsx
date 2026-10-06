@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import { keyframes } from '@emotion/react'
 import { Gomb } from './Gomb'
 import { useNyelv } from '../nyelv/useNyelv'
+import { useWeboldalTartalom } from '../tartalom/WeboldalTartalomContext'
 import { tema, aranySzovegAtmenet } from '../stilusok/tema'
 
 /** A hero tartalom felúszó animációja */
@@ -113,13 +114,15 @@ const GombSor = styled.div`
  */
 export function HosSzekcio() {
   const { szoveg } = useNyelv()
+  const { cegnev } = useWeboldalTartalom()
+  const markaNev = cegnev.trim() || szoveg.hos.markaNev
 
   return (
     <HosKeret className="hos-szekcio" id="kezdooldal" aria-labelledby="hos-cim">
       <HosHatter className="hos-hatter" aria-hidden="true" />
       <HosTartalom className="hos-tartalom">
         <MarkaCim className="marka-cim" id="hos-cim">
-          {szoveg.hos.markaNev}
+          {markaNev}
         </MarkaCim>
         <HosAlcim className="hos-alcim">{szoveg.hos.alcim}</HosAlcim>
         <HosMotto className="hos-motto">{szoveg.hos.motto}</HosMotto>
