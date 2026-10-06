@@ -77,6 +77,89 @@ export type OldalakForditas = {
   }
 }
 
+/** Űrlap válasz: kanonikus érték (admin) + megjelenített felirat */
+export type UrlapOpcio = {
+  ertek: string
+  felirat: string
+}
+
+export type UrlapHibaUzenetek = {
+  kotelezo: string
+  valasztas: string
+  legalabbEgy: string
+  egyeb: string
+  fajl: string
+  email: string
+  tizennyolcEv: string
+  adatvedelem: string
+  hozzajarulas: string
+  fajlPdf: string
+  fajlKep: string
+  fajlKepVagyPdf: string
+  profilkepFeldolgozas: string
+  kuldesSikertelen: string
+}
+
+/** Karrier landing oldal */
+export type KarrierForditas = {
+  seo: SeoForditas
+  animacioCim1: string
+  animacioCim2: string
+  allomasCim: string
+  bevezeto: string
+  feladatokCim: string
+  feladatok: string[]
+  elvarasokCim: string
+  elvarasok: string[]
+  kinalunkCim: string
+  kinalunk: string[]
+  cta: string
+}
+
+/** Sofőr jelentkezési űrlap */
+export type JelentkezesForditas = {
+  seo: SeoForditas
+  foCim: string
+  alcim: string
+  bevezeto: string
+  szekcio: {
+    szemelyes: string
+    vezetes: string
+    premium: string
+    nemetorszag: string
+    jogositvany: string
+    nyelv: string
+    keszsegek: string
+    feltetelek: string
+    szurok: string
+    dokumentumok: string
+    motivacio: string
+    kuldes: string
+  }
+  mezo: Record<string, string>
+  opciok: Record<string, UrlapOpcio[]>
+  dokumentumokBevezeto: string
+  feltoltes: Record<string, { cim: string; leiras: string; seged?: string }>
+  adatvedelemElotte: string
+  adatvedelemLink: string
+  adatvedelemUtana: string
+  hozzajarulas: string
+  gombKuldes: string
+  gombKuldesFut: string
+  gombKepFeldolgozas: string
+  osszesitoHiba: string
+  osszesitoHibaDarab: string
+  popupCim: string
+  popupSzoveg: string
+  popupZar: string
+  valasszon: string
+  egyebPlaceholder: string
+  egyebAria: string
+  feltoltesGomb: string
+  hibak: UrlapHibaUzenetek
+  egyebErtek: string
+}
+
 /**
  * Egy értékpont fordított szövegei.
  */
@@ -136,6 +219,8 @@ export type OldalForditas = {
     markaLeiras: string
   }
   oldalak: OldalakForditas
+  karrier: KarrierForditas
+  jelentkezes: JelentkezesForditas
 }
 
 /**

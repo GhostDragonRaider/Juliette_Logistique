@@ -1,3 +1,8 @@
+import type { UrlapHibaUzenetek } from '../nyelv/nyelvTipusok'
+import { magyarJelentkezesPaket } from '../nyelv/jelentkezes/paketHu'
+
+const alapFajlUzenetek = magyarJelentkezesPaket.hibak
+
 /** Igazolvány-kép max. méret (px) — hosszabb oldal illeszkedik ebbe a kerethez */
 const PROFIL_MAX_SZELESSEG = 1050
 const PROFIL_MAX_MAGASSAG = 660
@@ -85,29 +90,31 @@ export async function profilkepNormalizal(fajl: File): Promise<File> {
 
 export function feltoltesTipusUzenet(
   kulcs: 'szemelyi' | 'jogositvany' | 'fuehrungszeugnis' | 'oneletrajz' | 'profilkep' | 'referencia',
+  uzenetek: Pick<UrlapHibaUzenetek, 'fajlPdf' | 'fajlKep' | 'fajlKepVagyPdf'> = alapFajlUzenetek,
 ) {
   switch (kulcs) {
     case 'oneletrajz':
     case 'referencia':
-      return 'Csak PDF formátum engedélyezett.'
+      return uzenetek.fajlPdf
     case 'profilkep':
-      return 'Csak képfájl (JPG, PNG, WebP) engedélyezett.'
+      return uzenetek.fajlKep
     default:
-      return 'Csak kép (JPG, PNG, WebP) vagy PDF engedélyezett.'
+      return uzenetek.fajlKepVagyPdf
   }
 }
 
 export function ellenorizFeltoltesFajl(
   kulcs: 'szemelyi' | 'jogositvany' | 'fuehrungszeugnis' | 'oneletrajz' | 'profilkep' | 'referencia',
   fajl: File,
+  uzenetek: UrlapHibaUzenetek = alapFajlUzenetek,
 ): string | null {
   switch (kulcs) {
     case 'oneletrajz':
     case 'referencia':
-      return fajlCsakPdf(fajl) ? null : feltoltesTipusUzenet(kulcs)
+      return fajlCsakPdf(fajl) ? null : feltoltesTipusUzenet(kulcs, uzenetek)
     case 'profilkep':
-      return fajlCsakKep(fajl) ? null : feltoltesTipusUzenet(kulcs)
+      return fajlCsakKep(fajl) ? null : feltoltesTipusUzenet(kulcs, uzenetek)
     default:
-      return fajlKepVagyPdf(fajl) ? null : feltoltesTipusUzenet(kulcs)
+      return fajlKepVagyPdf(fajl) ? null : feltoltesTipusUzenet(kulcs, uzenetek)
   }
 }

@@ -1,5 +1,7 @@
 import type { OldalForditas, NyelvKod } from './nyelvTipusok'
 import { magyarOldalak, angolOldalak, nemetOldalak } from './oldalTartalmak'
+import { magyarKarrier, angolKarrier, nemetKarrier } from './karrierTartalmak'
+import { jelentkezesForditasok } from './jelentkezes'
 
 /**
  * Magyar fordítások a főoldalhoz.
@@ -132,6 +134,8 @@ const magyar: OldalForditas = {
     markaLeiras: '— Premium járműszállítás',
   },
   oldalak: magyarOldalak,
+  karrier: magyarKarrier,
+  jelentkezes: jelentkezesForditasok.hu,
 }
 
 /**
@@ -265,6 +269,8 @@ const angol: OldalForditas = {
     markaLeiras: '— Premium vehicle transport',
   },
   oldalak: angolOldalak,
+  karrier: angolKarrier,
+  jelentkezes: jelentkezesForditasok.en,
 }
 
 /**
@@ -398,6 +404,8 @@ const nemet: OldalForditas = {
     markaLeiras: '— Premium Fahrzeugüberführung',
   },
   oldalak: nemetOldalak,
+  karrier: nemetKarrier,
+  jelentkezes: jelentkezesForditasok.de,
 }
 
 /**

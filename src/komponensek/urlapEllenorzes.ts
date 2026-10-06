@@ -1,19 +1,19 @@
+import type { UrlapHibaUzenetek } from '../nyelv/nyelvTipusok'
+import { magyarJelentkezesPaket } from '../nyelv/jelentkezes/paketHu'
+import { EGYEB_ERTEK } from '../nyelv/jelentkezes/opciokErtekek'
 import type { UrlapAllapot, FeltoltesKulcs } from './urlapTipusok'
 import { ellenorizFeltoltesFajl } from './urlapFajl'
 
 export type UrlapHibak = Partial<Record<string, string>>
 
-const KOTELEZO_UZENET = 'Ez a mező kötelező.'
-const VALASZ_UZENET = 'Kérjük, válasszon egy lehetőséget.'
-const LEGALABB_EGY_UZENET = 'Válasszon legalább egy lehetőséget.'
-const EGYEB_UZENET = 'Kérjük, részletezze az „Egyéb” választ.'
-const FAJL_UZENET = 'Dokumentum feltöltése kötelező.'
-const EMAIL_UZENET = 'Érvényes e-mail-címet adjon meg.'
-const TIZENNYOLC_EV_UZENET =
-  'A jelentkezéshez legalább 18 évesnek kell lennie (a 18. életév betöltése kötelező).'
+const alapUzenetek: UrlapHibaUzenetek = magyarJelentkezesPaket.hibak
 
 function ures(ertek: string) {
   return ertek.trim().length === 0
+}
+
+function emailErvenyes(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
 }
 
 /** HTML date input max: utolsó nap, amikor még 18 év alatti a születésnap. */
@@ -45,85 +45,84 @@ function betoltotteATizennyolcat(szuletesiDatum: string): boolean {
   return szuletes.getTime() <= tizennyolcEve.getTime()
 }
 
-function emailErvenyes(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
-}
-
 /**
  * Az összes kötelező mezőt és feltöltést ellenőrzi.
  * Minden feltöltés kötelező, kivéve a Führungszeugnist, ha az erkölcsi bizonyítvány
  * státusza „Nem” vagy „Beszerzés alatt”.
  */
-export function ellenorizUrlap(adat: UrlapAllapot): UrlapHibak {
+export function ellenorizUrlap(
+  adat: UrlapAllapot,
+  uzenetek: UrlapHibaUzenetek = alapUzenetek,
+): UrlapHibak {
   const hibak: UrlapHibak = {}
 
-  if (ures(adat.teljesNev)) hibak.teljesNev = KOTELEZO_UZENET
+  if (ures(adat.teljesNev)) hibak.teljesNev = uzenetek.kotelezo
   if (ures(adat.szuletesiDatum)) {
-    hibak.szuletesiDatum = KOTELEZO_UZENET
+    hibak.szuletesiDatum = uzenetek.kotelezo
   } else if (!betoltotteATizennyolcat(adat.szuletesiDatum)) {
-    hibak.szuletesiDatum = TIZENNYOLC_EV_UZENET
+    hibak.szuletesiDatum = uzenetek.tizennyolcEv
   }
-  if (ures(adat.telefon)) hibak.telefon = KOTELEZO_UZENET
-  if (ures(adat.email)) hibak.email = KOTELEZO_UZENET
-  else if (!emailErvenyes(adat.email)) hibak.email = EMAIL_UZENET
-  if (ures(adat.lakhely)) hibak.lakhely = KOTELEZO_UZENET
-  if (ures(adat.orszag)) hibak.orszag = VALASZ_UZENET
+  if (ures(adat.telefon)) hibak.telefon = uzenetek.kotelezo
+  if (ures(adat.email)) hibak.email = uzenetek.kotelezo
+  else if (!emailErvenyes(adat.email)) hibak.email = uzenetek.email
+  if (ures(adat.lakhely)) hibak.lakhely = uzenetek.kotelezo
+  if (ures(adat.orszag)) hibak.orszag = uzenetek.valasztas
 
-  if (ures(adat.bJogositvanyEve)) hibak.bJogositvanyEve = VALASZ_UZENET
-  if (ures(adat.professzionalisEv)) hibak.professzionalisEv = VALASZ_UZENET
-  if (ures(adat.soforkentNemetorszag)) hibak.soforkentNemetorszag = VALASZ_UZENET
-  if (adat.korabbiTerulet.length === 0) hibak.korabbiTerulet = LEGALABB_EGY_UZENET
+  if (ures(adat.bJogositvanyEve)) hibak.bJogositvanyEve = uzenetek.valasztas
+  if (ures(adat.professzionalisEv)) hibak.professzionalisEv = uzenetek.valasztas
+  if (ures(adat.soforkentNemetorszag)) hibak.soforkentNemetorszag = uzenetek.valasztas
+  if (adat.korabbiTerulet.length === 0) hibak.korabbiTerulet = uzenetek.legalabbEgy
   if (
-    adat.korabbiTerulet.includes('Egyéb') &&
+    adat.korabbiTerulet.includes(EGYEB_ERTEK) &&
     ures(adat.korabbiTeruletEgyeb)
   ) {
-    hibak.korabbiTeruletEgyeb = EGYEB_UZENET
+    hibak.korabbiTeruletEgyeb = uzenetek.egyeb
   }
 
-  if (ures(adat.premiumTapasztalat)) hibak.premiumTapasztalat = VALASZ_UZENET
-  if (adat.premiumMarkak.length === 0) hibak.premiumMarkak = LEGALABB_EGY_UZENET
-  if (adat.premiumMarkak.includes('Egyéb') && ures(adat.premiumMarkaEgyeb)) {
-    hibak.premiumMarkaEgyeb = EGYEB_UZENET
+  if (ures(adat.premiumTapasztalat)) hibak.premiumTapasztalat = uzenetek.valasztas
+  if (adat.premiumMarkak.length === 0) hibak.premiumMarkak = uzenetek.legalabbEgy
+  if (adat.premiumMarkak.includes(EGYEB_ERTEK) && ures(adat.premiumMarkaEgyeb)) {
+    hibak.premiumMarkaEgyeb = uzenetek.egyeb
   }
-  if (ures(adat.premiumGyakorisag)) hibak.premiumGyakorisag = VALASZ_UZENET
-  if (ures(adat.automataValto)) hibak.automataValto = VALASZ_UZENET
+  if (ures(adat.premiumGyakorisag)) hibak.premiumGyakorisag = uzenetek.valasztas
+  if (ures(adat.automataValto)) hibak.automataValto = uzenetek.valasztas
 
-  if (ures(adat.munkavallalasiJog)) hibak.munkavallalasiJog = VALASZ_UZENET
-  if (ures(adat.nemetorszagiCim)) hibak.nemetorszagiCim = VALASZ_UZENET
-  if (ures(adat.munkabaAllas)) hibak.munkabaAllas = VALASZ_UZENET
-  if (ures(adat.rugalmassag)) hibak.rugalmassag = VALASZ_UZENET
+  if (ures(adat.munkavallalasiJog)) hibak.munkavallalasiJog = uzenetek.valasztas
+  if (ures(adat.nemetorszagiCim)) hibak.nemetorszagiCim = uzenetek.valasztas
+  if (ures(adat.munkabaAllas)) hibak.munkabaAllas = uzenetek.valasztas
+  if (ures(adat.rugalmassag)) hibak.rugalmassag = uzenetek.valasztas
 
   if (adat.jogositvanyKategoria.length === 0) {
-    hibak.jogositvanyKategoria = LEGALABB_EGY_UZENET
+    hibak.jogositvanyKategoria = uzenetek.legalabbEgy
   }
-  if (adat.jogositvanyKategoria.includes('Egyéb') && ures(adat.jogositvanyEgyeb)) {
-    hibak.jogositvanyEgyeb = EGYEB_UZENET
+  if (adat.jogositvanyKategoria.includes(EGYEB_ERTEK) && ures(adat.jogositvanyEgyeb)) {
+    hibak.jogositvanyEgyeb = uzenetek.egyeb
   }
-  if (ures(adat.jogositvanyErvenyes)) hibak.jogositvanyErvenyes = VALASZ_UZENET
-  if (ures(adat.eltiltas)) hibak.eltiltas = VALASZ_UZENET
-  if (ures(adat.erkolesi)) hibak.erkolesi = VALASZ_UZENET
+  if (ures(adat.jogositvanyErvenyes)) hibak.jogositvanyErvenyes = uzenetek.valasztas
+  if (ures(adat.eltiltas)) hibak.eltiltas = uzenetek.valasztas
+  if (ures(adat.erkolesi)) hibak.erkolesi = uzenetek.valasztas
 
-  if (ures(adat.nemetNyelv)) hibak.nemetNyelv = VALASZ_UZENET
-  if (ures(adat.angolNyelv)) hibak.angolNyelv = VALASZ_UZENET
+  if (ures(adat.nemetNyelv)) hibak.nemetNyelv = uzenetek.valasztas
+  if (ures(adat.angolNyelv)) hibak.angolNyelv = uzenetek.valasztas
 
-  if (ures(adat.okostelefon)) hibak.okostelefon = VALASZ_UZENET
-  if (ures(adat.navigacio)) hibak.navigacio = VALASZ_UZENET
-  if (ures(adat.gpsKovetes)) hibak.gpsKovetes = VALASZ_UZENET
+  if (ures(adat.okostelefon)) hibak.okostelefon = uzenetek.valasztas
+  if (ures(adat.navigacio)) hibak.navigacio = uzenetek.valasztas
+  if (ures(adat.gpsKovetes)) hibak.gpsKovetes = uzenetek.valasztas
 
-  if (ures(adat.hosszuUt)) hibak.hosszuUt = VALASZ_UZENET
-  if (ures(adat.hetvege)) hibak.hetvege = VALASZ_UZENET
-  if (ures(adat.tobbnapos)) hibak.tobbnapos = VALASZ_UZENET
-  if (ures(adat.hetiNapok)) hibak.hetiNapok = VALASZ_UZENET
+  if (ures(adat.hosszuUt)) hibak.hosszuUt = uzenetek.valasztas
+  if (ures(adat.hetvege)) hibak.hetvege = uzenetek.valasztas
+  if (ures(adat.tobbnapos)) hibak.tobbnapos = uzenetek.valasztas
+  if (ures(adat.hetiNapok)) hibak.hetiNapok = uzenetek.valasztas
 
-  if (ures(adat.haromEvAktiv)) hibak.haromEvAktiv = VALASZ_UZENET
-  if (ures(adat.haromEvProf)) hibak.haromEvProf = VALASZ_UZENET
-  if (ures(adat.premiumSzuro)) hibak.premiumSzuro = VALASZ_UZENET
-  if (ures(adat.biztonsagosVezetes)) hibak.biztonsagosVezetes = VALASZ_UZENET
-  if (ures(adat.gondosKezeles)) hibak.gondosKezeles = VALASZ_UZENET
-  if (ures(adat.ellenorzesElfogadas)) hibak.ellenorzesElfogadas = VALASZ_UZENET
+  if (ures(adat.haromEvAktiv)) hibak.haromEvAktiv = uzenetek.valasztas
+  if (ures(adat.haromEvProf)) hibak.haromEvProf = uzenetek.valasztas
+  if (ures(adat.premiumSzuro)) hibak.premiumSzuro = uzenetek.valasztas
+  if (ures(adat.biztonsagosVezetes)) hibak.biztonsagosVezetes = uzenetek.valasztas
+  if (ures(adat.gondosKezeles)) hibak.gondosKezeles = uzenetek.valasztas
+  if (ures(adat.ellenorzesElfogadas)) hibak.ellenorzesElfogadas = uzenetek.valasztas
 
-  if (ures(adat.motivacio)) hibak.motivacio = KOTELEZO_UZENET
-  if (ures(adat.tapasztalatLeiras)) hibak.tapasztalatLeiras = KOTELEZO_UZENET
+  if (ures(adat.motivacio)) hibak.motivacio = uzenetek.kotelezo
+  if (ures(adat.tapasztalatLeiras)) hibak.tapasztalatLeiras = uzenetek.kotelezo
 
   const kotelezoFeltoltesek: FeltoltesKulcs[] = [
     'szemelyi',
@@ -135,7 +134,6 @@ export function ellenorizUrlap(adat: UrlapAllapot): UrlapHibak {
   ]
 
   for (const kulcs of kotelezoFeltoltesek) {
-    // Führungszeugnis: ha még nincs / beszerzés alatt, a fájl nem kötelező
     if (
       kulcs === 'fuehrungszeugnis' &&
       (adat.erkolesi === 'Nem' || adat.erkolesi === 'Beszerzés alatt')
@@ -144,20 +142,20 @@ export function ellenorizUrlap(adat: UrlapAllapot): UrlapHibak {
     }
     const fajl = adat.feltoltesek[kulcs]
     if (!fajl) {
-      hibak[`feltoltes.${kulcs}`] = FAJL_UZENET
+      hibak[`feltoltes.${kulcs}`] = uzenetek.fajl
       continue
     }
-    const tipusHiba = ellenorizFeltoltesFajl(kulcs, fajl)
+    const tipusHiba = ellenorizFeltoltesFajl(kulcs, fajl, uzenetek)
     if (tipusHiba) {
       hibak[`feltoltes.${kulcs}`] = tipusHiba
     }
   }
 
   if (!adat.adatvedelem) {
-    hibak.adatvedelem = 'Az adatvédelmi tájékoztató elfogadása kötelező.'
+    hibak.adatvedelem = uzenetek.adatvedelem
   }
   if (!adat.hozzajarulas) {
-    hibak.hozzajarulas = 'A hozzájárulás megadása kötelező.'
+    hibak.hozzajarulas = uzenetek.hozzajarulas
   }
 
   return hibak

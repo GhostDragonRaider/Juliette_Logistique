@@ -9,6 +9,8 @@ import {
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useScrollReveal } from '../hookok/useScrollReveal'
+import { useNyelv } from '../nyelv/useNyelv'
+import { SeoFej } from './SeoFej'
 
 const Container = styled.div`
   display: flex;
@@ -275,13 +277,14 @@ const RevealBlokk = styled.div`
 
 type MunkaTartalomTulajdonsagok = {
   lathato: boolean
+  tartalom: ReturnType<typeof useNyelv>['szoveg']['karrier']
 }
 
 /**
  * A munkakör tartalma: bevezető + videó azonnal,
  * a további szekciók görgetésre áttűnnek.
  */
-function MunkaTartalom({ lathato }: MunkaTartalomTulajdonsagok) {
+function MunkaTartalom({ lathato, tartalom }: MunkaTartalomTulajdonsagok) {
   const navigate = useNavigate()
   const feladatokReveal = useScrollReveal<HTMLDivElement>(0.2)
   const elvarasokReveal = useScrollReveal<HTMLDivElement>(0.2)
@@ -290,46 +293,19 @@ function MunkaTartalom({ lathato }: MunkaTartalomTulajdonsagok) {
 
   return (
     <MunkaDiv lathato={lathato}>
-      <H1Text>Járműátvezető / sofőr Juliette Logistique</H1Text>
-      <PText>
-        A Juliette Logistique professzionális gépjármű-átvezetéssel és
-        járműlogisztikával foglalkozik egész Németország területén. Ha
-        megbízhatóan, pontosan és gondosan dolgozol, és fontos számodra a
-        járművek biztonságos kezelése, nálunk a helyed.
-      </PText>
+      <H1Text>{tartalom.allomasCim}</H1Text>
+      <PText>{tartalom.bevezeto}</PText>
       <VideoHely className="video-hely" aria-hidden="true" />
 
       <RevealBlokk
         ref={feladatokReveal.referencia}
         className={feladatokReveal.lathato ? 'lathato' : undefined}
       >
-        <H2Text>Mit fogsz csinálni?</H2Text>
+        <H2Text>{tartalom.feladatokCim}</H2Text>
         <MunkaLista>
-          <MunkaListaItem>
-            Gépjárművek átvétele, átvezetése és átadása a megbízó által
-            megadott feltételek szerint
-          </MunkaListaItem>
-          <MunkaListaItem>
-            Járművek saját keréken történő szállítása Németország-szerte
-          </MunkaListaItem>
-          <MunkaListaItem>
-            Átvételkori és átadáskori állapotellenőrzés, dokumentálás
-          </MunkaListaItem>
-          <MunkaListaItem>
-            Szükség esetén fotódokumentáció készítése
-          </MunkaListaItem>
-          <MunkaListaItem>
-            Kilométeróra-állás, járműadatok és meglévő sérülések rögzítése
-          </MunkaListaItem>
-          <MunkaListaItem>
-            Kulcsok és járműdokumentumok gondos kezelése
-          </MunkaListaItem>
-          <MunkaListaItem>
-            Megbízások határidőre történő teljesítése
-          </MunkaListaItem>
-          <MunkaListaItem>
-            Digitális megbízáskezelés és státuszjelentés támogatása
-          </MunkaListaItem>
+          {tartalom.feladatok.map((sor) => (
+            <MunkaListaItem key={sor.slice(0, 32)}>{sor}</MunkaListaItem>
+          ))}
         </MunkaLista>
       </RevealBlokk>
 
@@ -337,19 +313,11 @@ function MunkaTartalom({ lathato }: MunkaTartalomTulajdonsagok) {
         ref={elvarasokReveal.referencia}
         className={elvarasokReveal.lathato ? 'lathato' : undefined}
       >
-        <H2Text>Kit keresünk?</H2Text>
+        <H2Text>{tartalom.elvarasokCim}</H2Text>
         <MunkaLista>
-          <MunkaListaItem>Érvényes B jogosítvány (BE előny)</MunkaListaItem>
-          <MunkaListaItem>
-            Megbízható, precíz, ügyfélközpontú hozzáállás
-          </MunkaListaItem>
-          <MunkaListaItem>Tiszta előélet és gondos járműkezelés</MunkaListaItem>
-          <MunkaListaItem>
-            Rugalmasság regionális és országos útvonalakra
-          </MunkaListaItem>
-          <MunkaListaItem>
-            Alapszintű német és/vagy angol kommunikáció
-          </MunkaListaItem>
+          {tartalom.elvarasok.map((sor) => (
+            <MunkaListaItem key={sor.slice(0, 32)}>{sor}</MunkaListaItem>
+          ))}
         </MunkaLista>
       </RevealBlokk>
 
@@ -357,17 +325,11 @@ function MunkaTartalom({ lathato }: MunkaTartalomTulajdonsagok) {
         ref={kinalunkReveal.referencia}
         className={kinalunkReveal.lathato ? 'lathato' : undefined}
       >
-        <H2Text>Mit kínálunk?</H2Text>
+        <H2Text>{tartalom.kinalunkCim}</H2Text>
         <MunkaLista>
-          <MunkaListaItem>
-            Változatos, felelősségteljes munka prémium járműlogisztikában
-          </MunkaListaItem>
-          <MunkaListaItem>
-            Átlátható folyamatok és digitális megbízáskezelés
-          </MunkaListaItem>
-          <MunkaListaItem>
-            Megbízható szakmai közeg: pontosság, biztonság, gondosság
-          </MunkaListaItem>
+          {tartalom.kinalunk.map((sor) => (
+            <MunkaListaItem key={sor.slice(0, 32)}>{sor}</MunkaListaItem>
+          ))}
         </MunkaLista>
       </RevealBlokk>
       <RevealBlokk
@@ -378,7 +340,7 @@ function MunkaTartalom({ lathato }: MunkaTartalomTulajdonsagok) {
           type="button"
           onClick={() => navigate('/karrier/jelentkezes')}
         >
-          <PremiumButtonText>Csatlakoznál hozzánk?</PremiumButtonText>
+          <PremiumButtonText>{tartalom.cta}</PremiumButtonText>
         </PremiumButton>
       </RevealBlokk>
 
@@ -390,6 +352,8 @@ function MunkaTartalom({ lathato }: MunkaTartalomTulajdonsagok) {
 }
 
 export function Karrier() {
+  const { szoveg } = useNyelv()
+  const karrier = szoveg.karrier
   const [lepes, setLepes] = useState(0)
   const [lathato, setLathato] = useState(false)
 
@@ -426,17 +390,20 @@ export function Karrier() {
   }, [])
 
   return (
-    <Container className="karrier-oldal">
-      <SubContainer>
-        {lepes === 0 ? (
-          <Title lathato={lathato}>Csatlakoznál hozzánk?</Title>
-        ) : lepes === 1 ? (
-          <Title lathato={lathato}>Ismerd meg a munkánkat.</Title>
-        ) : lepes === 2 ? (
-          <MunkaTartalom lathato={lathato} />
-        ) : null}
-      </SubContainer>
-    </Container>
+    <>
+      <SeoFej feluliras={karrier.seo} />
+      <Container className="karrier-oldal">
+        <SubContainer>
+          {lepes === 0 ? (
+            <Title lathato={lathato}>{karrier.animacioCim1}</Title>
+          ) : lepes === 1 ? (
+            <Title lathato={lathato}>{karrier.animacioCim2}</Title>
+          ) : lepes === 2 ? (
+            <MunkaTartalom lathato={lathato} tartalom={karrier} />
+          ) : null}
+        </SubContainer>
+      </Container>
+    </>
   )
 }
 

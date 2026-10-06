@@ -21,6 +21,9 @@ import {
   profilkepNormalizal,
 } from './urlapFajl'
 import { oldalTetejereGorget } from '../lib/gorgetes'
+import { useNyelv } from '../nyelv/useNyelv'
+import type { UrlapOpcio } from '../nyelv/nyelvTipusok'
+import { SeoFej } from './SeoFej'
 
 export type { FeltoltesKulcs, UrlapAllapot } from './urlapTipusok'
 
@@ -78,20 +81,6 @@ const kezdoAllapot: UrlapAllapot = {
     referencia: null,
   },
 }
-
-const ORSZAGOK = [
-  'Németország',
-  'Magyarország',
-  'Ausztria',
-  'Lengyelország',
-  'Csehország',
-  'Szlovákia',
-  'Románia',
-  'Hollandia',
-  'Belgium',
-  'Franciaország',
-  'Egyéb',
-] as const
 
 const mezoHatter = `
   width: 100%;
@@ -623,7 +612,7 @@ const PopupZarGomb = styled.button`
 type RadioProps = {
   nev: string
   ertek: string
-  opciok: string[]
+  opciok: UrlapOpcio[]
   onChange: (ertek: string) => void
   hiba?: string
 }
@@ -633,18 +622,18 @@ function RadioCsoport({ nev, ertek, opciok, onChange, hiba }: RadioProps) {
     <div>
       <ValaszLista role="radiogroup" aria-label={nev} $hibas={Boolean(hiba)}>
         {opciok.map((opcio) => {
-          const checked = ertek === opcio
+          const checked = ertek === opcio.ertek
           return (
-            <ValaszSor key={opcio}>
+            <ValaszSor key={opcio.ertek}>
               <input
                 type="radio"
                 name={nev}
-                value={opcio}
+                value={opcio.ertek}
                 checked={checked}
-                onChange={() => onChange(opcio)}
+                onChange={() => onChange(opcio.ertek)}
               />
               <Jelolo tipus="radio" checked={checked} aria-hidden="true" />
-              <span>{opcio}</span>
+              <span>{opcio.felirat}</span>
             </ValaszSor>
           )
         })}
@@ -656,11 +645,13 @@ function RadioCsoport({ nev, ertek, opciok, onChange, hiba }: RadioProps) {
 
 type CheckboxProps = {
   ertekek: string[]
-  opciok: string[]
+  opciok: UrlapOpcio[]
   onChange: (ertekek: string[]) => void
   egyebErtek?: string
   onEgyebChange?: (ertek: string) => void
-  egyebCimke?: string
+  egyebKulcs: string
+  egyebPlaceholder: string
+  egyebAria: string
   hiba?: string
   egyebHiba?: string
 }
@@ -671,34 +662,36 @@ function CheckboxCsoport({
   onChange,
   egyebErtek,
   onEgyebChange,
-  egyebCimke = 'Egyéb',
+  egyebKulcs,
+  egyebPlaceholder,
+  egyebAria,
   hiba,
   egyebHiba,
 }: CheckboxProps) {
-  function valt(opcio: string) {
-    if (ertekek.includes(opcio)) {
-      onChange(ertekek.filter((e) => e !== opcio))
+  function valt(opcioErtek: string) {
+    if (ertekek.includes(opcioErtek)) {
+      onChange(ertekek.filter((e) => e !== opcioErtek))
       return
     }
-    onChange([...ertekek, opcio])
+    onChange([...ertekek, opcioErtek])
   }
 
   return (
     <div>
       <ValaszLista $hibas={Boolean(hiba || egyebHiba)}>
         {opciok.map((opcio) => {
-          const checked = ertekek.includes(opcio)
-          const egyeb = opcio === egyebCimke
+          const checked = ertekek.includes(opcio.ertek)
+          const egyeb = opcio.ertek === egyebKulcs
           return (
-            <div key={opcio}>
+            <div key={opcio.ertek}>
               <ValaszSor>
                 <input
                   type="checkbox"
                   checked={checked}
-                  onChange={() => valt(opcio)}
+                  onChange={() => valt(opcio.ertek)}
                 />
                 <Jelolo tipus="checkbox" checked={checked} aria-hidden="true" />
-                <span>{opcio}</span>
+                <span>{opcio.felirat}</span>
               </ValaszSor>
               {egyeb && checked && onEgyebChange ? (
                 <EgyebMezo
@@ -706,8 +699,8 @@ function CheckboxCsoport({
                   value={egyebErtek ?? ''}
                   $hibas={Boolean(egyebHiba)}
                   onChange={(e) => onEgyebChange(e.target.value)}
-                  placeholder="Kérjük, részletezze"
-                  aria-label={`${egyebCimke} megnevezése`}
+                  placeholder={egyebPlaceholder}
+                  aria-label={egyebAria}
                 />
               ) : null}
             </div>
@@ -729,6 +722,7 @@ type FeltoltesProps = {
   onChange: (fajl: File | null) => void | Promise<void>
   hiba?: string
   kotelezo?: boolean
+  feltoltesGomb: string
 }
 
 function FeltoltesMezo({
@@ -740,6 +734,7 @@ function FeltoltesMezo({
   onChange,
   hiba,
   kotelezo = true,
+  feltoltesGomb,
 }: FeltoltesProps) {
   async function kezel(e: ChangeEvent<HTMLInputElement>) {
     const kivalasztott = e.target.files?.[0] ?? null
@@ -756,7 +751,7 @@ function FeltoltesMezo({
       <Cimke as="span">{leiras}</Cimke>
       <FeltoltesGomb $hibas={Boolean(hiba)}>
         <input type="file" accept={accept} onChange={kezel} />
-        Dokumentum feltöltése
+        {feltoltesGomb}
       </FeltoltesGomb>
       {fajl ? <FajlNev>{fajl.name}</FajlNev> : null}
       {seged ? <Seged>{seged}</Seged> : null}
@@ -770,6 +765,9 @@ function FeltoltesMezo({
  */
 export function Urlap() {
   const navigate = useNavigate()
+  const { szoveg } = useNyelv()
+  const t = szoveg.jelentkezes
+  const op = t.opciok
   const maxSzuletesiDatum = legkesobbiSzuletesiDatumTizennyolcEvhez()
   const [adat, setAdat] = useState<UrlapAllapot>(kezdoAllapot)
   const [hibak, setHibak] = useState<UrlapHibak>({})
@@ -832,7 +830,7 @@ export function Urlap() {
       return
     }
 
-    const tipusHiba = ellenorizFeltoltesFajl(kulcs, fajl)
+    const tipusHiba = ellenorizFeltoltesFajl(kulcs, fajl, t.hibak)
     if (tipusHiba) {
       setHibak((elozo) => ({ ...elozo, [`feltoltes.${kulcs}`]: tipusHiba }))
       return
@@ -847,7 +845,7 @@ export function Urlap() {
         setHibak((elozo) => ({
           ...elozo,
           [`feltoltes.${kulcs}`]:
-            err instanceof Error ? err.message : 'A profilkép feldolgozása sikertelen.',
+            err instanceof Error ? err.message : t.hibak.profilkepFeldolgozas,
         }))
         return
       } finally {
@@ -864,7 +862,7 @@ export function Urlap() {
 
   async function kuldes(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    const ujHibak = ellenorizUrlap(adat)
+    const ujHibak = ellenorizUrlap(adat, t.hibak)
     setHibak(ujHibak)
 
     if (Object.keys(ujHibak).length > 0) {
@@ -885,7 +883,7 @@ export function Urlap() {
       setKuldesHiba(
         e instanceof Error
           ? e.message
-          : 'A jelentkezés elküldése sikertelen. Próbálja újra.',
+          : t.hibak.kuldesSikertelen,
       )
     } finally {
       setKuldesFut(false)
@@ -895,24 +893,22 @@ export function Urlap() {
   const hibaDarab = Object.keys(hibak).length
 
   return (
-    <Oldal className="urlap-oldal">
-      <Keret>
-        <FejlecBlokk>
-          <FoCim>Sofőr jelentkezési űrlap</FoCim>
-          <Alcim>Németországi prémium- és luxusautó-vezető</Alcim>
-          <Bevezeto>
-            Kérjük, töltse ki az alábbi űrlapot a lehető legpontosabban. A
-            jelentkezés során megadott adatokat és dokumentumokat a kiválasztási
-            folyamat során ellenőrizhetjük.
-          </Bevezeto>
-        </FejlecBlokk>
+    <>
+      <SeoFej feluliras={t.seo} />
+      <Oldal className="urlap-oldal">
+        <Keret>
+          <FejlecBlokk>
+            <FoCim>{t.foCim}</FoCim>
+            <Alcim>{t.alcim}</Alcim>
+            <Bevezeto>{t.bevezeto}</Bevezeto>
+          </FejlecBlokk>
 
-        <Form onSubmit={kuldes} noValidate>
-          <Szekcio aria-labelledby="szemelyes-adatok">
-            <SzekcioCim id="szemelyes-adatok">1. Személyes adatok</SzekcioCim>
+          <Form onSubmit={kuldes} noValidate>
+            <Szekcio aria-labelledby="szemelyes-adatok">
+              <SzekcioCim id="szemelyes-adatok">{t.szekcio.szemelyes}</SzekcioCim>
 
-            <MezoCsoport data-hiba={hibak.teljesNev ? 'true' : undefined}>
-              <Cimke htmlFor="teljesNev">Teljes név</Cimke>
+              <MezoCsoport data-hiba={hibak.teljesNev ? 'true' : undefined}>
+                <Cimke htmlFor="teljesNev">{t.mezo.teljesNev}</Cimke>
               <SzovegMezo
                 id="teljesNev"
                 type="text"
@@ -925,8 +921,8 @@ export function Urlap() {
               {hibak.teljesNev ? <HibaUzenet>{hibak.teljesNev}</HibaUzenet> : null}
             </MezoCsoport>
 
-            <MezoCsoport data-hiba={hibak.szuletesiDatum ? 'true' : undefined}>
-              <Cimke htmlFor="szuletesiDatum">Születési dátum</Cimke>
+              <MezoCsoport data-hiba={hibak.szuletesiDatum ? 'true' : undefined}>
+                <Cimke htmlFor="szuletesiDatum">{t.mezo.szuletesiDatum}</Cimke>
               <DatumMezo
                 id="szuletesiDatum"
                 type="date"
@@ -941,8 +937,8 @@ export function Urlap() {
               ) : null}
             </MezoCsoport>
 
-            <MezoCsoport data-hiba={hibak.telefon ? 'true' : undefined}>
-              <Cimke htmlFor="telefon">Telefonszám</Cimke>
+              <MezoCsoport data-hiba={hibak.telefon ? 'true' : undefined}>
+                <Cimke htmlFor="telefon">{t.mezo.telefon}</Cimke>
               <SzovegMezo
                 id="telefon"
                 type="tel"
@@ -955,8 +951,8 @@ export function Urlap() {
               {hibak.telefon ? <HibaUzenet>{hibak.telefon}</HibaUzenet> : null}
             </MezoCsoport>
 
-            <MezoCsoport data-hiba={hibak.email ? 'true' : undefined}>
-              <Cimke htmlFor="email">E-mail-cím</Cimke>
+              <MezoCsoport data-hiba={hibak.email ? 'true' : undefined}>
+                <Cimke htmlFor="email">{t.mezo.email}</Cimke>
               <SzovegMezo
                 id="email"
                 type="email"
@@ -969,8 +965,8 @@ export function Urlap() {
               {hibak.email ? <HibaUzenet>{hibak.email}</HibaUzenet> : null}
             </MezoCsoport>
 
-            <MezoCsoport data-hiba={hibak.lakhely ? 'true' : undefined}>
-              <Cimke htmlFor="lakhely">Lakóhely / irányítószám</Cimke>
+              <MezoCsoport data-hiba={hibak.lakhely ? 'true' : undefined}>
+                <Cimke htmlFor="lakhely">{t.mezo.lakhely}</Cimke>
               <SzovegMezo
                 id="lakhely"
                 type="text"
@@ -983,604 +979,512 @@ export function Urlap() {
               {hibak.lakhely ? <HibaUzenet>{hibak.lakhely}</HibaUzenet> : null}
             </MezoCsoport>
 
-            <MezoCsoport data-hiba={hibak.orszag ? 'true' : undefined}>
-              <Cimke htmlFor="orszag">Melyik országban él jelenleg?</Cimke>
-              <SelectMezo
-                id="orszag"
-                required
-                value={adat.orszag}
-                $hibas={Boolean(hibak.orszag)}
-                onChange={(e) => frissit('orszag', e.target.value)}
-              >
-                <option value="">Válasszon…</option>
-                {ORSZAGOK.map((orszag) => (
-                  <option key={orszag} value={orszag}>
-                    {orszag}
-                  </option>
-                ))}
-              </SelectMezo>
-              {hibak.orszag ? <HibaUzenet>{hibak.orszag}</HibaUzenet> : null}
-            </MezoCsoport>
-          </Szekcio>
+              <MezoCsoport data-hiba={hibak.orszag ? 'true' : undefined}>
+                <Cimke htmlFor="orszag">{t.mezo.orszag}</Cimke>
+                <SelectMezo
+                  id="orszag"
+                  required
+                  value={adat.orszag}
+                  $hibas={Boolean(hibak.orszag)}
+                  onChange={(e) => frissit('orszag', e.target.value)}
+                >
+                  <option value="">{t.valasszon}</option>
+                  {op.orszagok.map((orszag) => (
+                    <option key={orszag.ertek} value={orszag.ertek}>
+                      {orszag.felirat}
+                    </option>
+                  ))}
+                </SelectMezo>
+                {hibak.orszag ? <HibaUzenet>{hibak.orszag}</HibaUzenet> : null}
+              </MezoCsoport>
+            </Szekcio>
 
-          <Szekcio aria-labelledby="vezetesi-tapasztalat">
-            <SzekcioCim id="vezetesi-tapasztalat">
-              2. Vezetési tapasztalat
-            </SzekcioCim>
+            <Szekcio aria-labelledby="vezetesi-tapasztalat">
+              <SzekcioCim id="vezetesi-tapasztalat">{t.szekcio.vezetes}</SzekcioCim>
 
-            <MezoCsoport data-hiba={hibak.bJogositvanyEve ? 'true' : undefined}>
-              <Cimke as="span">
-                Hány éve rendelkezik B kategóriás jogosítvánnyal?
-              </Cimke>
-              <RadioCsoport
-                nev="bJogositvanyEve"
-                ertek={adat.bJogositvanyEve}
-                opciok={[
-                  'Kevesebb mint 1 év',
-                  '1–2 év',
-                  '3–5 év',
-                  'Több mint 5 év',
-                ]}
-                hiba={hibak.bJogositvanyEve}
-                onChange={(v) => frissit('bJogositvanyEve', v)}
-              />
-            </MezoCsoport>
+              <MezoCsoport data-hiba={hibak.bJogositvanyEve ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.bJogositvanyEve}</Cimke>
+                <RadioCsoport
+                  nev="bJogositvanyEve"
+                  ertek={adat.bJogositvanyEve}
+                  opciok={op.bJogositvanyEve}
+                  hiba={hibak.bJogositvanyEve}
+                  onChange={(v) => frissit('bJogositvanyEve', v)}
+                />
+              </MezoCsoport>
 
-            <MezoCsoport data-hiba={hibak.professzionalisEv ? 'true' : undefined}>
-              <Cimke as="span">
-                Hány év professzionális vezetési tapasztalattal rendelkezik?
-              </Cimke>
-              <RadioCsoport
-                nev="professzionalisEv"
-                ertek={adat.professzionalisEv}
-                opciok={['Nincs', '1–2 év', '3–5 év', 'Több mint 5 év']}
-                hiba={hibak.professzionalisEv}
-                onChange={(v) => frissit('professzionalisEv', v)}
-              />
-            </MezoCsoport>
+              <MezoCsoport data-hiba={hibak.professzionalisEv ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.professzionalisEv}</Cimke>
+                <RadioCsoport
+                  nev="professzionalisEv"
+                  ertek={adat.professzionalisEv}
+                  opciok={op.professzionalisEv}
+                  hiba={hibak.professzionalisEv}
+                  onChange={(v) => frissit('professzionalisEv', v)}
+                />
+              </MezoCsoport>
 
-            <MezoCsoport data-hiba={hibak.soforkentNemetorszag ? 'true' : undefined}>
-              <Cimke as="span">
-                Dolgozott már professzionális sofőrként Németországban?
-              </Cimke>
-              <RadioCsoport
-                nev="soforkentNemetorszag"
-                ertek={adat.soforkentNemetorszag}
-                opciok={['Igen', 'Nem']}
-                hiba={hibak.soforkentNemetorszag}
-                onChange={(v) => frissit('soforkentNemetorszag', v)}
-              />
-            </MezoCsoport>
+              <MezoCsoport data-hiba={hibak.soforkentNemetorszag ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.soforkentNemetorszag}</Cimke>
+                <RadioCsoport
+                  nev="soforkentNemetorszag"
+                  ertek={adat.soforkentNemetorszag}
+                  opciok={op.igenNem}
+                  hiba={hibak.soforkentNemetorszag}
+                  onChange={(v) => frissit('soforkentNemetorszag', v)}
+                />
+              </MezoCsoport>
 
-            <MezoCsoport
-              data-hiba={
-                hibak.korabbiTerulet || hibak.korabbiTeruletEgyeb ? 'true' : undefined
-              }
-            >
-              <Cimke as="span">Milyen területen dolgozott korábban?</Cimke>
-              <CheckboxCsoport
-                ertekek={adat.korabbiTerulet}
-                opciok={[
-                  'Személyszállítás',
-                  'Fahrzeugüberführung / autóátadás',
-                  'VIP- vagy luxus személyszállítás',
-                  'Autókölcsönző',
-                  'Taxi',
-                  'Futár / kiszállítás',
-                  'Egyéb',
-                ]}
-                egyebErtek={adat.korabbiTeruletEgyeb}
-                onEgyebChange={(v) => frissit('korabbiTeruletEgyeb', v)}
-                hiba={hibak.korabbiTerulet}
-                egyebHiba={hibak.korabbiTeruletEgyeb}
-                onChange={(v) => frissit('korabbiTerulet', v)}
-              />
-            </MezoCsoport>
-          </Szekcio>
-
-          <Szekcio aria-labelledby="premium-tapasztalat">
-            <SzekcioCim id="premium-tapasztalat">
-              3. Prémium- és luxusautó-tapasztalat
-            </SzekcioCim>
-
-            <MezoCsoport data-hiba={hibak.premiumTapasztalat ? 'true' : undefined}>
-              <Cimke as="span">
-                Vezetett már prémium vagy luxus kategóriájú járműveket?
-              </Cimke>
-              <RadioCsoport
-                nev="premiumTapasztalat"
-                ertek={adat.premiumTapasztalat}
-                opciok={['Igen', 'Nem']}
-                hiba={hibak.premiumTapasztalat}
-                onChange={(v) => frissit('premiumTapasztalat', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport
-              data-hiba={
-                hibak.premiumMarkak || hibak.premiumMarkaEgyeb ? 'true' : undefined
-              }
-            >
-              <Cimke as="span">
-                Milyen prémium/luxus márkákkal rendelkezik tapasztalattal?
-              </Cimke>
-              <CheckboxCsoport
-                ertekek={adat.premiumMarkak}
-                opciok={[
-                  'BMW',
-                  'Mercedes-Benz',
-                  'Audi',
-                  'Porsche',
-                  'Bentley',
-                  'Lamborghini',
-                  'Ferrari',
-                  'Range Rover',
-                  'Egyéb',
-                ]}
-                egyebErtek={adat.premiumMarkaEgyeb}
-                onEgyebChange={(v) => frissit('premiumMarkaEgyeb', v)}
-                hiba={hibak.premiumMarkak}
-                egyebHiba={hibak.premiumMarkaEgyeb}
-                onChange={(v) => frissit('premiumMarkak', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport data-hiba={hibak.premiumGyakorisag ? 'true' : undefined}>
-              <Cimke as="span">
-                Milyen gyakran vezetett prémium vagy luxus járműveket?
-              </Cimke>
-              <RadioCsoport
-                nev="premiumGyakorisag"
-                ertek={adat.premiumGyakorisag}
-                opciok={['Alkalmanként', 'Rendszeresen', 'Naponta']}
-                hiba={hibak.premiumGyakorisag}
-                onChange={(v) => frissit('premiumGyakorisag', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport data-hiba={hibak.automataValto ? 'true' : undefined}>
-              <Cimke as="span">
-                Van tapasztalata automata váltós, nagy teljesítményű járművek
-                vezetésében?
-              </Cimke>
-              <RadioCsoport
-                nev="automataValto"
-                ertek={adat.automataValto}
-                opciok={['Igen', 'Nem']}
-                hiba={hibak.automataValto}
-                onChange={(v) => frissit('automataValto', v)}
-              />
-            </MezoCsoport>
-          </Szekcio>
-
-          <Szekcio aria-labelledby="nemetorszag">
-            <SzekcioCim id="nemetorszag">4. Németországi munkavégzés</SzekcioCim>
-
-            <MezoCsoport data-hiba={hibak.munkavallalasiJog ? 'true' : undefined}>
-              <Cimke as="span">
-                Rendelkezik érvényes munkavállalási jogosultsággal Németországban?
-              </Cimke>
-              <RadioCsoport
-                nev="munkavallalasiJog"
-                ertek={adat.munkavallalasiJog}
-                opciok={['Igen', 'Nem']}
-                hiba={hibak.munkavallalasiJog}
-                onChange={(v) => frissit('munkavallalasiJog', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport data-hiba={hibak.nemetorszagiCim ? 'true' : undefined}>
-              <Cimke as="span">Rendelkezik németországi lakcímmel?</Cimke>
-              <RadioCsoport
-                nev="nemetorszagiCim"
-                ertek={adat.nemetorszagiCim}
-                opciok={['Igen', 'Nem']}
-                hiba={hibak.nemetorszagiCim}
-                onChange={(v) => frissit('nemetorszagiCim', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport data-hiba={hibak.munkabaAllas ? 'true' : undefined}>
-              <Cimke as="span">Mikor tud munkába állni?</Cimke>
-              <RadioCsoport
-                nev="munkabaAllas"
-                ertek={adat.munkabaAllas}
-                opciok={[
-                  'Azonnal',
-                  '1 héten belül',
-                  '2 héten belül',
-                  '1 hónapon belül',
-                  'Később',
-                ]}
-                hiba={hibak.munkabaAllas}
-                onChange={(v) => frissit('munkabaAllas', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport data-hiba={hibak.rugalmassag ? 'true' : undefined}>
-              <Cimke as="span">
-                Mennyire rugalmas a munkavégzés helyét illetően?
-              </Cimke>
-              <RadioCsoport
-                nev="rugalmassag"
-                ertek={adat.rugalmassag}
-                opciok={[
-                  'Csak a lakóhelyem közelében',
-                  'Németországon belül rugalmas vagyok',
-                  'Egész Németországban vállalok munkát',
-                ]}
-                hiba={hibak.rugalmassag}
-                onChange={(v) => frissit('rugalmassag', v)}
-              />
-            </MezoCsoport>
-          </Szekcio>
-
-          <Szekcio aria-labelledby="jogositvany">
-            <SzekcioCim id="jogositvany">
-              5. Jogosítvány és vezetési előélet
-            </SzekcioCim>
-
-            <MezoCsoport
-              data-hiba={
-                hibak.jogositvanyKategoria || hibak.jogositvanyEgyeb
-                  ? 'true'
-                  : undefined
-              }
-            >
-              <Cimke as="span">
-                Milyen kategóriájú jogosítvánnyal rendelkezik?
-              </Cimke>
-              <CheckboxCsoport
-                ertekek={adat.jogositvanyKategoria}
-                opciok={['B', 'BE', 'C', 'Egyéb']}
-                egyebErtek={adat.jogositvanyEgyeb}
-                onEgyebChange={(v) => frissit('jogositvanyEgyeb', v)}
-                hiba={hibak.jogositvanyKategoria}
-                egyebHiba={hibak.jogositvanyEgyeb}
-                onChange={(v) => frissit('jogositvanyKategoria', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport data-hiba={hibak.jogositvanyErvenyes ? 'true' : undefined}>
-              <Cimke as="span">Érvényes jelenleg a jogosítványa?</Cimke>
-              <RadioCsoport
-                nev="jogositvanyErvenyes"
-                ertek={adat.jogositvanyErvenyes}
-                opciok={['Igen', 'Nem']}
-                hiba={hibak.jogositvanyErvenyes}
-                onChange={(v) => frissit('jogositvanyErvenyes', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport data-hiba={hibak.eltiltas ? 'true' : undefined}>
-              <Cimke as="span">
-                Volt az elmúlt 5 évben vezetéstől eltiltása vagy súlyos
-                közlekedési szabálysértése?
-              </Cimke>
-              <RadioCsoport
-                nev="eltiltas"
-                ertek={adat.eltiltas}
-                opciok={['Igen', 'Nem']}
-                hiba={hibak.eltiltas}
-                onChange={(v) => frissit('eltiltas', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport data-hiba={hibak.erkolesi ? 'true' : undefined}>
-              <Cimke as="span">
-                Rendelkezik Führungszeugnisszel / erkölcsi bizonyítvánnyal?
-              </Cimke>
-              <RadioCsoport
-                nev="erkolesi"
-                ertek={adat.erkolesi}
-                opciok={['Igen', 'Nem', 'Beszerzés alatt']}
-                hiba={hibak.erkolesi}
-                onChange={(v) => frissit('erkolesi', v)}
-              />
-            </MezoCsoport>
-          </Szekcio>
-
-          <Szekcio aria-labelledby="nyelv">
-            <SzekcioCim id="nyelv">6. Nyelvtudás</SzekcioCim>
-
-            <MezoCsoport data-hiba={hibak.nemetNyelv ? 'true' : undefined}>
-              <Cimke as="span">Milyen szinten beszél németül?</Cimke>
-              <RadioCsoport
-                nev="nemetNyelv"
-                ertek={adat.nemetNyelv}
-                opciok={[
-                  'Egyáltalán nem',
-                  'Alapszint',
-                  'Kommunikációs szint',
-                  'Jó',
-                  'Anyanyelvi szint',
-                ]}
-                hiba={hibak.nemetNyelv}
-                onChange={(v) => frissit('nemetNyelv', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport data-hiba={hibak.angolNyelv ? 'true' : undefined}>
-              <Cimke as="span">Milyen szinten beszél angolul?</Cimke>
-              <RadioCsoport
-                nev="angolNyelv"
-                ertek={adat.angolNyelv}
-                opciok={[
-                  'Egyáltalán nem',
-                  'Alapszint',
-                  'Kommunikációs szint',
-                  'Jó',
-                  'Anyanyelvi szint',
-                ]}
-                hiba={hibak.angolNyelv}
-                onChange={(v) => frissit('angolNyelv', v)}
-              />
-            </MezoCsoport>
-          </Szekcio>
-
-          <Szekcio aria-labelledby="keszsegek">
-            <SzekcioCim id="keszsegek">
-              7. Munkavégzéshez szükséges készségek
-            </SzekcioCim>
-
-            <MezoCsoport data-hiba={hibak.okostelefon ? 'true' : undefined}>
-              <Cimke as="span">
-                Rendelkezik okostelefonnal és mobilinternettel?
-              </Cimke>
-              <RadioCsoport
-                nev="okostelefon"
-                ertek={adat.okostelefon}
-                opciok={['Igen', 'Nem']}
-                hiba={hibak.okostelefon}
-                onChange={(v) => frissit('okostelefon', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport data-hiba={hibak.navigacio ? 'true' : undefined}>
-              <Cimke as="span">
-                Tudja használni a Google Maps vagy más navigációs alkalmazásokat?
-              </Cimke>
-              <RadioCsoport
-                nev="navigacio"
-                ertek={adat.navigacio}
-                opciok={['Igen', 'Nem']}
-                hiba={hibak.navigacio}
-                onChange={(v) => frissit('navigacio', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport data-hiba={hibak.gpsKovetes ? 'true' : undefined}>
-              <Cimke as="span">
-                Vállalja GPS-alapú munkakövetés és digitális munkarendszer
-                használatát?
-              </Cimke>
-              <RadioCsoport
-                nev="gpsKovetes"
-                ertek={adat.gpsKovetes}
-                opciok={['Igen', 'Nem']}
-                hiba={hibak.gpsKovetes}
-                onChange={(v) => frissit('gpsKovetes', v)}
-              />
-            </MezoCsoport>
-          </Szekcio>
-
-          <Szekcio aria-labelledby="feltetelek">
-            <SzekcioCim id="feltetelek">8. Munkavállalási feltételek</SzekcioCim>
-
-            <MezoCsoport data-hiba={hibak.hosszuUt ? 'true' : undefined}>
-              <Cimke as="span">
-                Hajlandó 200–500 km-es utakat is vállalni?
-              </Cimke>
-              <RadioCsoport
-                nev="hosszuUt"
-                ertek={adat.hosszuUt}
-                opciok={['Igen', 'Nem']}
-                hiba={hibak.hosszuUt}
-                onChange={(v) => frissit('hosszuUt', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport data-hiba={hibak.hetvege ? 'true' : undefined}>
-              <Cimke as="span">Vállal hétvégi munkavégzést?</Cimke>
-              <RadioCsoport
-                nev="hetvege"
-                ertek={adat.hetvege}
-                opciok={['Igen', 'Nem', 'Esetenként']}
-                hiba={hibak.hetvege}
-                onChange={(v) => frissit('hetvege', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport data-hiba={hibak.tobbnapos ? 'true' : undefined}>
-              <Cimke as="span">
-                Vállal többnapos munkát Németországon belül?
-              </Cimke>
-              <RadioCsoport
-                nev="tobbnapos"
-                ertek={adat.tobbnapos}
-                opciok={['Igen', 'Nem']}
-                hiba={hibak.tobbnapos}
-                onChange={(v) => frissit('tobbnapos', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport data-hiba={hibak.hetiNapok ? 'true' : undefined}>
-              <Cimke as="span">Hány napot tud hetente dolgozni?</Cimke>
-              <RadioCsoport
-                nev="hetiNapok"
-                ertek={adat.hetiNapok}
-                opciok={['2–3 nap', '4 nap', '5 nap', '6 vagy több nap']}
-                hiba={hibak.hetiNapok}
-                onChange={(v) => frissit('hetiNapok', v)}
-              />
-            </MezoCsoport>
-          </Szekcio>
-
-          <Szekcio aria-labelledby="szurok">
-            <SzekcioCim id="szurok">9. Fontos szűrőkérdések</SzekcioCim>
-
-            <MezoCsoport data-hiba={hibak.haromEvAktiv ? 'true' : undefined}>
-              <Cimke as="span">
-                Van legalább 3 év aktív vezetési tapasztalata?
-              </Cimke>
-              <RadioCsoport
-                nev="haromEvAktiv"
-                ertek={adat.haromEvAktiv}
-                opciok={['Igen', 'Nem']}
-                hiba={hibak.haromEvAktiv}
-                onChange={(v) => frissit('haromEvAktiv', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport data-hiba={hibak.haromEvProf ? 'true' : undefined}>
-              <Cimke as="span">
-                Van legalább 3 év professzionális vezetési tapasztalata?
-              </Cimke>
-              <RadioCsoport
-                nev="haromEvProf"
-                ertek={adat.haromEvProf}
-                opciok={['Igen', 'Nem']}
-                hiba={hibak.haromEvProf}
-                onChange={(v) => frissit('haromEvProf', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport data-hiba={hibak.premiumSzuro ? 'true' : undefined}>
-              <Cimke as="span">
-                Van tapasztalata prémium vagy luxus járművek vezetésében?
-              </Cimke>
-              <RadioCsoport
-                nev="premiumSzuro"
-                ertek={adat.premiumSzuro}
-                opciok={['Igen', 'Nem']}
-                hiba={hibak.premiumSzuro}
-                onChange={(v) => frissit('premiumSzuro', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport data-hiba={hibak.biztonsagosVezetes ? 'true' : undefined}>
-              <Cimke as="span">
-                Biztonságosan és felelősségteljesen vezet nagy értékű járműveket?
-              </Cimke>
-              <RadioCsoport
-                nev="biztonsagosVezetes"
-                ertek={adat.biztonsagosVezetes}
-                opciok={['Igen', 'Nem']}
-                hiba={hibak.biztonsagosVezetes}
-                onChange={(v) => frissit('biztonsagosVezetes', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport data-hiba={hibak.gondosKezeles ? 'true' : undefined}>
-              <Cimke as="span">
-                Vállalja, hogy a rábízott járműveket kiemelt gondossággal kezeli?
-              </Cimke>
-              <RadioCsoport
-                nev="gondosKezeles"
-                ertek={adat.gondosKezeles}
-                opciok={['Igen', 'Nem']}
-                hiba={hibak.gondosKezeles}
-                onChange={(v) => frissit('gondosKezeles', v)}
-              />
-            </MezoCsoport>
-
-            <MezoCsoport data-hiba={hibak.ellenorzesElfogadas ? 'true' : undefined}>
-              <Cimke as="span">
-                Elfogadja, hogy a jelentkezés során vezetési tapasztalatát és
-                dokumentumait ellenőrizhetjük?
-              </Cimke>
-              <RadioCsoport
-                nev="ellenorzesElfogadas"
-                ertek={adat.ellenorzesElfogadas}
-                opciok={['Igen', 'Nem']}
-                hiba={hibak.ellenorzesElfogadas}
-                onChange={(v) => frissit('ellenorzesElfogadas', v)}
-              />
-            </MezoCsoport>
-          </Szekcio>
-
-          <Szekcio aria-labelledby="dokumentumok">
-            <SzekcioCim id="dokumentumok">10. Dokumentumok feltöltése</SzekcioCim>
-            <SzekcioBevezeto>
-              Kérjük, töltse fel az alábbi dokumentumokat.
-            </SzekcioBevezeto>
-
-            <div data-hiba={hibak['feltoltes.szemelyi'] ? 'true' : undefined}>
-              <FeltoltesMezo
-                cim="Személyazonosító okmány"
-                leiras="Személyi igazolvány vagy útlevél feltöltése"
-                accept=".pdf,.jpg,.jpeg,.png,.webp,image/*,application/pdf"
-                fajl={adat.feltoltesek.szemelyi}
-                hiba={hibak['feltoltes.szemelyi']}
-                onChange={(f) => feltoltesFrissit('szemelyi', f)}
-              />
-            </div>
-            <div data-hiba={hibak['feltoltes.jogositvany'] ? 'true' : undefined}>
-              <FeltoltesMezo
-                cim="Jogosítvány"
-                leiras="Érvényes vezetői engedély mindkét oldalának feltöltése"
-                accept=".pdf,.jpg,.jpeg,.png,.webp,image/*,application/pdf"
-                fajl={adat.feltoltesek.jogositvany}
-                hiba={hibak['feltoltes.jogositvany']}
-                onChange={(f) => feltoltesFrissit('jogositvany', f)}
-              />
-            </div>
-            <div
-              data-hiba={hibak['feltoltes.fuehrungszeugnis'] ? 'true' : undefined}
-            >
-              <FeltoltesMezo
-                cim="Führungszeugnis / erkölcsi bizonyítvány"
-                leiras="Führungszeugnis feltöltése"
-                accept=".pdf,.jpg,.jpeg,.png,.webp,image/*,application/pdf"
-                seged="Ha még nincs, a jelentkezés során jelezze."
-                fajl={adat.feltoltesek.fuehrungszeugnis}
-                hiba={hibak['feltoltes.fuehrungszeugnis']}
-                kotelezo={
-                  adat.erkolesi !== 'Nem' && adat.erkolesi !== 'Beszerzés alatt'
+              <MezoCsoport
+                data-hiba={
+                  hibak.korabbiTerulet || hibak.korabbiTeruletEgyeb ? 'true' : undefined
                 }
-                onChange={(f) => feltoltesFrissit('fuehrungszeugnis', f)}
-              />
-            </div>
-            <div data-hiba={hibak['feltoltes.oneletrajz'] ? 'true' : undefined}>
-              <FeltoltesMezo
-                cim="Önéletrajz"
-                leiras="CV / Lebenslauf feltöltése"
-                accept=".pdf,application/pdf"
-                fajl={adat.feltoltesek.oneletrajz}
-                hiba={hibak['feltoltes.oneletrajz']}
-                onChange={(f) => feltoltesFrissit('oneletrajz', f)}
-              />
-            </div>
-            <div data-hiba={hibak['feltoltes.profilkep'] ? 'true' : undefined}>
-              <FeltoltesMezo
-                cim="Profilkép"
-                leiras="Aktuális profilkép feltöltése"
-                accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
-                seged="Csak kép. Nagy fájl esetén igazolvány-méretre optimalizáljuk."
-                fajl={adat.feltoltesek.profilkep}
-                hiba={hibak['feltoltes.profilkep']}
-                onChange={(f) => feltoltesFrissit('profilkep', f)}
-              />
-            </div>
-            <div data-hiba={hibak['feltoltes.referencia'] ? 'true' : undefined}>
-              <FeltoltesMezo
-                cim="Referencia / munkáltatói igazolás"
-                leiras="Korábbi munkáltatói referencia vagy munkaviszony igazolása"
-                accept=".pdf,application/pdf"
-                fajl={adat.feltoltesek.referencia}
-                hiba={hibak['feltoltes.referencia']}
-                onChange={(f) => feltoltesFrissit('referencia', f)}
-              />
-            </div>
-          </Szekcio>
+              >
+                <Cimke as="span">{t.mezo.korabbiTerulet}</Cimke>
+                <CheckboxCsoport
+                  ertekek={adat.korabbiTerulet}
+                  opciok={op.korabbiTerulet}
+                  egyebKulcs={t.egyebErtek}
+                  egyebPlaceholder={t.egyebPlaceholder}
+                  egyebAria={t.egyebAria}
+                  egyebErtek={adat.korabbiTeruletEgyeb}
+                  onEgyebChange={(v) => frissit('korabbiTeruletEgyeb', v)}
+                  hiba={hibak.korabbiTerulet}
+                  egyebHiba={hibak.korabbiTeruletEgyeb}
+                  onChange={(v) => frissit('korabbiTerulet', v)}
+                />
+              </MezoCsoport>
+            </Szekcio>
 
-          <Szekcio aria-labelledby="motivacio">
-            <SzekcioCim id="motivacio">11. Motiváció</SzekcioCim>
+            <Szekcio aria-labelledby="premium-tapasztalat">
+              <SzekcioCim id="premium-tapasztalat">{t.szekcio.premium}</SzekcioCim>
 
-            <MezoCsoport data-hiba={hibak.motivacio ? 'true' : undefined}>
-              <Cimke htmlFor="motivacioSzoveg">
-                Miért szeretne Németországban prémium és luxusautókat vezetni?
-              </Cimke>
+              <MezoCsoport data-hiba={hibak.premiumTapasztalat ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.premiumTapasztalat}</Cimke>
+                <RadioCsoport
+                  nev="premiumTapasztalat"
+                  ertek={adat.premiumTapasztalat}
+                  opciok={op.igenNem}
+                  hiba={hibak.premiumTapasztalat}
+                  onChange={(v) => frissit('premiumTapasztalat', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport
+                data-hiba={
+                  hibak.premiumMarkak || hibak.premiumMarkaEgyeb ? 'true' : undefined
+                }
+              >
+                <Cimke as="span">{t.mezo.premiumMarkak}</Cimke>
+                <CheckboxCsoport
+                  ertekek={adat.premiumMarkak}
+                  opciok={op.premiumMarkak}
+                  egyebKulcs={t.egyebErtek}
+                  egyebPlaceholder={t.egyebPlaceholder}
+                  egyebAria={t.egyebAria}
+                  egyebErtek={adat.premiumMarkaEgyeb}
+                  onEgyebChange={(v) => frissit('premiumMarkaEgyeb', v)}
+                  hiba={hibak.premiumMarkak}
+                  egyebHiba={hibak.premiumMarkaEgyeb}
+                  onChange={(v) => frissit('premiumMarkak', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport data-hiba={hibak.premiumGyakorisag ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.premiumGyakorisag}</Cimke>
+                <RadioCsoport
+                  nev="premiumGyakorisag"
+                  ertek={adat.premiumGyakorisag}
+                  opciok={op.premiumGyakorisag}
+                  hiba={hibak.premiumGyakorisag}
+                  onChange={(v) => frissit('premiumGyakorisag', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport data-hiba={hibak.automataValto ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.automataValto}</Cimke>
+                <RadioCsoport
+                  nev="automataValto"
+                  ertek={adat.automataValto}
+                  opciok={op.igenNem}
+                  hiba={hibak.automataValto}
+                  onChange={(v) => frissit('automataValto', v)}
+                />
+              </MezoCsoport>
+            </Szekcio>
+
+            <Szekcio aria-labelledby="nemetorszag">
+              <SzekcioCim id="nemetorszag">{t.szekcio.nemetorszag}</SzekcioCim>
+
+              <MezoCsoport data-hiba={hibak.munkavallalasiJog ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.munkavallalasiJog}</Cimke>
+                <RadioCsoport
+                  nev="munkavallalasiJog"
+                  ertek={adat.munkavallalasiJog}
+                  opciok={op.igenNem}
+                  hiba={hibak.munkavallalasiJog}
+                  onChange={(v) => frissit('munkavallalasiJog', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport data-hiba={hibak.nemetorszagiCim ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.nemetorszagiCim}</Cimke>
+                <RadioCsoport
+                  nev="nemetorszagiCim"
+                  ertek={adat.nemetorszagiCim}
+                  opciok={op.igenNem}
+                  hiba={hibak.nemetorszagiCim}
+                  onChange={(v) => frissit('nemetorszagiCim', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport data-hiba={hibak.munkabaAllas ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.munkabaAllas}</Cimke>
+                <RadioCsoport
+                  nev="munkabaAllas"
+                  ertek={adat.munkabaAllas}
+                  opciok={op.munkabaAllas}
+                  hiba={hibak.munkabaAllas}
+                  onChange={(v) => frissit('munkabaAllas', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport data-hiba={hibak.rugalmassag ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.rugalmassag}</Cimke>
+                <RadioCsoport
+                  nev="rugalmassag"
+                  ertek={adat.rugalmassag}
+                  opciok={op.rugalmassag}
+                  hiba={hibak.rugalmassag}
+                  onChange={(v) => frissit('rugalmassag', v)}
+                />
+              </MezoCsoport>
+            </Szekcio>
+
+            <Szekcio aria-labelledby="jogositvany">
+              <SzekcioCim id="jogositvany">{t.szekcio.jogositvany}</SzekcioCim>
+
+              <MezoCsoport
+                data-hiba={
+                  hibak.jogositvanyKategoria || hibak.jogositvanyEgyeb
+                    ? 'true'
+                    : undefined
+                }
+              >
+                <Cimke as="span">{t.mezo.jogositvanyKategoria}</Cimke>
+                <CheckboxCsoport
+                  ertekek={adat.jogositvanyKategoria}
+                  opciok={op.jogositvanyKategoria}
+                  egyebKulcs={t.egyebErtek}
+                  egyebPlaceholder={t.egyebPlaceholder}
+                  egyebAria={t.egyebAria}
+                  egyebErtek={adat.jogositvanyEgyeb}
+                  onEgyebChange={(v) => frissit('jogositvanyEgyeb', v)}
+                  hiba={hibak.jogositvanyKategoria}
+                  egyebHiba={hibak.jogositvanyEgyeb}
+                  onChange={(v) => frissit('jogositvanyKategoria', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport data-hiba={hibak.jogositvanyErvenyes ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.jogositvanyErvenyes}</Cimke>
+                <RadioCsoport
+                  nev="jogositvanyErvenyes"
+                  ertek={adat.jogositvanyErvenyes}
+                  opciok={op.igenNem}
+                  hiba={hibak.jogositvanyErvenyes}
+                  onChange={(v) => frissit('jogositvanyErvenyes', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport data-hiba={hibak.eltiltas ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.eltiltas}</Cimke>
+                <RadioCsoport
+                  nev="eltiltas"
+                  ertek={adat.eltiltas}
+                  opciok={op.igenNem}
+                  hiba={hibak.eltiltas}
+                  onChange={(v) => frissit('eltiltas', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport data-hiba={hibak.erkolesi ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.erkolesi}</Cimke>
+                <RadioCsoport
+                  nev="erkolesi"
+                  ertek={adat.erkolesi}
+                  opciok={op.erkolesi}
+                  hiba={hibak.erkolesi}
+                  onChange={(v) => frissit('erkolesi', v)}
+                />
+              </MezoCsoport>
+            </Szekcio>
+
+            <Szekcio aria-labelledby="nyelv">
+              <SzekcioCim id="nyelv">{t.szekcio.nyelv}</SzekcioCim>
+
+              <MezoCsoport data-hiba={hibak.nemetNyelv ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.nemetNyelv}</Cimke>
+                <RadioCsoport
+                  nev="nemetNyelv"
+                  ertek={adat.nemetNyelv}
+                  opciok={op.nyelvSzint}
+                  hiba={hibak.nemetNyelv}
+                  onChange={(v) => frissit('nemetNyelv', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport data-hiba={hibak.angolNyelv ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.angolNyelv}</Cimke>
+                <RadioCsoport
+                  nev="angolNyelv"
+                  ertek={adat.angolNyelv}
+                  opciok={op.nyelvSzint}
+                  hiba={hibak.angolNyelv}
+                  onChange={(v) => frissit('angolNyelv', v)}
+                />
+              </MezoCsoport>
+            </Szekcio>
+
+            <Szekcio aria-labelledby="keszsegek">
+              <SzekcioCim id="keszsegek">{t.szekcio.keszsegek}</SzekcioCim>
+
+              <MezoCsoport data-hiba={hibak.okostelefon ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.okostelefon}</Cimke>
+                <RadioCsoport
+                  nev="okostelefon"
+                  ertek={adat.okostelefon}
+                  opciok={op.igenNem}
+                  hiba={hibak.okostelefon}
+                  onChange={(v) => frissit('okostelefon', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport data-hiba={hibak.navigacio ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.navigacio}</Cimke>
+                <RadioCsoport
+                  nev="navigacio"
+                  ertek={adat.navigacio}
+                  opciok={op.igenNem}
+                  hiba={hibak.navigacio}
+                  onChange={(v) => frissit('navigacio', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport data-hiba={hibak.gpsKovetes ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.gpsKovetes}</Cimke>
+                <RadioCsoport
+                  nev="gpsKovetes"
+                  ertek={adat.gpsKovetes}
+                  opciok={op.igenNem}
+                  hiba={hibak.gpsKovetes}
+                  onChange={(v) => frissit('gpsKovetes', v)}
+                />
+              </MezoCsoport>
+            </Szekcio>
+
+            <Szekcio aria-labelledby="feltetelek">
+              <SzekcioCim id="feltetelek">{t.szekcio.feltetelek}</SzekcioCim>
+
+              <MezoCsoport data-hiba={hibak.hosszuUt ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.hosszuUt}</Cimke>
+                <RadioCsoport
+                  nev="hosszuUt"
+                  ertek={adat.hosszuUt}
+                  opciok={op.igenNem}
+                  hiba={hibak.hosszuUt}
+                  onChange={(v) => frissit('hosszuUt', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport data-hiba={hibak.hetvege ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.hetvege}</Cimke>
+                <RadioCsoport
+                  nev="hetvege"
+                  ertek={adat.hetvege}
+                  opciok={op.hetvege}
+                  hiba={hibak.hetvege}
+                  onChange={(v) => frissit('hetvege', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport data-hiba={hibak.tobbnapos ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.tobbnapos}</Cimke>
+                <RadioCsoport
+                  nev="tobbnapos"
+                  ertek={adat.tobbnapos}
+                  opciok={op.igenNem}
+                  hiba={hibak.tobbnapos}
+                  onChange={(v) => frissit('tobbnapos', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport data-hiba={hibak.hetiNapok ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.hetiNapok}</Cimke>
+                <RadioCsoport
+                  nev="hetiNapok"
+                  ertek={adat.hetiNapok}
+                  opciok={op.hetiNapok}
+                  hiba={hibak.hetiNapok}
+                  onChange={(v) => frissit('hetiNapok', v)}
+                />
+              </MezoCsoport>
+            </Szekcio>
+
+            <Szekcio aria-labelledby="szurok">
+              <SzekcioCim id="szurok">{t.szekcio.szurok}</SzekcioCim>
+
+              <MezoCsoport data-hiba={hibak.haromEvAktiv ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.haromEvAktiv}</Cimke>
+                <RadioCsoport
+                  nev="haromEvAktiv"
+                  ertek={adat.haromEvAktiv}
+                  opciok={op.igenNem}
+                  hiba={hibak.haromEvAktiv}
+                  onChange={(v) => frissit('haromEvAktiv', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport data-hiba={hibak.haromEvProf ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.haromEvProf}</Cimke>
+                <RadioCsoport
+                  nev="haromEvProf"
+                  ertek={adat.haromEvProf}
+                  opciok={op.igenNem}
+                  hiba={hibak.haromEvProf}
+                  onChange={(v) => frissit('haromEvProf', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport data-hiba={hibak.premiumSzuro ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.premiumSzuro}</Cimke>
+                <RadioCsoport
+                  nev="premiumSzuro"
+                  ertek={adat.premiumSzuro}
+                  opciok={op.igenNem}
+                  hiba={hibak.premiumSzuro}
+                  onChange={(v) => frissit('premiumSzuro', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport data-hiba={hibak.biztonsagosVezetes ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.biztonsagosVezetes}</Cimke>
+                <RadioCsoport
+                  nev="biztonsagosVezetes"
+                  ertek={adat.biztonsagosVezetes}
+                  opciok={op.igenNem}
+                  hiba={hibak.biztonsagosVezetes}
+                  onChange={(v) => frissit('biztonsagosVezetes', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport data-hiba={hibak.gondosKezeles ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.gondosKezeles}</Cimke>
+                <RadioCsoport
+                  nev="gondosKezeles"
+                  ertek={adat.gondosKezeles}
+                  opciok={op.igenNem}
+                  hiba={hibak.gondosKezeles}
+                  onChange={(v) => frissit('gondosKezeles', v)}
+                />
+              </MezoCsoport>
+
+              <MezoCsoport data-hiba={hibak.ellenorzesElfogadas ? 'true' : undefined}>
+                <Cimke as="span">{t.mezo.ellenorzesElfogadas}</Cimke>
+                <RadioCsoport
+                  nev="ellenorzesElfogadas"
+                  ertek={adat.ellenorzesElfogadas}
+                  opciok={op.igenNem}
+                  hiba={hibak.ellenorzesElfogadas}
+                  onChange={(v) => frissit('ellenorzesElfogadas', v)}
+                />
+              </MezoCsoport>
+            </Szekcio>
+
+            <Szekcio aria-labelledby="dokumentumok">
+              <SzekcioCim id="dokumentumok">{t.szekcio.dokumentumok}</SzekcioCim>
+              <SzekcioBevezeto>{t.dokumentumokBevezeto}</SzekcioBevezeto>
+
+              <div data-hiba={hibak['feltoltes.szemelyi'] ? 'true' : undefined}>
+                <FeltoltesMezo
+                  cim={t.feltoltes.szemelyi.cim}
+                  leiras={t.feltoltes.szemelyi.leiras}
+                  feltoltesGomb={t.feltoltesGomb}
+                  accept=".pdf,.jpg,.jpeg,.png,.webp,image/*,application/pdf"
+                  fajl={adat.feltoltesek.szemelyi}
+                  hiba={hibak['feltoltes.szemelyi']}
+                  onChange={(f) => feltoltesFrissit('szemelyi', f)}
+                />
+              </div>
+              <div data-hiba={hibak['feltoltes.jogositvany'] ? 'true' : undefined}>
+                <FeltoltesMezo
+                  cim={t.feltoltes.jogositvany.cim}
+                  leiras={t.feltoltes.jogositvany.leiras}
+                  feltoltesGomb={t.feltoltesGomb}
+                  accept=".pdf,.jpg,.jpeg,.png,.webp,image/*,application/pdf"
+                  fajl={adat.feltoltesek.jogositvany}
+                  hiba={hibak['feltoltes.jogositvany']}
+                  onChange={(f) => feltoltesFrissit('jogositvany', f)}
+                />
+              </div>
+              <div
+                data-hiba={hibak['feltoltes.fuehrungszeugnis'] ? 'true' : undefined}
+              >
+                <FeltoltesMezo
+                  cim={t.feltoltes.fuehrungszeugnis.cim}
+                  leiras={t.feltoltes.fuehrungszeugnis.leiras}
+                  feltoltesGomb={t.feltoltesGomb}
+                  accept=".pdf,.jpg,.jpeg,.png,.webp,image/*,application/pdf"
+                  seged={t.feltoltes.fuehrungszeugnis.seged}
+                  fajl={adat.feltoltesek.fuehrungszeugnis}
+                  hiba={hibak['feltoltes.fuehrungszeugnis']}
+                  kotelezo={
+                    adat.erkolesi !== 'Nem' && adat.erkolesi !== 'Beszerzés alatt'
+                  }
+                  onChange={(f) => feltoltesFrissit('fuehrungszeugnis', f)}
+                />
+              </div>
+              <div data-hiba={hibak['feltoltes.oneletrajz'] ? 'true' : undefined}>
+                <FeltoltesMezo
+                  cim={t.feltoltes.oneletrajz.cim}
+                  leiras={t.feltoltes.oneletrajz.leiras}
+                  feltoltesGomb={t.feltoltesGomb}
+                  accept=".pdf,application/pdf"
+                  fajl={adat.feltoltesek.oneletrajz}
+                  hiba={hibak['feltoltes.oneletrajz']}
+                  onChange={(f) => feltoltesFrissit('oneletrajz', f)}
+                />
+              </div>
+              <div data-hiba={hibak['feltoltes.profilkep'] ? 'true' : undefined}>
+                <FeltoltesMezo
+                  cim={t.feltoltes.profilkep.cim}
+                  leiras={t.feltoltes.profilkep.leiras}
+                  feltoltesGomb={t.feltoltesGomb}
+                  accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                  seged={t.feltoltes.profilkep.seged}
+                  fajl={adat.feltoltesek.profilkep}
+                  hiba={hibak['feltoltes.profilkep']}
+                  onChange={(f) => feltoltesFrissit('profilkep', f)}
+                />
+              </div>
+              <div data-hiba={hibak['feltoltes.referencia'] ? 'true' : undefined}>
+                <FeltoltesMezo
+                  cim={t.feltoltes.referencia.cim}
+                  leiras={t.feltoltes.referencia.leiras}
+                  feltoltesGomb={t.feltoltesGomb}
+                  accept=".pdf,application/pdf"
+                  fajl={adat.feltoltesek.referencia}
+                  hiba={hibak['feltoltes.referencia']}
+                  onChange={(f) => feltoltesFrissit('referencia', f)}
+                />
+              </div>
+            </Szekcio>
+
+            <Szekcio aria-labelledby="motivacio">
+              <SzekcioCim id="motivacio">{t.szekcio.motivacio}</SzekcioCim>
+
+              <MezoCsoport data-hiba={hibak.motivacio ? 'true' : undefined}>
+                <Cimke htmlFor="motivacioSzoveg">{t.mezo.motivacio}</Cimke>
               <SzovegTerulet
                 id="motivacioSzoveg"
                 value={adat.motivacio}
@@ -1590,11 +1494,8 @@ export function Urlap() {
               {hibak.motivacio ? <HibaUzenet>{hibak.motivacio}</HibaUzenet> : null}
             </MezoCsoport>
 
-            <MezoCsoport data-hiba={hibak.tapasztalatLeiras ? 'true' : undefined}>
-              <Cimke htmlFor="tapasztalatLeiras">
-                Kérjük, röviden mutassa be korábbi vezetési és szakmai
-                tapasztalatait.
-              </Cimke>
+              <MezoCsoport data-hiba={hibak.tapasztalatLeiras ? 'true' : undefined}>
+                <Cimke htmlFor="tapasztalatLeiras">{t.mezo.tapasztalatLeiras}</Cimke>
               <SzovegTerulet
                 id="tapasztalatLeiras"
                 value={adat.tapasztalatLeiras}
@@ -1605,107 +1506,99 @@ export function Urlap() {
                 <HibaUzenet>{hibak.tapasztalatLeiras}</HibaUzenet>
               ) : null}
             </MezoCsoport>
-          </Szekcio>
+            </Szekcio>
 
-          <Szekcio aria-labelledby="kuldes">
-            <SzekcioCim id="kuldes">12. Jelentkezés elküldése</SzekcioCim>
+            <Szekcio aria-labelledby="kuldes">
+              <SzekcioCim id="kuldes">{t.szekcio.kuldes}</SzekcioCim>
 
-            <ValaszLista>
-              <div data-hiba={hibak.adatvedelem ? 'true' : undefined}>
-                <ValaszSor>
-                  <input
-                    type="checkbox"
-                    checked={adat.adatvedelem}
-                    onChange={(e) => frissit('adatvedelem', e.target.checked)}
-                    required
-                  />
-                  <Jelolo tipus="checkbox" checked={adat.adatvedelem} aria-hidden="true" />
-                  <span>
-                    Elolvastam és elfogadom az{' '}
-                    <AdatvedelmiLink
-                      href="/adatvedelmi"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      adatvédelmi tájékoztatót
-                    </AdatvedelmiLink>
-                    .
-                  </span>
-                </ValaszSor>
-                {hibak.adatvedelem ? (
-                  <HibaUzenet>{hibak.adatvedelem}</HibaUzenet>
+              <ValaszLista>
+                <div data-hiba={hibak.adatvedelem ? 'true' : undefined}>
+                  <ValaszSor>
+                    <input
+                      type="checkbox"
+                      checked={adat.adatvedelem}
+                      onChange={(e) => frissit('adatvedelem', e.target.checked)}
+                      required
+                    />
+                    <Jelolo tipus="checkbox" checked={adat.adatvedelem} aria-hidden="true" />
+                    <span>
+                      {t.adatvedelemElotte}{' '}
+                      <AdatvedelmiLink
+                        href="/adatvedelmi"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {t.adatvedelemLink}
+                      </AdatvedelmiLink>
+                      {t.adatvedelemUtana}
+                    </span>
+                  </ValaszSor>
+                  {hibak.adatvedelem ? (
+                    <HibaUzenet>{hibak.adatvedelem}</HibaUzenet>
+                  ) : null}
+                </div>
+                <div data-hiba={hibak.hozzajarulas ? 'true' : undefined}>
+                  <ValaszSor>
+                    <input
+                      type="checkbox"
+                      checked={adat.hozzajarulas}
+                      onChange={(e) => frissit('hozzajarulas', e.target.checked)}
+                      required
+                    />
+                    <Jelolo
+                      tipus="checkbox"
+                      checked={adat.hozzajarulas}
+                      aria-hidden="true"
+                    />
+                    <span>{t.hozzajarulas}</span>
+                  </ValaszSor>
+                  {hibak.hozzajarulas ? (
+                    <HibaUzenet>{hibak.hozzajarulas}</HibaUzenet>
+                  ) : null}
+                </div>
+              </ValaszLista>
+
+              <KuldesSor>
+                <KuldesGomb type="submit" disabled={kuldesFut || feltoltesFut}>
+                  {kuldesFut
+                    ? t.gombKuldesFut
+                    : feltoltesFut
+                      ? t.gombKepFeldolgozas
+                      : t.gombKuldes}
+                </KuldesGomb>
+                {kuldesHiba ? <OsszesitoHiba>{kuldesHiba}</OsszesitoHiba> : null}
+                {hibaDarab > 0 ? (
+                  <OsszesitoHiba>
+                    {t.osszesitoHiba}{' '}
+                    {t.osszesitoHibaDarab.replace('{n}', String(hibaDarab))}
+                  </OsszesitoHiba>
                 ) : null}
-              </div>
-              <div data-hiba={hibak.hozzajarulas ? 'true' : undefined}>
-                <ValaszSor>
-                  <input
-                    type="checkbox"
-                    checked={adat.hozzajarulas}
-                    onChange={(e) => frissit('hozzajarulas', e.target.checked)}
-                    required
-                  />
-                  <Jelolo
-                    tipus="checkbox"
-                    checked={adat.hozzajarulas}
-                    aria-hidden="true"
-                  />
-                  <span>
-                    Hozzájárulok ahhoz, hogy a jelentkezésemben megadott adatokat és
-                    feltöltött dokumentumokat a kiválasztási folyamat során
-                    ellenőrizzék.
-                  </span>
-                </ValaszSor>
-                {hibak.hozzajarulas ? (
-                  <HibaUzenet>{hibak.hozzajarulas}</HibaUzenet>
-                ) : null}
-              </div>
-            </ValaszLista>
+              </KuldesSor>
+            </Szekcio>
+          </Form>
+        </Keret>
 
-            <KuldesSor>
-              <KuldesGomb type="submit" disabled={kuldesFut || feltoltesFut}>
-                {kuldesFut
-                  ? 'Küldés…'
-                  : feltoltesFut
-                    ? 'Kép feldolgozása…'
-                    : 'Jelentkezés elküldése'}
-              </KuldesGomb>
-              {kuldesHiba ? <OsszesitoHiba>{kuldesHiba}</OsszesitoHiba> : null}
-              {hibaDarab > 0 ? (
-                <OsszesitoHiba>
-                  Kérjük, töltse ki az összes kötelező mezőt és töltse fel a
-                  dokumentumokat a jelentkezés elküldéséhez. ({hibaDarab} hiányzó adat)
-                </OsszesitoHiba>
-              ) : null}
-            </KuldesSor>
-          </Szekcio>
-        </Form>
-      </Keret>
-
-      {popupLathato
-        ? createPortal(
-            <PopupHatter role="presentation" onClick={popupBezarEsKezdooldal}>
-              <PopupAblak
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="urlap-koszonet-cim"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <PopupCim id="urlap-koszonet-cim">
-                  Köszönjük jelentkezését!
-                </PopupCim>
-                <PopupSzoveg>
-                  Sikeres előszűrés esetén felvesszük Önnel a kapcsolatot a
-                  további lépésekkel kapcsolatban.
-                </PopupSzoveg>
-                <PopupZarGomb type="button" onClick={popupBezarEsKezdooldal}>
-                  Bezárás
-                </PopupZarGomb>
-              </PopupAblak>
-            </PopupHatter>,
-            document.body,
-          )
-        : null}
-    </Oldal>
+        {popupLathato
+          ? createPortal(
+              <PopupHatter role="presentation" onClick={popupBezarEsKezdooldal}>
+                <PopupAblak
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="urlap-koszonet-cim"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <PopupCim id="urlap-koszonet-cim">{t.popupCim}</PopupCim>
+                  <PopupSzoveg>{t.popupSzoveg}</PopupSzoveg>
+                  <PopupZarGomb type="button" onClick={popupBezarEsKezdooldal}>
+                    {t.popupZar}
+                  </PopupZarGomb>
+                </PopupAblak>
+              </PopupHatter>,
+              document.body,
+            )
+          : null}
+      </Oldal>
+    </>
   )
 }
 
