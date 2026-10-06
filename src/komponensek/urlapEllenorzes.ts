@@ -9,9 +9,40 @@ const LEGALABB_EGY_UZENET = 'Válasszon legalább egy lehetőséget.'
 const EGYEB_UZENET = 'Kérjük, részletezze az „Egyéb” választ.'
 const FAJL_UZENET = 'Dokumentum feltöltése kötelező.'
 const EMAIL_UZENET = 'Érvényes e-mail-címet adjon meg.'
+const TIZENNYOLC_EV_UZENET =
+  'A jelentkezéshez legalább 18 évesnek kell lennie (a 18. életév betöltése kötelező).'
 
 function ures(ertek: string) {
   return ertek.trim().length === 0
+}
+
+/** HTML date input max: utolsó nap, amikor még 18 év alatti a születésnap. */
+export function legkesobbiSzuletesiDatumTizennyolcEvhez(): string {
+  const ma = new Date()
+  const hatar = new Date(ma.getFullYear() - 18, ma.getMonth(), ma.getDate())
+  const ev = hatar.getFullYear()
+  const honap = String(hatar.getMonth() + 1).padStart(2, '0')
+  const nap = String(hatar.getDate()).padStart(2, '0')
+  return `${ev}-${honap}-${nap}`
+}
+
+function betoltotteATizennyolcat(szuletesiDatum: string): boolean {
+  const resz = szuletesiDatum.trim().split('-')
+  if (resz.length !== 3) return false
+  const ev = Number(resz[0])
+  const honap = Number(resz[1]) - 1
+  const nap = Number(resz[2])
+  if (!Number.isFinite(ev) || !Number.isFinite(honap) || !Number.isFinite(nap)) {
+    return false
+  }
+  const szuletes = new Date(ev, honap, nap)
+  if (Number.isNaN(szuletes.getTime())) return false
+  if (szuletes.getFullYear() !== ev || szuletes.getMonth() !== honap || szuletes.getDate() !== nap) {
+    return false
+  }
+  const ma = new Date()
+  const tizennyolcEve = new Date(ma.getFullYear() - 18, ma.getMonth(), ma.getDate())
+  return szuletes.getTime() <= tizennyolcEve.getTime()
 }
 
 function emailErvenyes(email: string) {
@@ -27,7 +58,11 @@ export function ellenorizUrlap(adat: UrlapAllapot): UrlapHibak {
   const hibak: UrlapHibak = {}
 
   if (ures(adat.teljesNev)) hibak.teljesNev = KOTELEZO_UZENET
-  if (ures(adat.szuletesiDatum)) hibak.szuletesiDatum = KOTELEZO_UZENET
+  if (ures(adat.szuletesiDatum)) {
+    hibak.szuletesiDatum = KOTELEZO_UZENET
+  } else if (!betoltotteATizennyolcat(adat.szuletesiDatum)) {
+    hibak.szuletesiDatum = TIZENNYOLC_EV_UZENET
+  }
   if (ures(adat.telefon)) hibak.telefon = KOTELEZO_UZENET
   if (ures(adat.email)) hibak.email = KOTELEZO_UZENET
   else if (!emailErvenyes(adat.email)) hibak.email = EMAIL_UZENET

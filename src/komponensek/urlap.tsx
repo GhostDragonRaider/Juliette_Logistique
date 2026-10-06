@@ -11,7 +11,11 @@ import {
 } from '../stilusok/tema'
 import { bekuldesJelentkezes } from '../api/jelentkezesApi'
 import type { FeltoltesKulcs, UrlapAllapot } from './urlapTipusok'
-import { ellenorizUrlap, type UrlapHibak } from './urlapEllenorzes'
+import {
+  ellenorizUrlap,
+  legkesobbiSzuletesiDatumTizennyolcEvhez,
+  type UrlapHibak,
+} from './urlapEllenorzes'
 import {
   ellenorizFeltoltesFajl,
   profilkepNormalizal,
@@ -766,6 +770,7 @@ function FeltoltesMezo({
  */
 export function Urlap() {
   const navigate = useNavigate()
+  const maxSzuletesiDatum = legkesobbiSzuletesiDatumTizennyolcEvhez()
   const [adat, setAdat] = useState<UrlapAllapot>(kezdoAllapot)
   const [hibak, setHibak] = useState<UrlapHibak>({})
   const [popupLathato, setPopupLathato] = useState(false)
@@ -926,6 +931,7 @@ export function Urlap() {
                 id="szuletesiDatum"
                 type="date"
                 required
+                max={maxSzuletesiDatum}
                 value={adat.szuletesiDatum}
                 $hibas={Boolean(hibak.szuletesiDatum)}
                 onChange={(e) => frissit('szuletesiDatum', e.target.value)}
