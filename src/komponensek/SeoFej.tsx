@@ -1,8 +1,6 @@
 import { useEffect } from 'react'
 import { useWeboldalTartalom } from '../tartalom/WeboldalTartalomContext'
 import { useNyelv } from '../nyelv/useNyelv'
-import { MARKA_LOGO_ARANY } from './Logo'
-
 /**
  * Beállítja vagy létrehozza a megadott meta elemet a document head-ben.
  */
@@ -72,8 +70,8 @@ export function SeoFej({ feluliras }: { feluliras?: SeoFeluliras }) {
 
   useEffect(() => {
     const oldalUrl = window.location.origin + window.location.pathname
-    const logoUrl = `${window.location.origin}${MARKA_LOGO_ARANY}`
-    const kepUrl = logoUrl
+    const logoUrl = `${window.location.origin}/favicon-192.png`
+    const kepUrl = `${window.location.origin}/favicon-512.png`
 
     document.title = seoCim
     metaBeallitas('description', seoLeiras)
