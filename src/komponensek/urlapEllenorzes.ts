@@ -161,6 +161,9 @@ export function ellenorizUrlap(
   return hibak
 }
 
-export function urlapErvenyes(adat: UrlapAllapot) {
-  return Object.keys(ellenorizUrlap(adat)).length === 0
+export function urlapErvenyes(
+  adat: UrlapAllapot,
+  uzenetek: UrlapHibaUzenetek = alapUzenetek,
+) {
+  return Object.keys(ellenorizUrlap(adat, uzenetek)).length === 0
 }

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { useState, useEffect, type ChangeEvent, type FormEvent } from 'react'
+import { useState, useEffect, useMemo, type ChangeEvent, type FormEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -14,6 +14,7 @@ import type { FeltoltesKulcs, UrlapAllapot } from './urlapTipusok'
 import {
   ellenorizUrlap,
   legkesobbiSzuletesiDatumTizennyolcEvhez,
+  urlapErvenyes,
   type UrlapHibak,
 } from './urlapEllenorzes'
 import {
@@ -776,6 +777,11 @@ export function Urlap() {
   const [kuldesHiba, setKuldesHiba] = useState('')
   const [feltoltesFut, setFeltoltesFut] = useState(false)
 
+  const mindenKotelezoKitoltve = useMemo(
+    () => urlapErvenyes(adat, t.hibak),
+    [adat, t.hibak],
+  )
+
   useEffect(() => {
     oldalTetejereGorget('auto')
   }, [])
@@ -1488,6 +1494,7 @@ export function Urlap() {
               <SzovegTerulet
                 id="motivacioSzoveg"
                 value={adat.motivacio}
+                required
                 $hibas={Boolean(hibak.motivacio)}
                 onChange={(e) => frissit('motivacio', e.target.value)}
               />
@@ -1499,6 +1506,7 @@ export function Urlap() {
               <SzovegTerulet
                 id="tapasztalatLeiras"
                 value={adat.tapasztalatLeiras}
+                required
                 $hibas={Boolean(hibak.tapasztalatLeiras)}
                 onChange={(e) => frissit('tapasztalatLeiras', e.target.value)}
               />
@@ -1559,7 +1567,10 @@ export function Urlap() {
               </ValaszLista>
 
               <KuldesSor>
-                <KuldesGomb type="submit" disabled={kuldesFut || feltoltesFut}>
+                <KuldesGomb
+                  type="submit"
+                  disabled={kuldesFut || feltoltesFut || !mindenKotelezoKitoltve}
+                >
                   {kuldesFut
                     ? t.gombKuldesFut
                     : feltoltesFut
