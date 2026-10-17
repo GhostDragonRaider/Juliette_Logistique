@@ -12,6 +12,7 @@ import {
 } from './belsoStilus'
 import { aranySzovegAtmenet, tema } from '../stilusok/tema'
 import { useNyelv } from '../nyelv/useNyelv'
+import { NyelvKapcsolo } from '../komponensek/NyelvKapcsolo'
 
 const Keret = styled.main`
   min-height: 100dvh;
@@ -21,6 +22,14 @@ const Keret = styled.main`
   justify-content: center;
   padding: max(1.25rem, env(safe-area-inset-top))
     ${tema.oldalsoPadding} max(1.25rem, env(safe-area-inset-bottom));
+`
+
+const NyelvSav = styled.div`
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.85rem;
 `
 
 const Cim = styled.h1`
@@ -96,6 +105,9 @@ export function BelepesOldal() {
   return (
     <BelsoHatter>
       <Keret>
+        <NyelvSav>
+          <NyelvKapcsolo className="belso-nyelv-valaszto" />
+        </NyelvSav>
         <BelsoPanel style={{ width: '100%', maxWidth: 420 }}>
           <Cim>{t.belepesCim}</Cim>
           <form onSubmit={kuldes}>

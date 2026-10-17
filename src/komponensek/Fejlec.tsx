@@ -7,7 +7,7 @@ import { Gomb } from './Gomb'
 import { PremiumSzam } from './PremiumSzam'
 import { useTelefonszam } from '../tartalom/WeboldalTartalomContext'
 import { useNyelv } from '../nyelv/useNyelv'
-import { nyelvKapcsolok, type NyelvKod } from '../nyelv/nyelvTipusok'
+import { NyelvKapcsolo } from './NyelvKapcsolo'
 import { tema, aranyKeret, fokuszKeret } from '../stilusok/tema'
 import { useBelsoAuth } from '../belso/BelsoAuthContext'
 
@@ -102,47 +102,6 @@ const JobbSav = styled.div`
   }
 `
 
-/** Nyelvválasztó sor — mindig látható */
-const NyelvValaszto = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-family: ${tema.betu.cim};
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
-  color: ${tema.szin.szurke};
-`
-
-/** Egy nyelv gombja a kapcsolóban */
-const NyelvGomb = styled.button<{ aktiv: boolean }>`
-  text-align: center;
-  min-width: 36px;
-  min-height: 36px;
-  color: ${(props) => (props.aktiv ? tema.szin.aranyVilagos : tema.szin.szurke)};
-  font-weight: ${(props) => (props.aktiv ? 700 : 500)};
-  transition: color 0.2s ease;
-
-  &:hover {
-    color: ${tema.szin.arany};
-  }
-
-  &:focus-visible {
-    ${fokuszKeret}
-  }
-`
-
-/** Elválasztó a nyelvek között */
-const NyelvElvalaszto = styled.span`
-  color: ${tema.szin.szurkeSotet};
-`
-
-/** Egy nyelv gomb csoportja az elválasztóval */
-const NyelvElem = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-`
-
 /** Telefon gomb szöveg — nagyon keskeny képernyőn rejtve */
 const TelefonSzoveg = styled.span`
   display: none;
@@ -225,7 +184,7 @@ function routeCel(cel: string) {
  */
 export function Fejlec(_props: FejlecTulajdonsagok = {}) {
   const telefonszam = useTelefonszam()
-  const { nyelv, szoveg, nyelvetValaszt } = useNyelv()
+  const { szoveg } = useNyelv()
   const hely = useLocation()
   const navigal = useNavigate()
   const [mobilMenuNyitva, setMobilMenuNyitva] = useState(false)
@@ -262,13 +221,6 @@ export function Fejlec(_props: FejlecTulajdonsagok = {}) {
    */
   function mobilMenutBezar() {
     setMobilMenuNyitva(false)
-  }
-
-  /**
-   * Átváltja az oldal nyelvét a kapcsolóról.
-   */
-  function nyelvetAtvalt(ujNyelv: NyelvKod) {
-    nyelvetValaszt(ujNyelv)
   }
 
   /**
@@ -341,27 +293,7 @@ export function Fejlec(_props: FejlecTulajdonsagok = {}) {
         >
           {belsoBetolt ? belsoLinkFelirat : szoveg.belso.bejelentkezes}
         </NavigacioRouterLink>
-        <NyelvValaszto
-          className="nyelv-valaszto"
-          role="group"
-          aria-label={szoveg.nyelvAria}
-        >
-          {nyelvKapcsolok.map((kapcsolo, index) => (
-            <NyelvElem key={kapcsolo.kod} className="nyelv-elem">
-              {index > 0 ? <NyelvElvalaszto aria-hidden="true">|</NyelvElvalaszto> : null}
-              <NyelvGomb
-                className="nyelv-gomb"
-                type="button"
-                aktiv={nyelv === kapcsolo.kod}
-                aria-pressed={nyelv === kapcsolo.kod}
-                aria-label={kapcsolo.felirat}
-                onClick={() => nyelvetAtvalt(kapcsolo.kod)}
-              >
-                {kapcsolo.felirat}
-              </NyelvGomb>
-            </NyelvElem>
-          ))}
-        </NyelvValaszto>
+        <NyelvKapcsolo className="nyelv-valaszto" />
 
         <Gomb
           className="telefon-gomb"

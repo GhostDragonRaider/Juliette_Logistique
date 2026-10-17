@@ -5,6 +5,7 @@ import { useBelsoAuth } from './BelsoAuthContext'
 import { BelsoGomb, BelsoHatter } from './belsoStilus'
 import { aranyKeret, aranySzovegAtmenet, tema } from '../stilusok/tema'
 import { useNyelv } from '../nyelv/useNyelv'
+import { NyelvKapcsolo } from '../komponensek/NyelvKapcsolo'
 
 const Keret = styled.div`
   min-height: 100dvh;
@@ -107,6 +108,14 @@ const Fo = styled.main`
   padding: 1rem ${tema.oldalsoPadding} 2rem;
 `
 
+const FejlecJobb = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-left: auto;
+  min-width: 0;
+`
+
 const EmailSzoveg = styled.span`
   font-size: 0.75rem;
   color: ${tema.szin.szurke};
@@ -157,9 +166,12 @@ export function DashboardLayout() {
             {menuNyitva ? t.menuBezar : t.menuNyit}
           </BelsoGomb>
           <Marka>{t.vezerlopultCim}</Marka>
-          <EmailSzoveg title={felhasznalo?.email}>
-            {felhasznalo?.email}
-          </EmailSzoveg>
+          <FejlecJobb>
+            <NyelvKapcsolo className="belso-nyelv-valaszto" />
+            <EmailSzoveg title={felhasznalo?.email}>
+              {felhasznalo?.email}
+            </EmailSzoveg>
+          </FejlecJobb>
         </Fejlec>
 
         <Tartalom>
