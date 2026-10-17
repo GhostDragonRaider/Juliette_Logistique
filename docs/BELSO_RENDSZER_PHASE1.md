@@ -70,15 +70,26 @@ node scripts/create-user.js --email user@example.com --password 'legalabb12karak
 
 ## 11. Fejlesztői környezet
 
-```bash
-# API
-cd juliette-api && npm install && npm run dev
+A `/login` **csak akkor érhető el**, ha a Vite dev szerver fut a **5173**-as porton. A bejelentkezéshez kell az API is (**3010**).
 
-# Frontend (proxy → :3010)
-npm install && npm run dev
+**Egyszerű (ajánlott):**
+
+```bash
+npm install
+cd juliette-api && npm install && cd ..
+npm run dev:all
 ```
 
-Nyisd meg: `http://localhost:5173/login`
+**Két terminál:**
+
+```bash
+cd juliette-api && npm run dev    # :3010
+npm run dev                       # :5173, /api proxy
+```
+
+Nyisd meg: **http://localhost:5173/login** (ne csak a főoldalt – a `/login` útvonal kell).
+
+Ha „nem érhető el” / connection refused: nincs elindítva a dev szerver, vagy más folyamat foglalja a 5173-at.
 
 ## 12. Élesítés (később, külön jóváhagyással)
 
