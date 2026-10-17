@@ -36,6 +36,7 @@ export type BelsoForditas = {
   mentesFut: string
   mentesSiker: string
   mentesHiba: string
+  tesztBelepesSegitseg: string
 }
 
 const hu: BelsoForditas = {
@@ -75,6 +76,7 @@ const hu: BelsoForditas = {
   mentesFut: 'Mentés…',
   mentesSiker: 'Az adatok sikeresen mentve.',
   mentesHiba: 'A mentés sikertelen. Próbálja újra.',
+  tesztBelepesSegitseg: 'Fejlesztői teszt: felhasználó „teszt”, jelszó „teszt”.',
 }
 
 const en: BelsoForditas = {
@@ -114,6 +116,7 @@ const en: BelsoForditas = {
   mentesFut: 'Saving…',
   mentesSiker: 'Your details were saved.',
   mentesHiba: 'Save failed. Please try again.',
+  tesztBelepesSegitseg: 'Dev test account: user „teszt”, password „teszt”.',
 }
 
 const de: BelsoForditas = {
@@ -153,6 +156,7 @@ const de: BelsoForditas = {
   mentesFut: 'Speichern…',
   mentesSiker: 'Daten wurden gespeichert.',
   mentesHiba: 'Speichern fehlgeschlagen. Bitte erneut versuchen.',
+  tesztBelepesSegitseg: 'Entwicklungs-Test: Benutzer „teszt“, Passwort „teszt”.',
 }
 
 export const belsoForditasok: Record<NyelvKod, BelsoForditas> = { hu, en, de }

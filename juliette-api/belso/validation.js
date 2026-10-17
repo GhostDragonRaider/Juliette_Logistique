@@ -12,6 +12,21 @@ export const loginSchema = z.object({
   password: z.string().min(1, 'A jelszó megadása kötelező.').max(256),
 })
 
+/**
+ * Bejelentkezési adatok normalizálása (fejlesztői „teszt” alias).
+ */
+export function loginBodyElokeszites(body) {
+  const rawEmail = String(body?.email ?? '').trim().toLowerCase()
+  let email = rawEmail
+  if (process.env.NODE_ENV !== 'production' && rawEmail === 'teszt') {
+    email = 'teszt@teszt.local'
+  }
+  return {
+    email,
+    password: String(body?.password ?? ''),
+  }
+}
+
 export const profilePatchSchema = z.object({
   firstName: z.string().trim().max(120).optional(),
   lastName: z.string().trim().max(120).optional(),

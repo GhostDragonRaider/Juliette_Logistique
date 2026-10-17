@@ -57,6 +57,14 @@ const JelszoSor = styled.div`
   }
 `
 
+const TesztSegitseg = styled.p`
+  margin: 0 0 1rem;
+  font-size: 0.8rem;
+  color: ${tema.szin.szurke};
+  text-align: center;
+  line-height: 1.45;
+`
+
 const VisszaLink = styled(Link)`
   display: inline-block;
   margin-top: 1.25rem;
@@ -110,14 +118,17 @@ export function BelepesOldal() {
         </NyelvSav>
         <BelsoPanel style={{ width: '100%', maxWidth: 420 }}>
           <Cim>{t.belepesCim}</Cim>
+          {import.meta.env.DEV ? (
+            <TesztSegitseg>{t.tesztBelepesSegitseg}</TesztSegitseg>
+          ) : null}
           <form onSubmit={kuldes}>
             <FormSor>
               <BelsoCimke>
                 {t.emailCimke}
                 <BelsoMezo
-                  type="email"
+                  type="text"
                   name="email"
-                  autoComplete="email"
+                  autoComplete="username"
                   inputMode="email"
                   required
                   value={email}

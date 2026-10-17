@@ -8,7 +8,12 @@ import {
   loginRateLimit,
   CSRF_HEADER,
 } from './middleware.js'
-import { jelszoErvenyes, loginSchema, profilePatchSchema } from './validation.js'
+import {
+  jelszoErvenyes,
+  loginBodyElokeszites,
+  loginSchema,
+  profilePatchSchema,
+} from './validation.js'
 
 const GENERIC_LOGIN_ERROR =
   'Hibás e-mail-cím vagy jelszó. Ellenőrizze az adatokat, majd próbálja újra.'
@@ -93,7 +98,7 @@ export function belsoRouterLetrehozasa(db, { naplozas }) {
   })
 
   router.post('/auth/login', loginRateLimit, csrfEllenorzes, async (req, res) => {
-    const parsed = loginSchema.safeParse(req.body)
+    const parsed = loginSchema.safeParse(loginBodyElokeszites(req.body))
     if (!parsed.success) {
       res.status(400).json({ hiba: GENERIC_LOGIN_ERROR })
       return

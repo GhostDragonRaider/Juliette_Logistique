@@ -60,7 +60,19 @@ A belső auth teszt: két felhasználó, login, profil mentés, 401 névtelenül
 - Éles nginx / VPS proxy cookie beállítások.
 - Production `SESSION_SECRET`, `CORS_ORIGINS`, `TRUST_PROXY=1`.
 
-## 10. Első felhasználó
+## 10. Teszt felhasználó (fejlesztés)
+
+Nem production környezetben az API induláskor automatikusan létrehozza, ha még nincs:
+
+| Mező | Érték |
+|------|--------|
+| Belépés (alias) | `teszt` |
+| Jelszó | `teszt` |
+| Tényleges e-mail az adatbázisban | `teszt@teszt.local` |
+
+Kikapcsolás: `DEV_TEST_USER=0`. Productionben **nem** jön létre.
+
+## 11. Első éles felhasználó
 
 ```bash
 cd juliette-api
@@ -68,7 +80,7 @@ export DATA_DIR=/path/to/data   # opcionális
 node scripts/create-user.js --email user@example.com --password 'legalabb12karakter'
 ```
 
-## 11. Fejlesztői környezet
+## 12. Fejlesztői környezet
 
 A `/login` **csak akkor érhető el**, ha a Vite dev szerver fut a **5173**-as porton. A bejelentkezéshez kell az API is (**3010**).
 
@@ -91,7 +103,7 @@ Nyisd meg: **http://localhost:5173/login** (ne csak a főoldalt – a `/login` �
 
 Ha „nem érhető el” / connection refused: nincs elindítva a dev szerver, vagy más folyamat foglalja a 5173-at.
 
-## 12. Élesítés (később, külön jóváhagyással)
+## 13. Élesítés (később, külön jóváhagyással)
 
 1. `SESSION_SECRET`, `CORS_ORIGINS` (pl. `https://juliettelogistique.de`), `NODE_ENV=production`, `TRUST_PROXY=1`.
 2. SQLite fájl jogosultságok + backup.

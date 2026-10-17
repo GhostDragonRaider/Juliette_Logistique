@@ -12,6 +12,7 @@ import { naploModulLetrehozasa } from './naplo.js'
 import { adatbazisLetrehozasa } from './db.js'
 import { SqliteSessionStore } from './sessionStore.js'
 import { belsoRouterLetrehozasa } from './belso/routes.js'
+import { ensureDevTestUser } from './belso/devSeed.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const PORT = Number(process.env.PORT || 3010)
@@ -409,6 +410,8 @@ app.get('/api/admin/naplo', adminVedett, (req, res) => {
   })
   res.json(eredmeny)
 })
+
+await ensureDevTestUser(belsoDb)
 
 app.listen(PORT, '127.0.0.1', () => {
   naplozas(null, {
