@@ -9,6 +9,7 @@ import { useTelefonszam } from '../tartalom/WeboldalTartalomContext'
 import { useNyelv } from '../nyelv/useNyelv'
 import { nyelvKapcsolok, type NyelvKod } from '../nyelv/nyelvTipusok'
 import { tema, aranyKeret, fokuszKeret } from '../stilusok/tema'
+import { useBelsoAuth } from '../belso/BelsoAuthContext'
 
 type FejlecTulajdonsagok = {
   /** Kompatibilitás — a fejléc minden oldalon fix */
@@ -229,6 +230,11 @@ export function Fejlec(_props: FejlecTulajdonsagok = {}) {
   const navigal = useNavigate()
   const [mobilMenuNyitva, setMobilMenuNyitva] = useState(false)
   const menuAzonosito = useId()
+  const { bejelentkezve, betolt: belsoBetolt } = useBelsoAuth()
+  const belsoLinkCel = bejelentkezve ? '/dashboard' : '/login'
+  const belsoLinkFelirat = bejelentkezve
+    ? szoveg.belso.vezerlopult
+    : szoveg.belso.bejelentkezes
 
   useEffect(() => {
     /**
@@ -327,6 +333,14 @@ export function Fejlec(_props: FejlecTulajdonsagok = {}) {
       </NavigacioLista>
 
       <JobbSav className="fejlec-jobb-sav">
+        <NavigacioRouterLink
+          className="belso-bejelentkezes-link navigacio-link"
+          to={belsoBetolt ? belsoLinkCel : '/login'}
+          onClick={mobilMenutBezar}
+          aria-label={szoveg.belso.bejelentkezesAria}
+        >
+          {belsoBetolt ? belsoLinkFelirat : szoveg.belso.bejelentkezes}
+        </NavigacioRouterLink>
         <NyelvValaszto
           className="nyelv-valaszto"
           role="group"
@@ -386,6 +400,13 @@ export function Fejlec(_props: FejlecTulajdonsagok = {}) {
         {szoveg.navigacio.map((link) =>
           navigacioLinketRajzol(link, 'mobil-navigacio-link'),
         )}
+        <NavigacioRouterLink
+          className="mobil-navigacio-link"
+          to={belsoLinkCel}
+          onClick={mobilMenutBezar}
+        >
+          {belsoLinkFelirat}
+        </NavigacioRouterLink>
       </MobilMenuPanel>
     </FejlecSav>
   )

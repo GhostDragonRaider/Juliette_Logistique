@@ -18,6 +18,12 @@ import { AdminTartalom } from './admin/AdminTartalom'
 import { AdminJelentkezesLista } from './admin/AdminJelentkezesLista'
 import { AdminJelentkezesReszlet } from './admin/AdminJelentkezesReszlet'
 import { AdminNaplo } from './admin/AdminNaplo'
+import { BelsoAuthSzolgaltato } from './belso/BelsoAuthContext'
+import { BelepesOldal } from './belso/BelepesOldal'
+import { BelsoVedett } from './belso/BelsoVedett'
+import { DashboardLayout } from './belso/DashboardLayout'
+import { DashboardKezdoldal } from './belso/DashboardKezdoldal'
+import { ProfilOldal } from './belso/ProfilOldal'
 
 /**
  * Az alkalmazás gyökér komponense.
@@ -28,6 +34,7 @@ function App() {
     <NyelvSzolgaltato>
       <GlobalisStilus />
       <BrowserRouter>
+        <BelsoAuthSzolgaltato>
         <WeboldalTartalomSzolgaltato>
         <HashGorgetes />
         <Routes>
@@ -41,6 +48,18 @@ function App() {
             <Route path="/karrier/jelentkezes" element={<Urlap />} />
             <Route path="/adatvedelmi" element={<AdatvedelmiTajekoztato />} />
           </Route>
+          <Route path="/login" element={<BelepesOldal />} />
+          <Route
+            path="/dashboard"
+            element={
+              <BelsoVedett>
+                <DashboardLayout />
+              </BelsoVedett>
+            }
+          >
+            <Route index element={<DashboardKezdoldal />} />
+            <Route path="profile" element={<ProfilOldal />} />
+          </Route>
           <Route path="/admin/belepes" element={<AdminBelepes />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Navigate to="jelentkezesek" replace />} />
@@ -51,6 +70,7 @@ function App() {
           </Route>
         </Routes>
         </WeboldalTartalomSzolgaltato>
+        </BelsoAuthSzolgaltato>
       </BrowserRouter>
     </NyelvSzolgaltato>
   )

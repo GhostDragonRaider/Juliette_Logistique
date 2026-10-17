@@ -7,6 +7,7 @@ import {
   angolAdatvedelmi,
   nemetAdatvedelmi,
 } from './adatvedelmiTartalmak'
+import { belsoForditasok } from './belsoForditasok'
 
 /**
  * Magyar fordítások a főoldalhoz.
@@ -142,6 +143,7 @@ const magyar: OldalForditas = {
   karrier: magyarKarrier,
   jelentkezes: jelentkezesForditasok.hu,
   adatvedelmi: magyarAdatvedelmi,
+  belso: belsoForditasok.hu,
 }
 
 /**
@@ -278,6 +280,7 @@ const angol: OldalForditas = {
   karrier: angolKarrier,
   jelentkezes: jelentkezesForditasok.en,
   adatvedelmi: angolAdatvedelmi,
+  belso: belsoForditasok.en,
 }
 
 /**
@@ -414,6 +417,7 @@ const nemet: OldalForditas = {
   karrier: nemetKarrier,
   jelentkezes: jelentkezesForditasok.de,
   adatvedelmi: nemetAdatvedelmi,
+  belso: belsoForditasok.de,
 }
 
 /**

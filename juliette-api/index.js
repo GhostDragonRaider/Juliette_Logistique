@@ -1,11 +1,17 @@
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 import crypto from 'node:crypto'
 import express from 'express'
 import fs from 'node:fs'
+import helmet from 'helmet'
 import multer from 'multer'
 import path from 'node:path'
+import session from 'express-session'
 import { fileURLToPath } from 'node:url'
 import { naploModulLetrehozasa } from './naplo.js'
+import { adatbazisLetrehozasa } from './db.js'
+import { SqliteSessionStore } from './sessionStore.js'
+import { belsoRouterLetrehozasa } from './belso/routes.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const PORT = Number(process.env.PORT || 3010)
@@ -31,10 +37,64 @@ if (!fs.existsSync(CONTENT_FILE) && fs.existsSync(DEFAULT_CONTENT)) {
 }
 
 const { naplozas, naploLekeres } = naploModulLetrehozasa(DATA_DIR)
+const belsoDb = adatbazisLetrehozasa(DATA_DIR)
+const sessionStore = new SqliteSessionStore(belsoDb)
+
+const SESSION_SECRET =
+  process.env.SESSION_SECRET || 'juliette-dev-session-secret-change-me'
+const CORS_ORIGINS = (process.env.CORS_ORIGINS || '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean)
 
 const app = express()
-app.use(cors())
+if (process.env.TRUST_PROXY === '1') {
+  app.set('trust proxy', 1)
+}
+
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  }),
+)
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin) {
+        callback(null, true)
+        return
+      }
+      if (CORS_ORIGINS.length === 0 || CORS_ORIGINS.includes(origin)) {
+        callback(null, true)
+        return
+      }
+      callback(null, false)
+    },
+    credentials: true,
+  }),
+)
+
+app.use(cookieParser())
+app.use(
+  session({
+    name: 'jl.sid',
+    secret: SESSION_SECRET,
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    rolling: true,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 12 * 60 * 60 * 1000,
+    },
+  }),
+)
 app.use(express.json({ limit: '2mb' }))
+
+app.use('/api', belsoRouterLetrehozasa(belsoDb, { naplozas }))
 
 const feltoltes = multer({
   storage: multer.diskStorage({

@@ -1,7 +1,11 @@
+import type { BelsoForditas } from './belsoForditasok'
+
 /**
  * A weboldalon választható nyelvek típusai.
  */
 export type NyelvKod = 'hu' | 'en' | 'de'
+
+export type { BelsoForditas } from './belsoForditasok'
 
 /**
  * Egy navigációs link fordított felirattal.
@@ -239,6 +243,7 @@ export type OldalForditas = {
   karrier: KarrierForditas
   jelentkezes: JelentkezesForditas
   adatvedelmi: AdatvedelmiForditas
+  belso: BelsoForditas
 }
 
 /**

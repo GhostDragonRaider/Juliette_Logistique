@@ -9,7 +9,8 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "deploy:vps": "bash scripts/feltolt-vps.sh",
-    "favicons": "python3 scripts/generate-favicons.py"
+    "favicons": "python3 scripts/generate-favicons.py",
+    "test:api": "npm run test --prefix juliette-api"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

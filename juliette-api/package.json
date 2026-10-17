@@ -5,11 +5,21 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "node --watch index.js"
+    "dev": "node --watch index.js",
+    "create-user": "node scripts/create-user.js",
+    "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
+    "argon2": "^0.45.1",
+    "better-sqlite3": "^13.0.3",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^4.21.2",
-    "multer": "^1.4.5-lts.2"
+    "express-rate-limit": "^8.7.1",
+    "express-session": "^1.19.0",
+    "helmet": "^8.3.0",
+    "multer": "^1.4.5-lts.2",
+    "uuid": "^14.0.3",
+    "zod": "^4.6.7"
   }
 }

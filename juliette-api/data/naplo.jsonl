@@ -1,0 +1,2 @@
+{"id":"log-1792219390364-c62f7d70","idopont":"2026-10-17T06:43:10.364Z","kategoria":"rendszer","esemeny":"szerver_inditas","uzenet":"Juliette API elindult.","adat":{"port":3199},"felhasznalo":null,"ip":""}
+{"id":"log-1792219391068-c033dc07","idopont":"2026-10-17T06:43:11.068Z","kategoria":"belso_auth","esemeny":"bejelentkezes_sikertelen","uzenet":"Sikertelen belső bejelentkezés.","adat":{},"felhasznalo":null,"ip":"127.0.0.1"}
