@@ -6,58 +6,95 @@ import { BelsoGomb, BelsoHatter } from './belsoStilus'
 import { aranyKeret, aranySzovegAtmenet, tema } from '../stilusok/tema'
 import { useNyelv } from '../nyelv/useNyelv'
 import { NyelvKapcsolo } from '../komponensek/NyelvKapcsolo'
+import { bejelentkezesiFelirat } from './dashboardFelhasznalo'
 
 const Keret = styled.div`
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
   background: ${tema.hatter.fekete};
+  overflow-x: clip;
 `
 
 const Fejlec = styled.header`
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.85rem ${tema.oldalsoPadding};
+  gap: 0.5rem;
+  padding: 0.75rem ${tema.oldalsoPadding};
+  padding-top: max(0.75rem, env(safe-area-inset-top));
   border-bottom: ${aranyKeret};
   background: ${tema.hatter.sotet};
 `
 
-const Marka = styled.span`
+const MenüGomb = styled(BelsoGomb)`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-width: 4.75rem;
+  min-height: 44px;
+  padding: 0.5rem 0.65rem;
+  flex-shrink: 0;
+  line-height: 1.2;
+`
+
+const FelhasznaloNev = styled.p`
+  margin: 0;
+  min-width: 0;
+  text-align: center;
   font-family: ${tema.betu.cim};
-  font-size: 0.75rem;
-  letter-spacing: 0.14em;
+  font-size: clamp(0.72rem, 3.2vw, 0.85rem);
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   ${aranySzovegAtmenet}
+`
+
+const NyelvCella = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
 `
 
 const Tartalom = styled.div`
   flex: 1;
   display: flex;
+  flex-direction: column;
   min-height: 0;
+  width: 100%;
+
+  @media (min-width: ${tema.szelesseg.tablet}) {
+    flex-direction: row;
+  }
 `
 
 const Oldalsav = styled.aside<{ nyitva: boolean }>`
   position: fixed;
   inset: 0 auto 0 0;
   z-index: 40;
-  width: min(280px, 88vw);
+  width: min(280px, 92vw);
   max-width: 100%;
   transform: translateX(${(p) => (p.nyitva ? '0' : '-105%')});
   transition: transform 0.22s ease;
   display: flex;
   flex-direction: column;
   padding: 1rem;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
   gap: 0.35rem;
   background: rgba(27, 27, 27, 0.98);
   border-right: ${aranyKeret};
   box-shadow: ${tema.arnyek.kartya};
+  overflow-y: auto;
 
   @media (min-width: ${tema.szelesseg.tablet}) {
     position: static;
     transform: none;
-    width: 240px;
+    width: min(240px, 28vw);
     flex-shrink: 0;
+    min-height: 0;
   }
 `
 
@@ -105,28 +142,9 @@ const AlsoSav = styled.div`
 const Fo = styled.main`
   flex: 1;
   min-width: 0;
-  padding: 1rem ${tema.oldalsoPadding} 2rem;
-`
-
-const FejlecJobb = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  margin-left: auto;
-  min-width: 0;
-`
-
-const EmailSzoveg = styled.span`
-  font-size: 0.75rem;
-  color: ${tema.szin.szurke};
-  max-width: 42vw;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  @media (min-width: ${tema.szelesseg.tablet}) {
-    max-width: 240px;
-  }
+  width: 100%;
+  padding: 1rem ${tema.oldalsoPadding} max(2rem, env(safe-area-inset-bottom));
+  box-sizing: border-box;
 `
 
 export function DashboardLayout() {
@@ -136,6 +154,7 @@ export function DashboardLayout() {
   const navigate = useNavigate()
   const [menuNyitva, setMenuNyitva] = useState(false)
   const menuId = useId()
+  const felirat = bejelentkezesiFelirat(felhasznalo)
 
   useEffect(() => {
     function escapeFigyelo(e: KeyboardEvent) {
@@ -147,6 +166,17 @@ export function DashboardLayout() {
     return () => window.removeEventListener('keydown', escapeFigyelo)
   }, [])
 
+  useEffect(() => {
+    if (menuNyitva) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [menuNyitva])
+
   async function kilepes() {
     await kijelentkezes()
     navigate('/', { replace: true })
@@ -156,22 +186,18 @@ export function DashboardLayout() {
     <BelsoHatter>
       <Keret>
         <Fejlec>
-          <BelsoGomb
+          <MenüGomb
             type="button"
             aria-expanded={menuNyitva}
             aria-controls={menuId}
             onClick={() => setMenuNyitva((e) => !e)}
-            style={{ minWidth: 44 }}
           >
             {menuNyitva ? t.menuBezar : t.menuNyit}
-          </BelsoGomb>
-          <Marka>{t.vezerlopultCim}</Marka>
-          <FejlecJobb>
+          </MenüGomb>
+          <FelhasznaloNev title={felirat}>{felirat}</FelhasznaloNev>
+          <NyelvCella>
             <NyelvKapcsolo className="belso-nyelv-valaszto" />
-            <EmailSzoveg title={felhasznalo?.email}>
-              {felhasznalo?.email}
-            </EmailSzoveg>
-          </FejlecJobb>
+          </NyelvCella>
         </Fejlec>
 
         <Tartalom>

@@ -16,8 +16,9 @@ import { useNyelv } from '../nyelv/useNyelv'
 const Racs = styled.div`
   display: grid;
   gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
 
-  @media (min-width: ${tema.szelesseg.mobil}) {
+  @media (min-width: ${tema.szelesseg.kicsi}) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 `
