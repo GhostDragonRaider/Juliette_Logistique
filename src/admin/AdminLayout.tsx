@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useNavigate } from 'react-router-dom'
-import { adminKijelentkezes, adminTokenOlvas } from './auth'
+import { adminBejelentkezve, adminKijelentkezes } from './auth'
 import { AdminCim, AdminKeret, AdminNav, AdminPanel, AdminLink } from './adminStilus'
 
 /**
@@ -7,9 +7,8 @@ import { AdminCim, AdminKeret, AdminNav, AdminPanel, AdminLink } from './adminSt
  */
 export function AdminLayout() {
   const navigate = useNavigate()
-  const token = adminTokenOlvas()
-
-  if (!token) {
+  if (!adminBejelentkezve()) {
+    adminKijelentkezes()
     return <Navigate to="/admin/belepes" replace />
   }
 

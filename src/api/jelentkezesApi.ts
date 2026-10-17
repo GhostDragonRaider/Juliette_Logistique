@@ -1,7 +1,15 @@
 import type { UrlapAllapot } from '../komponensek/urlapTipusok'
 import type { FeltoltesKulcs } from '../komponensek/urlapTipusok'
 
+import { adminAtiranyitasBelepesre } from '../admin/auth'
+
 const apiBase = '/api'
+
+function adminValaszEllenorzes(response: Response) {
+  if (response.status === 401) {
+    adminAtiranyitasBelepesre()
+  }
+}
 
 function authHeaders(token: string) {
   return {
@@ -65,6 +73,7 @@ export async function jelentkezesekListazasa(token: string): Promise<Jelentkezes
   const response = await fetch(`${apiBase}/admin/jelentkezesek`, {
     headers: { Authorization: `Bearer ${token}` },
   })
+  adminValaszEllenorzes(response)
   const body = await response.json()
   if (!response.ok) {
     throw new Error(body.hiba || 'A lista betöltése sikertelen.')
@@ -79,6 +88,7 @@ export async function jelentkezesReszletei(
   const response = await fetch(`${apiBase}/admin/jelentkezesek/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
   })
+  adminValaszEllenorzes(response)
   const body = await response.json()
   if (!response.ok) {
     throw new Error(body.hiba || 'A részletek betöltése sikertelen.')
@@ -96,6 +106,7 @@ export async function jelentkezesStatusz(
     headers: authHeaders(token),
     body: JSON.stringify({ statusz }),
   })
+  adminValaszEllenorzes(response)
   const body = await response.json()
   if (!response.ok) {
     throw new Error(body.hiba || 'Státusz mentése sikertelen.')
@@ -108,6 +119,7 @@ export async function adminFajlLetoltese(token: string, utvonal: string): Promis
     `${apiBase}/admin/fajl?path=${encodeURIComponent(utvonal)}`,
     { headers: { Authorization: `Bearer ${token}` } },
   )
+  adminValaszEllenorzes(response)
   if (!response.ok) {
     let message = 'A fájl nem érhető el.'
     try {
@@ -159,6 +171,7 @@ export async function tartalomBetoltese(token: string): Promise<SzerkeszthetoTar
   const response = await fetch(`${apiBase}/admin/content`, {
     headers: { Authorization: `Bearer ${token}` },
   })
+  adminValaszEllenorzes(response)
   const body = await response.json()
   if (!response.ok) {
     throw new Error(body.hiba || 'A tartalom betöltése sikertelen.')
@@ -197,6 +210,7 @@ export async function naploLekeres(
   const response = await fetch(`${apiBase}/admin/naplo?${query.toString()}`, {
     headers: { Authorization: `Bearer ${token}` },
   })
+  adminValaszEllenorzes(response)
   const body = await response.json()
   if (!response.ok) {
     throw new Error(body.hiba || 'A napló betöltése sikertelen.')
@@ -213,6 +227,7 @@ export async function tartalomMentese(
     headers: authHeaders(token),
     body: JSON.stringify(tartalom),
   })
+  adminValaszEllenorzes(response)
   const body = await response.json()
   if (!response.ok) {
     throw new Error(body.hiba || 'Mentés sikertelen.')

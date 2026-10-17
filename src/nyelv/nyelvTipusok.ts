@@ -118,6 +118,21 @@ export type KarrierForditas = {
   cta: string
 }
 
+/** Egy szakasz az adatvédelmi tájékoztatóban */
+export type AdatvedelmiSzekcioForditas = {
+  cim: string
+  bekezdesek?: string[]
+  lista?: string[]
+}
+
+/** Adatvédelmi tájékoztató (jelentkezési folyamat) */
+export type AdatvedelmiForditas = {
+  seo: SeoForditas
+  foCim: string
+  frissites: string
+  szekciok: AdatvedelmiSzekcioForditas[]
+}
+
 /** Sofőr jelentkezési űrlap */
 export type JelentkezesForditas = {
   seo: SeoForditas
@@ -223,6 +238,7 @@ export type OldalForditas = {
   oldalak: OldalakForditas
   karrier: KarrierForditas
   jelentkezes: JelentkezesForditas
+  adatvedelmi: AdatvedelmiForditas
 }
 
 /**

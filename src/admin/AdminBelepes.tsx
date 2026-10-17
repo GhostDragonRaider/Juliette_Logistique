@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { adminBejelentkezes } from '../api/jelentkezesApi'
-import { adminTokenMent, adminTokenOlvas } from './auth'
+import { adminBejelentkezve, adminKijelentkezes, adminTokenMent } from './auth'
 import { AdminCim, AdminKeret, AdminPanel, FoGomb, MezoCsoport, SzovegMezo, UzenetSav } from './adminStilus'
 
 export function AdminBelepes() {
@@ -12,9 +12,11 @@ export function AdminBelepes() {
   const [fut, setFut] = useState(false)
 
   useEffect(() => {
-    if (adminTokenOlvas()) {
+    if (adminBejelentkezve()) {
       navigate('/admin/jelentkezesek', { replace: true })
+      return
     }
+    adminKijelentkezes()
   }, [navigate])
 
   async function kuldes(e: FormEvent) {
