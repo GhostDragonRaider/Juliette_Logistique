@@ -13,6 +13,13 @@ dist-ssr
 *.local
 .vercel
 
+# API runtime data (SQLite, napló, jelentkezések)
+juliette-api/data/*.sqlite
+juliette-api/data/*.sqlite-*
+juliette-api/data/naplo.jsonl
+juliette-api/data/jelentkezesek/
+juliette-api/data/feltoltesek/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
