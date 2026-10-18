@@ -20,6 +20,9 @@ juliette-api/data/naplo.jsonl
 juliette-api/data/jelentkezesek/
 juliette-api/data/feltoltesek/
 
+# Éles VPS másolat (buildelt oldal)
+vps-eles/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
