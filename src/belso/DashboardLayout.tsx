@@ -210,10 +210,16 @@ export function DashboardLayout() {
           ) : null}
           <Oldalsav id={menuId} nyitva={menuNyitva} aria-label={t.navAria}>
             <NavElem
+              to="/dashboard/aktualis-munka"
+              className={({ isActive }) => (isActive ? 'aktiv' : '')}
+              onClick={() => setMenuNyitva(false)}
+            >
+              {t.aktualisMunka}
+            </NavElem>
+            <NavElem
               to="/dashboard/profile"
               className={({ isActive }) => (isActive ? 'aktiv' : '')}
               onClick={() => setMenuNyitva(false)}
-              end={false}
             >
               {t.sajatAdataim}
             </NavElem>

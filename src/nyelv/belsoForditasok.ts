@@ -20,6 +20,9 @@ export type BelsoForditas = {
   menuNyit: string
   menuBezar: string
   navAria: string
+  aktualisMunka: string
+  aktualisMunkaCim: string
+  aktualisMunkaUres: string
   sajatAdataim: string
   kijelentkezes: string
   udvozletCim: string
@@ -59,6 +62,10 @@ const hu: BelsoForditas = {
   menuNyit: 'Menü',
   menuBezar: 'Bezárás',
   navAria: 'Belső navigáció',
+  aktualisMunka: 'Aktuális munka',
+  aktualisMunkaCim: 'Aktuális munka',
+  aktualisMunkaUres:
+    'Itt jelenik meg a folyamatban lévő szállítás vagy feladat. A részletes nyilvántartás egy későbbi fejlesztési szakaszban érkezik.',
   sajatAdataim: 'Saját adataim',
   kijelentkezes: 'Kijelentkezés',
   udvozletCim: 'Üdvözöljük',
@@ -99,6 +106,10 @@ const en: BelsoForditas = {
   menuNyit: 'Menu',
   menuBezar: 'Close',
   navAria: 'Portal navigation',
+  aktualisMunka: 'Current job',
+  aktualisMunkaCim: 'Current job',
+  aktualisMunkaUres:
+    'Your active transport or task will appear here. Detailed records will be added in a later release.',
   sajatAdataim: 'My details',
   kijelentkezes: 'Sign out',
   udvozletCim: 'Welcome',
@@ -139,6 +150,10 @@ const de: BelsoForditas = {
   menuNyit: 'Menü',
   menuBezar: 'Schließen',
   navAria: 'Interne Navigation',
+  aktualisMunka: 'Aktuelle Arbeit',
+  aktualisMunkaCim: 'Aktuelle Arbeit',
+  aktualisMunkaUres:
+    'Hier erscheint Ihr laufender Transport oder Auftrag. Die detaillierte Verwaltung folgt in einer späteren Version.',
   sajatAdataim: 'Meine Daten',
   kijelentkezes: 'Abmelden',
   udvozletCim: 'Willkommen',

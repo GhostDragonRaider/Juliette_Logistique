@@ -24,6 +24,7 @@ import { BelsoVedett } from './belso/BelsoVedett'
 import { DashboardLayout } from './belso/DashboardLayout'
 import { DashboardKezdoldal } from './belso/DashboardKezdoldal'
 import { ProfilOldal } from './belso/ProfilOldal'
+import { AktualisMunkaOldal } from './belso/AktualisMunkaOldal'
 
 /**
  * Az alkalmazás gyökér komponense.
@@ -58,6 +59,7 @@ function App() {
             }
           >
             <Route index element={<DashboardKezdoldal />} />
+            <Route path="aktualis-munka" element={<AktualisMunkaOldal />} />
             <Route path="profile" element={<ProfilOldal />} />
           </Route>
           <Route path="/admin/belepes" element={<AdminBelepes />} />
