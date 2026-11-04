@@ -23,6 +23,7 @@ const FejlecSav = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: nowrap;
   gap: 0.75rem;
   width: 100%;
   box-sizing: border-box;
@@ -33,20 +34,23 @@ const FejlecSav = styled.header`
   background: ${tema.hatter.fekete};
   border-bottom: 1px solid rgba(197, 165, 114, 0.18);
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+
+  .fejlec-logo {
+    flex-shrink: 0;
+  }
 `
 
-/** Asztali navigációs lista */
+/** Asztali navigációs lista — csak széles képernyőn, ahol minden pont elfér */
 const NavigacioLista = styled.nav`
   display: none;
   align-items: center;
-  gap: clamp(0.55rem, 1.2vw, 1.25rem);
+  gap: clamp(0.8rem, 1.5vw, 1.5rem);
+  flex: 1 1 auto;
+  min-width: 0;
+  justify-content: center;
 
-  @media (min-width: ${tema.szelesseg.tablet}) {
+  @media (min-width: ${tema.szelesseg.nagy}) {
     display: flex;
-  }
-
-  @media (min-width: ${tema.szelesseg.asztali}) {
-    gap: clamp(0.8rem, 1.5vw, 1.5rem);
   }
 `
 
@@ -90,28 +94,54 @@ const navigacioLinkStilus = `
 const NavigacioLinkElem = styled.a`${navigacioLinkStilus}`
 const NavigacioRouterLink = styled(Link)`${navigacioLinkStilus}`
 
-/** Jobb oldali segédsáv (nyelv + telefon) */
+/** Jobb oldali segédsáv (nyelv + telefon + hamburger) — nem zsugorodik */
 const JobbSav = styled.div`
   display: flex;
   align-items: center;
   gap: 0.55rem;
-  min-width: 0;
+  flex: 0 0 auto;
 
   @media (min-width: ${tema.szelesseg.kicsi}) {
     gap: 0.85rem;
   }
 `
 
-/** Telefon gomb szöveg — nagyon keskeny képernyőn rejtve */
+/**
+ * Asztali „Bejelentkezés” link — csak teljes nav mellett,
+ * szűkebb nézetben a hamburger menüben van.
+ */
+const AsztaliBelsoLink = styled(NavigacioRouterLink)`
+  display: none;
+  flex-shrink: 0;
+  white-space: nowrap;
+
+  @media (min-width: ${tema.szelesseg.nagy}) {
+    display: inline-flex;
+  }
+`
+
+/** Telefon gomb szöveg — nagyon keskeny képernyőn rejtve, soha nem törik */
 const TelefonSzoveg = styled.span`
   display: none;
+  white-space: nowrap;
 
   @media (min-width: ${tema.szelesseg.kicsi}) {
     display: inline;
   }
 `
 
-/** Mobil menü gomb */
+/** Telefon gomb keret — egy sorban marad, nem zsugorodik */
+const TelefonGombKeret = styled.span`
+  display: inline-flex;
+  flex-shrink: 0;
+
+  .telefon-gomb {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+`
+
+/** Mobil / közepes nézet hamburger gomb — 1440px alatt mindig */
 const MobilMenuGomb = styled.button<{ nyitva: boolean }>`
   display: inline-flex;
   flex-direction: column;
@@ -121,8 +151,9 @@ const MobilMenuGomb = styled.button<{ nyitva: boolean }>`
   min-height: 44px;
   padding: 0.55rem;
   border: ${aranyKeret};
+  flex-shrink: 0;
 
-  @media (min-width: ${tema.szelesseg.tablet}) {
+  @media (min-width: ${tema.szelesseg.nagy}) {
     display: none;
   }
 
@@ -153,7 +184,7 @@ const MobilMenuGomb = styled.button<{ nyitva: boolean }>`
   `}
 `
 
-/** Lenyíló mobil menü panel */
+/** Lenyíló menü panel — 1440px alatt */
 const MobilMenuPanel = styled.div<{ nyitva: boolean }>`
   display: ${(props) => (props.nyitva ? 'flex' : 'none')};
   position: absolute;
@@ -167,7 +198,7 @@ const MobilMenuPanel = styled.div<{ nyitva: boolean }>`
   backdrop-filter: blur(12px);
   border-bottom: ${aranyKeret};
 
-  @media (min-width: ${tema.szelesseg.tablet}) {
+  @media (min-width: ${tema.szelesseg.nagy}) {
     display: none;
   }
 `
@@ -285,27 +316,29 @@ export function Fejlec(_props: FejlecTulajdonsagok = {}) {
       </NavigacioLista>
 
       <JobbSav className="fejlec-jobb-sav">
-        <NavigacioRouterLink
+        <AsztaliBelsoLink
           className="belso-bejelentkezes-link navigacio-link"
           to={belsoBetolt ? belsoLinkCel : '/login'}
           onClick={mobilMenutBezar}
           aria-label={szoveg.belso.bejelentkezesAria}
         >
           {belsoBetolt ? belsoLinkFelirat : szoveg.belso.bejelentkezes}
-        </NavigacioRouterLink>
+        </AsztaliBelsoLink>
         <NyelvKapcsolo className="nyelv-valaszto" />
 
-        <Gomb
-          className="telefon-gomb"
-          href={`tel:${telefonszam.replace(/\s/g, '')}`}
-          valtozat="telefon"
-          mutatTelefont
-          ariaLabel={telefonszam}
-        >
-          <TelefonSzoveg className="telefon-szoveg">
-            <PremiumSzam>{telefonszam}</PremiumSzam>
-          </TelefonSzoveg>
-        </Gomb>
+        <TelefonGombKeret>
+          <Gomb
+            className="telefon-gomb"
+            href={`tel:${telefonszam.replace(/\s/g, '')}`}
+            valtozat="telefon"
+            mutatTelefont
+            ariaLabel={telefonszam}
+          >
+            <TelefonSzoveg className="telefon-szoveg">
+              <PremiumSzam>{telefonszam}</PremiumSzam>
+            </TelefonSzoveg>
+          </Gomb>
+        </TelefonGombKeret>
 
         <MobilMenuGomb
           className="mobil-menu-gomb"

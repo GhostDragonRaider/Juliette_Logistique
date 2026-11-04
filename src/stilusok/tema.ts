@@ -37,6 +37,7 @@ export const tema = {
     mobil: '720px',
     tablet: '980px',
     asztali: '1200px',
+    /** Teljes vízszintes navigáció — 7 menüpont + telefon miatt */
     nagy: '1440px',
   },
   /** Maximális tartalomszélesség nagy monitorokon */

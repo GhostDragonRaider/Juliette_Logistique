@@ -48,17 +48,19 @@ const korvonalStilus = css`
   }
 `
 
-/** A telefonos fejléc-gomb stílusa */
+/** A telefonos fejléc-gomb stílusa — szám mindig egy sorban */
 const telefonStilus = css`
   background: transparent;
   color: ${tema.szin.aranyVilagos};
   border: ${aranyKeret};
+  flex-shrink: 0;
   min-width: 44px;
   min-height: 44px;
   padding: 0.55rem 0.7rem;
   font-size: 0.78rem;
   letter-spacing: 0.05em;
   font-style: italic;
+  white-space: nowrap;
 
   @media (min-width: ${tema.szelesseg.kicsi}) {
     padding: 0.55rem 0.95rem;
@@ -67,6 +69,18 @@ const telefonStilus = css`
 
   &:hover {
     background: rgba(197, 165, 114, 0.1);
+  }
+
+  /* Belső szöveg ne zsugorodjon / ne törjön sorba */
+  & > span {
+    width: auto;
+    flex: 0 0 auto;
+  }
+
+  & > span > span {
+    flex: 0 0 auto;
+    min-width: auto;
+    white-space: nowrap;
   }
 `
 
@@ -119,6 +133,7 @@ const GombSzoveg = styled.span`
   flex: 1 1 auto;
   min-width: 0;
   text-align: center;
+  white-space: nowrap;
 `
 
 /** Fix szélességű ikon-hely (bal/jobb), hogy a szöveg ne csússzon el */
