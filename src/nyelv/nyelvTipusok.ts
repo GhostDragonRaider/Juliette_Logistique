@@ -133,7 +133,6 @@ export type AdatvedelmiSzekcioForditas = {
 export type AdatvedelmiForditas = {
   seo: SeoForditas
   foCim: string
-  frissites: string
   szekciok: AdatvedelmiSzekcioForditas[]
 }
 

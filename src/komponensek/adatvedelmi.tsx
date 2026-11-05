@@ -45,13 +45,6 @@ const Alcim = styled.p`
   color: ${tema.szin.arany};
 `
 
-const Frissites = styled.p`
-  margin: 0;
-  text-align: center;
-  font-size: 0.86rem;
-  color: ${tema.szin.szurkeSotet};
-`
-
 const Szekcio = styled.section`
   display: flex;
   flex-direction: column;
@@ -110,7 +103,6 @@ export function AdatvedelmiTajekoztato() {
         <Keret>
           <FoCim>{adatvedelmi.foCim}</FoCim>
           <Alcim>{cegnev}</Alcim>
-          <Frissites>{adatvedelmi.frissites}</Frissites>
 
           {adatvedelmi.szekciok.map((szekcio) => (
             <Szekcio key={szekcio.cim}>

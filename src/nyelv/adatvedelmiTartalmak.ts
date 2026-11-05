@@ -9,7 +9,6 @@ export const magyarAdatvedelmi: AdatvedelmiForditas = {
       'adatvédelem, adatvédelmi tájékoztató, sofőr jelentkezés, Juliette Logistique, GDPR',
   },
   foCim: 'Adatvédelmi tájékoztató',
-  frissites: 'Utolsó frissítés: 2026. szeptember 8.',
   szekciok: [
     {
       cim: '1. Az adatkezelő',
@@ -93,7 +92,6 @@ export const angolAdatvedelmi: AdatvedelmiForditas = {
       'privacy policy, data protection, driver application, Juliette Logistique, GDPR',
   },
   foCim: 'Privacy Policy',
-  frissites: 'Last updated: 8 September 2026.',
   szekciok: [
     {
       cim: '1. Data controller',
@@ -175,7 +173,6 @@ export const nemetAdatvedelmi: AdatvedelmiForditas = {
       'Datenschutz, Datenschutzerklärung, Fahrerbewerbung, Juliette Logistique, DSGVO',
   },
   foCim: 'Datenschutzerklärung',
-  frissites: 'Letzte Aktualisierung: 8. September 2026.',
   szekciok: [
     {
       cim: '1. Verantwortlicher',
