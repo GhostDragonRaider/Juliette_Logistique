@@ -476,6 +476,9 @@ function ideiglenesJelszo() {
 }
 
 app.post('/api/admin/jelentkezesek/:id/fiok', adminVedett, async (req, res) => {
+  res.status(403).json({ hiba: 'A fiók létrehozása átmenetileg nem elérhető.' })
+  return
+
   const fajl = path.join(APPS_DIR, `${req.params.id}.json`)
   if (!fs.existsSync(fajl)) {
     res.status(404).json({ hiba: 'Nem található.' })
