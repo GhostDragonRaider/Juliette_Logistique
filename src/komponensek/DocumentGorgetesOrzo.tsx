@@ -1,5 +1,8 @@
 import { useEffect } from 'react'
-import { documentGorgetesVisszavonasa } from '../lib/gorgetes'
+import {
+  documentGorgetesVisszavonasa,
+  elemLathatovaGorget,
+} from '../lib/gorgetes'
 
 /**
  * Megakadályozza, hogy a böngésző a window-t görgesse a #root helyett.
@@ -11,11 +14,23 @@ export function DocumentGorgetesOrzo() {
       documentGorgetesVisszavonasa()
     }
 
-    function fókuszUtanJavit() {
-      // A böngésző scrollIntoView-ja a focus után fut — két frame kell.
+    function fókuszUtanJavit(esemeny: FocusEvent) {
+      const cel = esemeny.target
+      const futtat = () => {
+        documentGorgetesVisszavonasa()
+        if (
+          cel instanceof HTMLElement &&
+          document.getElementById('root')?.contains(cel)
+        ) {
+          elemLathatovaGorget(cel, { behavior: 'auto', block: 'nearest' })
+        }
+      }
+      // A böngésző scrollIntoView-ja a focus után fut — frame + késleltetés kell.
       requestAnimationFrame(() => {
-        requestAnimationFrame(javit)
+        requestAnimationFrame(futtat)
       })
+      window.setTimeout(futtat, 50)
+      window.setTimeout(futtat, 120)
     }
 
     window.addEventListener('scroll', javit, { passive: true })

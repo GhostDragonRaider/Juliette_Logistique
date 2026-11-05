@@ -50,6 +50,10 @@ function globalisStilusok() {
     }
 
     #root {
+      /* Fixált réteg: a window focus-scroll ne vihesse el a tartalmat (üres fekete képernyő). */
+      position: fixed;
+      inset: 0;
+      width: 100%;
       height: 100%;
       min-width: 0;
       overflow-x: clip;

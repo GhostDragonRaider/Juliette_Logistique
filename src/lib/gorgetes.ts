@@ -28,7 +28,7 @@ export function documentGorgetesVisszavonasa(): number {
 
   const gyoker = document.getElementById('root')
   if (gyoker) {
-    gyoker.scrollTop += delta
+    gyoker.scrollTo({ top: gyoker.scrollTop + delta, left: 0, behavior: 'auto' })
   }
 
   return delta
@@ -81,7 +81,7 @@ export function elemLathatovaGorget(
     }
   }
 
-  if (delta !== 0) {
+  if (Math.abs(delta) > 1) {
     gyoker.scrollTo({ top: gyoker.scrollTop + delta, left: 0, behavior })
   }
 }
