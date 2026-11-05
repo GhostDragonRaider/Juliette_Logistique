@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
 import styled from '@emotion/styled'
-import { adminFajlLetoltese, type JelentkezesFajl } from '../api/jelentkezesApi'
+import {
+  adminFajlLetoltese,
+  adminFajlUrl,
+  type JelentkezesFajl,
+} from '../api/jelentkezesApi'
 import { adminTokenOlvas } from './auth'
 import { GombSor, UzenetSav } from './adminStilus'
 import { tema } from '../stilusok/tema'
@@ -23,8 +27,25 @@ const FajlRacs = styled.div`
   margin-top: 0.25rem;
 
   @media (max-width: ${tema.szelesseg.mobil}) {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
+`
+
+const FajlKartya = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0.75rem 0.85rem;
+  text-align: center;
+  font-family: ${tema.betu.torzs};
+  color: ${tema.szin.feher};
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.15));
+  border: 1px solid rgba(197, 165, 114, 0.22);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 `
 
 const FajlGomb = styled.button`
@@ -33,6 +54,8 @@ const FajlGomb = styled.button`
   align-items: center;
   gap: 0.25rem;
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   padding: 0.75rem 0.85rem;
   text-align: center;
   cursor: pointer;
@@ -66,31 +89,68 @@ const FajlTipus = styled.span`
 `
 
 const FajlNev = styled.span`
+  max-width: 100%;
   font-size: 0.84rem;
   line-height: 1.35;
   color: ${tema.szin.aranyVilagos};
+  overflow-wrap: anywhere;
+`
+
+const MuveletSor = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  margin-top: 0.35rem;
+`
+
+const FajlLink = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid rgba(197, 165, 114, 0.45);
+  color: ${tema.szin.aranyVilagos};
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid ${tema.szin.aranyVilagos};
+    outline-offset: 2px;
+  }
 `
 
 const ElonezetKeret = styled.div`
   margin-top: 1rem;
   border: 1px solid rgba(197, 165, 114, 0.3);
   background: rgba(0, 0, 0, 0.35);
-  min-height: 280px;
+  min-height: 0;
+  max-width: 100%;
+  overflow: hidden;
   box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.25);
 `
 
 const PdfIframe = styled.iframe`
+  display: block;
   width: 100%;
-  min-height: 70vh;
+  max-width: 100%;
+  height: min(70vh, 720px);
   border: 0;
   background: #fff;
 `
 
 const KepElonezet = styled.img`
   display: block;
+  width: 100%;
   max-width: 100%;
-  max-height: 70vh;
+  height: auto;
+  max-height: min(70vh, 720px);
   margin: 0 auto;
+  object-fit: contain;
 `
 
 const ModalHatter = styled.div`
@@ -106,8 +166,10 @@ const ModalHatter = styled.div`
 `
 
 const ModalPanel = styled.div`
+  box-sizing: border-box;
   width: min(100%, 960px);
-  max-height: 92vh;
+  max-width: calc(100vw - 2rem);
+  max-height: min(92vh, 100dvh - 2rem);
   overflow: auto;
   padding: 1.15rem;
   ${premiumKartya}
@@ -130,6 +192,14 @@ const BezarasGomb = styled.button`
   background: linear-gradient(135deg, #8f7349, #e8d7b5, #c5a572);
 `
 
+function megnyithatoBongeszoben(nev: string): boolean {
+  const alacsony = nev.toLowerCase()
+  return (
+    alacsony.endsWith('.pdf') ||
+    /\.(png|jpe?g|webp|gif)$/i.test(alacsony)
+  )
+}
+
 function fajlTipus(nev: string, blob: Blob): 'pdf' | 'kep' | 'egyeb' {
   const alacsony = nev.toLowerCase()
   if (blob.type === 'application/pdf' || alacsony.endsWith('.pdf')) return 'pdf'
@@ -147,6 +217,7 @@ export function FajlMegtekinto({ fajlok }: Props) {
   const [elonezetUrl, setElonezetUrl] = useState<string | null>(null)
   const [elonezetTipus, setElonezetTipus] = useState<'pdf' | 'kep' | 'egyeb' | null>(null)
   const [elonezetNev, setElonezetNev] = useState('')
+  const token = adminTokenOlvas()
 
   useEffect(() => {
     return () => {
@@ -154,15 +225,12 @@ export function FajlMegtekinto({ fajlok }: Props) {
     }
   }, [elonezetUrl])
 
-  async function megnyit(fajl: JelentkezesFajl) {
+  async function letoltEgyeb(fajl: JelentkezesFajl) {
     setHiba('')
     setBetoltes(true)
     try {
-      const token = adminTokenOlvas()
       const blob = await adminFajlLetoltese(token, fajl.utvonal)
       const tipus = fajlTipus(fajl.nev, blob)
-
-      if (elonezetUrl) URL.revokeObjectURL(elonezetUrl)
 
       if (tipus === 'egyeb') {
         const url = URL.createObjectURL(blob)
@@ -174,6 +242,8 @@ export function FajlMegtekinto({ fajlok }: Props) {
         return
       }
 
+      // Tartalék: ha mégis modal kell, reszponzívan jelenjen meg.
+      if (elonezetUrl) URL.revokeObjectURL(elonezetUrl)
       const url = URL.createObjectURL(blob)
       setElonezetUrl(url)
       setElonezetTipus(tipus)
@@ -206,17 +276,41 @@ export function FajlMegtekinto({ fajlok }: Props) {
       <SzekcioCim>Dokumentumok</SzekcioCim>
       {hiba ? <UzenetSav hiba>{hiba}</UzenetSav> : null}
       <FajlRacs>
-        {fajlok.map((fajl) => (
-          <FajlGomb
-            key={fajl.utvonal}
-            type="button"
-            disabled={betoltes}
-            onClick={() => void megnyit(fajl)}
-          >
-            <FajlTipus>{fajl.mezo}</FajlTipus>
-            <FajlNev>{fajl.nev}</FajlNev>
-          </FajlGomb>
-        ))}
+        {fajlok.map((fajl) =>
+          megnyithatoBongeszoben(fajl.nev) ? (
+            <FajlKartya key={fajl.utvonal}>
+              <FajlTipus>{fajl.mezo}</FajlTipus>
+              <FajlNev>{fajl.nev}</FajlNev>
+              <MuveletSor>
+                <FajlLink
+                  href={adminFajlUrl(token, fajl.utvonal, fajl.nev, false)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Megnyitás
+                </FajlLink>
+                <FajlLink
+                  href={adminFajlUrl(token, fajl.utvonal, fajl.nev, true)}
+                  download={fajl.nev}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Letöltés
+                </FajlLink>
+              </MuveletSor>
+            </FajlKartya>
+          ) : (
+            <FajlGomb
+              key={fajl.utvonal}
+              type="button"
+              disabled={betoltes}
+              onClick={() => void letoltEgyeb(fajl)}
+            >
+              <FajlTipus>{fajl.mezo}</FajlTipus>
+              <FajlNev>{fajl.nev}</FajlNev>
+            </FajlGomb>
+          ),
+        )}
       </FajlRacs>
 
       {elonezetUrl && elonezetTipus ? (
@@ -228,7 +322,12 @@ export function FajlMegtekinto({ fajlok }: Props) {
         >
           <ModalPanel onClick={(e) => e.stopPropagation()}>
             <GombSor>
-              <BezarasGomb type="button" onClick={bezarElonezet}>Bezárás</BezarasGomb>
+              <BezarasGomb type="button" onClick={bezarElonezet}>
+                Bezárás
+              </BezarasGomb>
+              <FajlLink href={elonezetUrl} target="_blank" rel="noopener noreferrer">
+                Új lap
+              </FajlLink>
               <span style={{ color: tema.szin.szurke, fontSize: '0.85rem' }}>{elonezetNev}</span>
             </GombSor>
             <ElonezetKeret>

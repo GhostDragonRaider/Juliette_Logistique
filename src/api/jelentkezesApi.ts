@@ -114,6 +114,24 @@ export async function jelentkezesStatusz(
   return body
 }
 
+/** Admin fájl URL cookie nélküli, új lapos megnyitáshoz (`access` query token). */
+export function adminFajlUrl(
+  token: string,
+  utvonal: string,
+  nev: string,
+  letoltes = false,
+): string {
+  const params = new URLSearchParams({
+    path: utvonal,
+    access: token,
+    nev,
+  })
+  if (letoltes) {
+    params.set('letoltes', '1')
+  }
+  return `${apiBase}/admin/fajl?${params.toString()}`
+}
+
 export async function adminFajlLetoltese(token: string, utvonal: string): Promise<Blob> {
   const response = await fetch(
     `${apiBase}/admin/fajl?path=${encodeURIComponent(utvonal)}`,
