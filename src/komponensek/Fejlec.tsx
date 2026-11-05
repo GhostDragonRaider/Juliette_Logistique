@@ -1,64 +1,86 @@
 import { useEffect, useId, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import styled from '@emotion/styled'
 import { Logo } from './Logo'
 import { Gomb } from './Gomb'
 import { PremiumSzam } from './PremiumSzam'
-import { telefonszam } from '../adatok/fooldalAdatok'
+import { useTelefonszam } from '../tartalom/WeboldalTartalomContext'
 import { useNyelv } from '../nyelv/useNyelv'
-import { nyelvKapcsolok, type NyelvKod } from '../nyelv/nyelvTipusok'
+import { NyelvKapcsolo } from './NyelvKapcsolo'
 import { tema, aranyKeret, fokuszKeret } from '../stilusok/tema'
+import { elemLathatovaGorget } from '../lib/gorgetes'
+import { useBelsoAuth } from '../belso/BelsoAuthContext'
 
-/** A fejléc rögzített sávja */
+type FejlecTulajdonsagok = {
+  /** Kompatibilitás — a fejléc minden oldalon fix */
+  mindigSticky?: boolean
+}
+
+/** Fejléc sáv — a #fejlec-portal fix rétegén belül */
 const FejlecSav = styled.header`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 20;
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: nowrap;
   gap: 0.75rem;
+  width: 100%;
+  box-sizing: border-box;
   padding-top: max(0.85rem, env(safe-area-inset-top, 0px));
   padding-bottom: 1.1rem;
   padding-left: ${tema.oldalsoPadding};
   padding-right: max(1rem, env(safe-area-inset-right, 0px), min(4vw, 3rem));
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0) 100%);
+  background: ${tema.hatter.fekete};
+  border-bottom: 1px solid rgba(197, 165, 114, 0.18);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+
+  .fejlec-logo {
+    flex-shrink: 0;
+  }
 `
 
-/** Asztali navigációs lista */
+/** Asztali navigációs lista — csak széles képernyőn, ahol minden pont elfér */
 const NavigacioLista = styled.nav`
   display: none;
   align-items: center;
   gap: clamp(0.8rem, 1.5vw, 1.5rem);
+  flex: 1 1 auto;
+  min-width: 0;
+  justify-content: center;
 
-  @media (min-width: ${tema.szelesseg.tablet}) {
+  @media (min-width: ${tema.szelesseg.nagy}) {
     display: flex;
   }
 `
 
-/** Egy navigációs link */
-const NavigacioLinkElem = styled.a`
+/** Egy navigációs link — hover csak a szöveg szélességéig, folyékonyan */
+const navigacioLinkStilus = `
   position: relative;
   min-height: 44px;
   display: inline-flex;
   align-items: center;
+  width: fit-content;
+  max-width: 100%;
   font-family: ${tema.betu.cim};
-  font-size: clamp(0.68rem, 0.9vw, 0.8rem);
+  font-size: clamp(0.62rem, 0.85vw, 0.78rem);
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   color: ${tema.szin.aranyVilagos};
-  transition: color 0.2s ease;
+  transition: color 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 
   &::after {
     content: '';
     position: absolute;
     left: 0;
-    bottom: 0.55rem;
-    width: 0;
+    right: 0;
+    bottom: 0.45rem;
     height: 1px;
     background: ${tema.szin.arany};
-    transition: width 0.25s ease;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   &:hover {
@@ -66,76 +88,73 @@ const NavigacioLinkElem = styled.a`
   }
 
   &:hover::after {
-    width: 100%;
+    transform: scaleX(1);
   }
 
   &:focus-visible {
     ${fokuszKeret}
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: color 0.15s ease;
+
+    &::after {
+      transition: none;
+    }
+  }
 `
 
-/** Jobb oldali segédsáv (nyelv + telefon) */
+const NavigacioLinkElem = styled.a`${navigacioLinkStilus}`
+const NavigacioRouterLink = styled(Link)`${navigacioLinkStilus}`
+
+/** Jobb oldali segédsáv (nyelv + telefon + hamburger) — nem zsugorodik */
 const JobbSav = styled.div`
   display: flex;
   align-items: center;
   gap: 0.55rem;
-  min-width: 0;
+  flex: 0 0 auto;
 
   @media (min-width: ${tema.szelesseg.kicsi}) {
     gap: 0.85rem;
   }
 `
 
-/** Nyelvválasztó sor — mindig látható */
-const NyelvValaszto = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-family: ${tema.betu.cim};
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
-  color: ${tema.szin.szurke};
-`
+/**
+ * Asztali „Bejelentkezés” link — csak teljes nav mellett,
+ * szűkebb nézetben a hamburger menüben van.
+ */
+const AsztaliBelsoLink = styled(NavigacioRouterLink)`
+  display: none;
+  flex-shrink: 0;
+  white-space: nowrap;
 
-/** Egy nyelv gombja a kapcsolóban */
-const NyelvGomb = styled.button<{ aktiv: boolean }>`
-  min-width: 36px;
-  min-height: 36px;
-  color: ${(props) => (props.aktiv ? tema.szin.aranyVilagos : tema.szin.szurke)};
-  font-weight: ${(props) => (props.aktiv ? 700 : 500)};
-  transition: color 0.2s ease;
-
-  &:hover {
-    color: ${tema.szin.arany};
-  }
-
-  &:focus-visible {
-    ${fokuszKeret}
+  @media (min-width: ${tema.szelesseg.nagy}) {
+    display: inline-flex;
   }
 `
 
-/** Elválasztó a nyelvek között */
-const NyelvElvalaszto = styled.span`
-  color: ${tema.szin.szurkeSotet};
-`
-
-/** Egy nyelv gomb csoportja az elválasztóval */
-const NyelvElem = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-`
-
-/** Telefon gomb szöveg — nagyon keskeny képernyőn rejtve */
+/** Telefon gomb szöveg — nagyon keskeny képernyőn rejtve, soha nem törik */
 const TelefonSzoveg = styled.span`
   display: none;
+  white-space: nowrap;
 
   @media (min-width: ${tema.szelesseg.kicsi}) {
     display: inline;
   }
 `
 
-/** Mobil menü gomb */
+/** Telefon gomb keret — egy sorban marad, nem zsugorodik */
+const TelefonGombKeret = styled.span`
+  display: inline-flex;
+  flex-shrink: 0;
+
+  .telefon-gomb {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+`
+
+/** Mobil / közepes nézet hamburger gomb — 1440px alatt mindig */
 const MobilMenuGomb = styled.button<{ nyitva: boolean }>`
   display: inline-flex;
   flex-direction: column;
@@ -145,8 +164,9 @@ const MobilMenuGomb = styled.button<{ nyitva: boolean }>`
   min-height: 44px;
   padding: 0.55rem;
   border: ${aranyKeret};
+  flex-shrink: 0;
 
-  @media (min-width: ${tema.szelesseg.tablet}) {
+  @media (min-width: ${tema.szelesseg.nagy}) {
     display: none;
   }
 
@@ -177,35 +197,74 @@ const MobilMenuGomb = styled.button<{ nyitva: boolean }>`
   `}
 `
 
-/** Lenyíló mobil menü panel */
+/** Lenyíló menü panel — 1440px alatt, áttűnéssel és finom legördüléssel */
 const MobilMenuPanel = styled.div<{ nyitva: boolean }>`
-  display: ${(props) => (props.nyitva ? 'flex' : 'none')};
+  display: flex;
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
   flex-direction: column;
+  align-items: flex-start;
   gap: 0.35rem;
   padding: 1rem ${tema.oldalsoPadding} 1.4rem;
   background: rgba(27, 27, 27, 0.97);
+  backdrop-filter: blur(12px);
   border-bottom: ${aranyKeret};
+  transform-origin: top center;
+  transition:
+    opacity 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.34s;
 
-  @media (min-width: ${tema.szelesseg.tablet}) {
+  ${(props) =>
+    props.nyitva
+      ? `
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  `
+      : `
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-0.7rem);
+    pointer-events: none;
+  `}
+
+  @media (min-width: ${tema.szelesseg.nagy}) {
     display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: opacity 0.15s ease, visibility 0.15s;
+    transform: none;
   }
 `
 
 /**
+ * Eldönti, hogy a navigációs cél route-e (nem csak hash a főoldalon).
+ */
+function routeCel(cel: string) {
+  return cel.startsWith('/') && !cel.startsWith('/#')
+}
+
+/**
  * A főoldal fejlécét rajzolja ki: logo, navigáció, nyelvkapcsoló és telefon gomb.
  */
-export function Fejlec() {
-  const { nyelv, szoveg, nyelvetValaszt } = useNyelv()
+export function Fejlec(_props: FejlecTulajdonsagok = {}) {
+  const telefonszam = useTelefonszam()
+  const { szoveg } = useNyelv()
+  const hely = useLocation()
+  const navigal = useNavigate()
   const [mobilMenuNyitva, setMobilMenuNyitva] = useState(false)
   const menuAzonosito = useId()
+  const { bejelentkezve, betolt: belsoBetolt } = useBelsoAuth()
+  const belsoLinkCel = bejelentkezve ? '/dashboard' : '/login'
+  const belsoLinkFelirat = bejelentkezve
+    ? szoveg.belso.vezerlopult
+    : szoveg.belso.bejelentkezes
 
-  /**
-   * Escape billentyűvel bezárja a mobil menüt.
-   */
   useEffect(() => {
     /**
      * Figyeli az Escape billentyűt a menü bezárásához.
@@ -235,62 +294,90 @@ export function Fejlec() {
   }
 
   /**
-   * Átváltja az oldal nyelvét a kapcsolóról.
+   * Hashes főoldali linkeket kezel — más oldalról is a megfelelő szekcióra ugrik.
    */
-  function nyelvetAtvalt(ujNyelv: NyelvKod) {
-    nyelvetValaszt(ujNyelv)
+  function hashLinkKattintas(cel: string) {
+    mobilMenutBezar()
+    const hash = cel.includes('#') ? `#${cel.split('#')[1]}` : cel
+
+    if (hely.pathname !== '/') {
+      navigal({ pathname: '/', hash: hash.replace(/^#/, '') })
+      return
+    }
+
+    const elem = document.querySelector(hash)
+    if (elem) {
+      elemLathatovaGorget(elem, { behavior: 'smooth', block: 'start' })
+    }
   }
 
-  return (
+  /**
+   * Egy navigációs linket rajzol ki (route vagy hash).
+   */
+  function navigacioLinketRajzol(
+    link: { azonosito: string; felirat: string; cel: string },
+    osztalyNev: string,
+  ) {
+    if (routeCel(link.cel)) {
+      return (
+        <NavigacioRouterLink
+          key={link.azonosito}
+          className={osztalyNev}
+          to={link.cel}
+          onClick={mobilMenutBezar}
+        >
+          {link.felirat}
+        </NavigacioRouterLink>
+      )
+    }
+
+    return (
+      <NavigacioLinkElem
+        key={link.azonosito}
+        className={osztalyNev}
+        href={link.cel.startsWith('/#') ? link.cel.slice(1) : link.cel}
+        onClick={(esemeny) => {
+          esemeny.preventDefault()
+          hashLinkKattintas(link.cel)
+        }}
+      >
+        {link.felirat}
+      </NavigacioLinkElem>
+    )
+  }
+
+  const fejlecTartalom = (
     <FejlecSav className="fejlec-sav">
       <Logo className="fejlec-logo" />
 
       <NavigacioLista className="navigacio-lista" aria-label={szoveg.navigacioAria}>
-        {szoveg.navigacio.map((link) => (
-          <NavigacioLinkElem
-            key={link.azonosito}
-            className="navigacio-link"
-            href={link.cel}
-          >
-            {link.felirat}
-          </NavigacioLinkElem>
-        ))}
+        {szoveg.navigacio.map((link) => navigacioLinketRajzol(link, 'navigacio-link'))}
       </NavigacioLista>
 
       <JobbSav className="fejlec-jobb-sav">
-        <NyelvValaszto
-          className="nyelv-valaszto"
-          role="group"
-          aria-label={szoveg.nyelvAria}
+        <AsztaliBelsoLink
+          className="belso-bejelentkezes-link navigacio-link"
+          to={belsoBetolt ? belsoLinkCel : '/login'}
+          onClick={mobilMenutBezar}
+          aria-label={szoveg.belso.bejelentkezesAria}
         >
-          {nyelvKapcsolok.map((kapcsolo, index) => (
-            <NyelvElem key={kapcsolo.kod} className="nyelv-elem">
-              {index > 0 ? <NyelvElvalaszto aria-hidden="true">|</NyelvElvalaszto> : null}
-              <NyelvGomb
-                className="nyelv-gomb"
-                type="button"
-                aktiv={nyelv === kapcsolo.kod}
-                aria-pressed={nyelv === kapcsolo.kod}
-                aria-label={kapcsolo.felirat}
-                onClick={() => nyelvetAtvalt(kapcsolo.kod)}
-              >
-                {kapcsolo.felirat}
-              </NyelvGomb>
-            </NyelvElem>
-          ))}
-        </NyelvValaszto>
+          {belsoBetolt ? belsoLinkFelirat : szoveg.belso.bejelentkezes}
+        </AsztaliBelsoLink>
+        <NyelvKapcsolo className="nyelv-valaszto" />
 
-        <Gomb
-          className="telefon-gomb"
-          href={`tel:${telefonszam.replace(/\s/g, '')}`}
-          valtozat="telefon"
-          mutatTelefont
-          ariaLabel={telefonszam}
-        >
-          <TelefonSzoveg className="telefon-szoveg">
-            <PremiumSzam>{telefonszam}</PremiumSzam>
-          </TelefonSzoveg>
-        </Gomb>
+        <TelefonGombKeret>
+          <Gomb
+            className="telefon-gomb"
+            href={`tel:${telefonszam.replace(/\s/g, '')}`}
+            valtozat="telefon"
+            mutatTelefont
+            ariaLabel={telefonszam}
+          >
+            <TelefonSzoveg className="telefon-szoveg">
+              <PremiumSzam>{telefonszam}</PremiumSzam>
+            </TelefonSzoveg>
+          </Gomb>
+        </TelefonGombKeret>
 
         <MobilMenuGomb
           className="mobil-menu-gomb"
@@ -314,17 +401,26 @@ export function Fejlec() {
         role="navigation"
         aria-label={szoveg.navigacioAria}
       >
-        {szoveg.navigacio.map((link) => (
-          <NavigacioLinkElem
-            key={link.azonosito}
-            className="mobil-navigacio-link"
-            href={link.cel}
-            onClick={mobilMenutBezar}
-          >
-            {link.felirat}
-          </NavigacioLinkElem>
-        ))}
+        {szoveg.navigacio.map((link) =>
+          navigacioLinketRajzol(link, 'mobil-navigacio-link'),
+        )}
+        <NavigacioRouterLink
+          className="mobil-navigacio-link"
+          to={belsoLinkCel}
+          onClick={mobilMenutBezar}
+        >
+          {belsoLinkFelirat}
+        </NavigacioRouterLink>
       </MobilMenuPanel>
     </FejlecSav>
   )
+
+  if (typeof document === 'undefined') {
+    return fejlecTartalom
+  }
+
+  const portalGyoker =
+    document.getElementById('fejlec-portal') ?? document.body
+
+  return createPortal(fejlecTartalom, portalGyoker)
 }

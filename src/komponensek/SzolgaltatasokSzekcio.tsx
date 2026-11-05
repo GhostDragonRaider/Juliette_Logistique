@@ -130,7 +130,7 @@ export function SzolgaltatasokSzekcio() {
         <KozepGombSor className="szolgaltatasok-gomb-sor">
           <Gomb
             className="osszes-szolgaltatas-gomb"
-            href="#szolgaltatasok"
+            href="/szolgaltatasok"
             valtozat="korvonal"
             mutatNyilat
           >

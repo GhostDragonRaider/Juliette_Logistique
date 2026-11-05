@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import styled from '@emotion/styled'
 import { css } from '@emotion/react'
 import { AranyIkon } from './AranyIkon'
@@ -47,17 +48,19 @@ const korvonalStilus = css`
   }
 `
 
-/** A telefonos fejléc-gomb stílusa */
+/** A telefonos fejléc-gomb stílusa — szám mindig egy sorban */
 const telefonStilus = css`
   background: transparent;
   color: ${tema.szin.aranyVilagos};
   border: ${aranyKeret};
+  flex-shrink: 0;
   min-width: 44px;
   min-height: 44px;
   padding: 0.55rem 0.7rem;
   font-size: 0.78rem;
   letter-spacing: 0.05em;
   font-style: italic;
+  white-space: nowrap;
 
   @media (min-width: ${tema.szelesseg.kicsi}) {
     padding: 0.55rem 0.95rem;
@@ -67,14 +70,25 @@ const telefonStilus = css`
   &:hover {
     background: rgba(197, 165, 114, 0.1);
   }
+
+  /* Belső szöveg ne zsugorodjon / ne törjön sorba */
+  & > span {
+    width: auto;
+    flex: 0 0 auto;
+  }
+
+  & > span > span {
+    flex: 0 0 auto;
+    min-width: auto;
+    white-space: nowrap;
+  }
 `
 
-/** A gomb közös alapja */
-const GombAlap = styled.a<{ valtozat: GombValtozat }>`
+const gombAlapCss = css`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.55rem;
+  gap: 0;
   min-height: 44px;
   padding: 0.85rem 1.25rem;
   font-family: ${tema.betu.cim};
@@ -88,11 +102,56 @@ const GombAlap = styled.a<{ valtozat: GombValtozat }>`
   &:focus-visible {
     ${fokuszKeret}
   }
+`
 
+/** Külső / hash / tel link */
+const GombAnchor = styled.a<{ valtozat: GombValtozat }>`
+  ${gombAlapCss}
   ${(props) => props.valtozat === 'telitett' && telitettStilus}
   ${(props) => props.valtozat === 'korvonal' && korvonalStilus}
   ${(props) => props.valtozat === 'telefon' && telefonStilus}
 `
+
+/** Belső SPA route link */
+const GombRouterLink = styled(Link)<{ valtozat: GombValtozat }>`
+  ${gombAlapCss}
+  ${(props) => props.valtozat === 'telitett' && telitettStilus}
+  ${(props) => props.valtozat === 'korvonal' && korvonalStilus}
+  ${(props) => props.valtozat === 'telefon' && telefonStilus}
+`
+
+/** Ikon + szöveg + ikon elrendezés — a felirat vizuálisan középen marad */
+const GombBelso = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  width: 100%;
+`
+
+const GombSzoveg = styled.span`
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+  white-space: nowrap;
+`
+
+/** Fix szélességű ikon-hely (bal/jobb), hogy a szöveg ne csússzon el */
+const IkonHely = styled.span`
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+`
+
+/**
+ * Eldönti, hogy a cél belső SPA útvonal-e.
+ */
+function belsoUtvonalE(href: string) {
+  return href.startsWith('/') && !href.startsWith('//') && !href.startsWith('/#')
+}
 
 /**
  * Egységes pezsgőarany gombot rajzol ki (telített, keretes vagy telefonos változat).
@@ -107,17 +166,41 @@ export function Gomb({
   mutatTelefont = false,
   ariaLabel,
 }: GombTulajdonsagok) {
+  const tartalom = (
+    <GombBelso>
+      <IkonHely aria-hidden={!mutatTelefont}>
+        {mutatTelefont ? <AranyIkon tipus="telefon" meret={16} /> : null}
+      </IkonHely>
+      <GombSzoveg>{children}</GombSzoveg>
+      <IkonHely aria-hidden={!mutatNyilat}>
+        {mutatNyilat ? <AranyIkon tipus="nyil" meret={16} /> : null}
+      </IkonHely>
+    </GombBelso>
+  )
+
+  if (belsoUtvonalE(href)) {
+    return (
+      <GombRouterLink
+        className={className}
+        to={href}
+        valtozat={valtozat}
+        onClick={onClick}
+        aria-label={ariaLabel}
+      >
+        {tartalom}
+      </GombRouterLink>
+    )
+  }
+
   return (
-    <GombAlap
+    <GombAnchor
       className={className}
       href={href}
       valtozat={valtozat}
       onClick={onClick}
       aria-label={ariaLabel}
     >
-      {mutatTelefont ? <AranyIkon tipus="telefon" meret={16} /> : null}
-      <span>{children}</span>
-      {mutatNyilat ? <AranyIkon tipus="nyil" meret={16} /> : null}
-    </GombAlap>
+      {tartalom}
+    </GombAnchor>
   )
 }

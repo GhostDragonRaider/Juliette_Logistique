@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
-import { telefonszam } from '../adatok/fooldalAdatok'
+import { useWeboldalTartalom } from '../tartalom/WeboldalTartalomContext'
 import { useNyelv } from '../nyelv/useNyelv'
-
 /**
  * Beállítja vagy létrehozza a megadott meta elemet a document head-ben.
  */
@@ -51,42 +50,55 @@ function jsonLdBeallitas(adat: Record<string, unknown>) {
   script.textContent = JSON.stringify(adat)
 }
 
+export type SeoFeluliras = {
+  cim?: string
+  leiras?: string
+  kulcsszavak?: string
+}
+
 /**
  * A kiválasztott nyelvhez igazítja a SEO meta adatokat és a JSON-LD-t.
+ * Opcionálisan felülírható aloldal-specifikus címmel és leírással.
  */
-export function SeoFej() {
+export function SeoFej({ feluliras }: { feluliras?: SeoFeluliras }) {
+  const { telefonszam, cegnev, email, cim } = useWeboldalTartalom()
   const { nyelv, szoveg } = useNyelv()
+
+  const seoCim = feluliras?.cim ?? szoveg.seo.cim
+  const seoLeiras = feluliras?.leiras ?? szoveg.seo.leiras
+  const seoKulcsszavak = feluliras?.kulcsszavak ?? szoveg.seo.kulcsszavak
 
   useEffect(() => {
     const oldalUrl = window.location.origin + window.location.pathname
-    const kepUrl = `${window.location.origin}/kepek/hos-hatter.png`
+    const logoUrl = `${window.location.origin}/favicon-192.png`
+    const kepUrl = `${window.location.origin}/favicon-512.png`
 
-    document.title = szoveg.seo.cim
-    metaBeallitas('description', szoveg.seo.leiras)
-    metaBeallitas('keywords', szoveg.seo.kulcsszavak)
+    document.title = seoCim
+    metaBeallitas('description', seoLeiras)
+    metaBeallitas('keywords', seoKulcsszavak)
     metaBeallitas('robots', 'index, follow')
     metaBeallitas('theme-color', '#141414')
     metaBeallitas('og:type', 'website', 'property')
-    metaBeallitas('og:site_name', 'Juliette Logistique', 'property')
-    metaBeallitas('og:title', szoveg.seo.cim, 'property')
-    metaBeallitas('og:description', szoveg.seo.leiras, 'property')
+    metaBeallitas('og:site_name', cegnev, 'property')
+    metaBeallitas('og:title', seoCim, 'property')
+    metaBeallitas('og:description', seoLeiras, 'property')
     metaBeallitas('og:locale', nyelv === 'hu' ? 'hu_HU' : nyelv === 'de' ? 'de_DE' : 'en_US', 'property')
     metaBeallitas('og:url', oldalUrl, 'property')
     metaBeallitas('og:image', kepUrl, 'property')
-    metaBeallitas('twitter:card', 'summary_large_image')
-    metaBeallitas('twitter:title', szoveg.seo.cim)
-    metaBeallitas('twitter:description', szoveg.seo.leiras)
+    metaBeallitas('twitter:card', 'summary')
+    metaBeallitas('twitter:title', seoCim)
+    metaBeallitas('twitter:description', seoLeiras)
     metaBeallitas('twitter:image', kepUrl)
     linkBeallitas('canonical', oldalUrl)
 
-    jsonLdBeallitas({
+    const szervezet: Record<string, unknown> = {
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      name: 'Juliette Logistique',
-      url: oldalUrl,
-      logo: `${window.location.origin}/brand/logo.png`,
-      image: kepUrl,
-      description: szoveg.seo.leiras,
+      name: cegnev,
+      url: window.location.origin,
+      logo: logoUrl,
+      image: logoUrl,
+      description: seoLeiras,
       telephone: telefonszam,
       areaServed: ['DE', 'EU'],
       sameAs: [],
@@ -95,9 +107,21 @@ export function SeoFej() {
         telephone: telefonszam,
         contactType: 'customer service',
         availableLanguage: ['hu', 'en', 'de'],
+        ...(email ? { email } : {}),
       },
-    })
-  }, [nyelv, szoveg])
+    }
+    if (email) {
+      szervezet.email = email
+    }
+    if (cim) {
+      szervezet.address = {
+        '@type': 'PostalAddress',
+        streetAddress: cim,
+      }
+    }
+
+    jsonLdBeallitas(szervezet)
+  }, [nyelv, seoCim, seoLeiras, seoKulcsszavak, telefonszam, cegnev, email, cim])
 
   return null
 }

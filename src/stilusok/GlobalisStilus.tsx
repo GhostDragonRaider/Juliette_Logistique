@@ -16,15 +16,29 @@ function globalisStilusok() {
     }
 
     html {
-      scroll-behavior: smooth;
+      height: 100%;
+      overflow: hidden;
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
     }
 
+    #fejlec-portal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      width: 100%;
+      pointer-events: none;
+    }
+
+    #fejlec-portal > * {
+      pointer-events: auto;
+    }
+
     body {
-      min-height: 100vh;
-      min-height: 100dvh;
-      overflow-x: hidden;
+      height: 100%;
+      overflow: hidden;
       background: ${tema.hatter.fekete};
       color: ${tema.szin.feher};
       font-family: ${tema.betu.torzs};
@@ -36,8 +50,28 @@ function globalisStilusok() {
     }
 
     #root {
-      overflow-x: hidden;
+      /* Fixált réteg: a window focus-scroll ne vihesse el a tartalmat (üres fekete képernyő). */
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
       min-width: 0;
+      overflow-x: clip;
+      overflow-y: auto;
+      overscroll-behavior-y: none;
+      scroll-behavior: smooth;
+      scroll-padding-top: clamp(5rem, 12vh, 6.5rem);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .fejlec-sav {
+      position: relative;
+      width: 100%;
+      max-width: 100vw;
+      box-sizing: border-box;
+      transform: none !important;
+      transition: none !important;
+      animation: none !important;
     }
 
     a {
@@ -57,6 +91,13 @@ function globalisStilusok() {
       cursor: pointer;
       border: none;
       background: none;
+      text-align: center;
+    }
+
+    input[type='submit'],
+    input[type='button'],
+    input[type='reset'] {
+      text-align: center;
     }
 
     ul {
@@ -68,7 +109,7 @@ function globalisStilusok() {
     }
 
     @media (prefers-reduced-motion: reduce) {
-      html {
+      #root {
         scroll-behavior: auto;
       }
 

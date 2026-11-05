@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import { Gomb } from './Gomb'
 import { PremiumSzam } from './PremiumSzam'
-import { telefonszam } from '../adatok/fooldalAdatok'
+import { useTelefonszam, useWeboldalTartalom } from '../tartalom/WeboldalTartalomContext'
 import { useNyelv } from '../nyelv/useNyelv'
 import { tema, aranySzovegAtmenet } from '../stilusok/tema'
 
@@ -78,6 +78,8 @@ const TelefonLink = styled.a`
  * A záró kapcsolatfelvételi sávot és a láblécet jeleníti meg a kiválasztott nyelven.
  */
 export function LablecSzekcio() {
+  const telefonszam = useTelefonszam()
+  const { cegnev } = useWeboldalTartalom()
   const { szoveg } = useNyelv()
 
   return (
@@ -93,7 +95,7 @@ export function LablecSzekcio() {
           </LablecKerdes>
           <Gomb
             className="lablec-kapcsolat-gomb"
-            href={`tel:${telefonszam.replace(/\s/g, '')}`}
+            href="/kapcsolat"
             valtozat="telitett"
             mutatNyilat
             ariaLabel={`${szoveg.lablec.gomb}: ${telefonszam}`}
@@ -105,7 +107,7 @@ export function LablecSzekcio() {
 
       <LablecKeret className="lablec-keret">
         <p className="lablec-marka">
-          <LablecKiemeles>Juliette Logistique</LablecKiemeles>
+          <LablecKiemeles>{cegnev}</LablecKiemeles>
           {' '}
           {szoveg.lablec.markaLeiras}
         </p>
