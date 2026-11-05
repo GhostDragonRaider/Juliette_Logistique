@@ -1,3 +1,4 @@
+import argon2 from 'argon2'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import crypto from 'node:crypto'
@@ -13,6 +14,7 @@ import { adatbazisLetrehozasa } from './db.js'
 import { SqliteSessionStore } from './sessionStore.js'
 import { belsoRouterLetrehozasa } from './belso/routes.js'
 import { ensureDevTestUser } from './belso/devSeed.js'
+import { csrfEllenorzes } from './belso/middleware.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const PORT = Number(process.env.PORT || 3010)
@@ -249,6 +251,38 @@ app.post('/api/admin/login', (req, res) => {
   res.json({ token: tokenKeszites(felhasznalo), felhasznalo })
 })
 
+/**
+ * Belső ADMIN session → admin JWT (az irányítópulton nincs külön /admin belépés).
+ */
+app.post('/api/admin/session-token', csrfEllenorzes, (req, res) => {
+  const userId = req.session?.belsoUserId
+  if (!userId) {
+    res.status(401).json({ hiba: 'Bejelentkezés szükséges.' })
+    return
+  }
+  const user = belsoDb
+    .prepare(
+      `SELECT id, email, role, is_active FROM users WHERE id = ?`,
+    )
+    .get(userId)
+  if (!user || !user.is_active) {
+    res.status(401).json({ hiba: 'Bejelentkezés szükséges.' })
+    return
+  }
+  if (user.role !== 'ADMIN') {
+    res.status(403).json({ hiba: 'Nincs jogosultság.' })
+    return
+  }
+  naplozas(req, {
+    kategoria: 'auth',
+    esemeny: 'admin_session_token',
+    uzenet: 'Admin API token belső sessionből.',
+    felhasznalo: user.id,
+    adat: { email: user.email },
+  })
+  res.json({ token: tokenKeszites(user.email), felhasznalo: user.email })
+})
+
 app.get('/api/admin/content', adminVedett, (req, res) => {
   naplozas(req, {
     kategoria: 'tartalom',
@@ -356,6 +390,9 @@ app.get('/api/admin/jelentkezesek', adminVedett, (req, res) => {
         nev: adat.mezok?.teljesNev || '',
         email: adat.mezok?.email || '',
         telefon: adat.mezok?.telefon || '',
+        fiokUserId: adat.fiokUserId || null,
+        fiokEmail: adat.fiokEmail || null,
+        fiokLetrehozva: adat.fiokLetrehozva || null,
       }
     })
     .sort((a, b) => String(b.erkezett).localeCompare(String(a.erkezett)))
@@ -417,20 +454,182 @@ app.patch('/api/admin/jelentkezesek/:id', adminVedett, (req, res) => {
   res.json(adat)
 })
 
-app.get('/api/admin/fajl', adminVedett, (req, res) => {
+function nevReszek(teljesNev) {
+  const reszek = String(teljesNev || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+  if (reszek.length === 0) {
+    return { firstName: '', lastName: '' }
+  }
+  if (reszek.length === 1) {
+    return { firstName: reszek[0], lastName: '' }
+  }
+  return {
+    lastName: reszek[0],
+    firstName: reszek.slice(1).join(' '),
+  }
+}
+
+function ideiglenesJelszo() {
+  return crypto.randomBytes(12).toString('base64url').slice(0, 16)
+}
+
+app.post('/api/admin/jelentkezesek/:id/fiok', adminVedett, async (req, res) => {
+  const fajl = path.join(APPS_DIR, `${req.params.id}.json`)
+  if (!fs.existsSync(fajl)) {
+    res.status(404).json({ hiba: 'Nem található.' })
+    return
+  }
+  const adat = JSON.parse(fs.readFileSync(fajl, 'utf8'))
+  if (adat.fiokUserId) {
+    res.status(409).json({
+      hiba: 'Ehhez a jelentkezéshez már létrejött felhasználói fiók.',
+      fiokUserId: adat.fiokUserId,
+      email: adat.fiokEmail || adat.mezok?.email || '',
+    })
+    return
+  }
+  const email = String(adat.mezok?.email || '')
+    .trim()
+    .toLowerCase()
+  if (!email || !email.includes('@')) {
+    res.status(400).json({ hiba: 'A jelentkezéshez nincs érvényes e-mail-cím.' })
+    return
+  }
+  const letezo = belsoDb
+    .prepare(`SELECT id FROM users WHERE email = ? COLLATE NOCASE`)
+    .get(email)
+  if (letezo) {
+    res.status(409).json({
+      hiba: 'Ez az e-mail-cím már regisztrálva van a zárt felületen.',
+      fiokUserId: letezo.id,
+      email,
+    })
+    return
+  }
+
+  const jelszo = ideiglenesJelszo()
+  const hash = await argon2.hash(jelszo, { type: argon2.argon2id })
+  const userId = crypto.randomUUID()
+  const profilId = crypto.randomUUID()
+  const now = new Date().toISOString()
+  const { firstName, lastName } = nevReszek(adat.mezok?.teljesNev)
+  const telefon = String(adat.mezok?.telefon || '').trim()
+  const orszag = String(adat.mezok?.orszag || '').trim()
+  const lakhely = String(adat.mezok?.lakhely || '').trim()
+  const szuletesi = String(adat.mezok?.szuletesiDatum || '').trim() || null
+
+  const tx = belsoDb.transaction(() => {
+    belsoDb
+      .prepare(
+        `INSERT INTO users (id, email, password_hash, role, is_active, created_at, updated_at)
+         VALUES (?, ?, ?, 'KLIENS', 1, ?, ?)`,
+      )
+      .run(userId, email, hash, now, now)
+    belsoDb
+      .prepare(
+        `INSERT INTO user_profiles (
+          id, user_id, first_name, last_name, phone, birth_date,
+          country, postal_code, city, street_address, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, '', '', ?, ?)`,
+      )
+      .run(
+        profilId,
+        userId,
+        firstName,
+        lastName,
+        telefon,
+        szuletesi,
+        orszag,
+        lakhely,
+        now,
+        now,
+      )
+  })
+  tx()
+
+  adat.fiokUserId = userId
+  adat.fiokEmail = email
+  adat.fiokLetrehozva = now
+  if ((adat.statusz || 'uj') === 'uj') {
+    adat.statusz = 'folyamatban'
+  }
+  fs.writeFileSync(fajl, JSON.stringify(adat, null, 2), 'utf8')
+
+  naplozas(req, {
+    kategoria: 'jelentkezes',
+    esemeny: 'fiok_letrehozva',
+    uzenet: `Sofőr fiók létrehozva jelentkezésből: ${email}.`,
+    adat: {
+      jelentkezesId: req.params.id,
+      fiokUserId: userId,
+      email,
+      nev: adat.mezok?.teljesNev || '',
+    },
+  })
+
+  res.status(201).json({
+    ok: true,
+    fiokUserId: userId,
+    email,
+    ideiglenesJelszo: jelszo,
+    jelentkezes: adat,
+  })
+})
+
+const FAJL_MIME = {
+  '.pdf': 'application/pdf',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.png': 'image/png',
+  '.webp': 'image/webp',
+  '.gif': 'image/gif',
+}
+
+function fajlContentDisposition(inline, fajlnev) {
+  const tiszta = String(fajlnev).replace(/[\r\n"]/g, '')
+  const ascii = tiszta.replace(/[^\w.\-]+/g, '_') || 'dokumentum'
+  return `${inline ? 'inline' : 'attachment'}; filename="${ascii}"; filename*=UTF-8''${encodeURIComponent(tiszta)}`
+}
+
+app.get('/api/admin/fajl', (req, res, next) => {
+  const header = req.headers.authorization || ''
+  const bearer = header.startsWith('Bearer ') ? header.slice(7) : ''
+  const queryToken = typeof req.query.access === 'string' ? req.query.access : ''
+  const session = tokenEllenorzes(bearer || queryToken)
+  if (!session) {
+    res.status(401).json({ hiba: 'Bejelentkezés szükséges.' })
+    return
+  }
+  req.admin = session
+  next()
+}, (req, res) => {
   const rel = String(req.query.path || '')
-  const abs = path.resolve(DATA_DIR, rel)
-  if (!abs.startsWith(path.resolve(DATA_DIR)) || !fs.existsSync(abs)) {
+  const gyoker = path.resolve(DATA_DIR)
+  const abs = path.resolve(gyoker, rel)
+  if (!abs.startsWith(`${gyoker}${path.sep}`) || !fs.existsSync(abs) || !fs.statSync(abs).isFile()) {
     res.status(404).json({ hiba: 'Fájl nem található.' })
     return
   }
+  const kertNev = typeof req.query.nev === 'string' ? path.basename(req.query.nev) : ''
+  const fajlnev = kertNev || path.basename(abs)
+  const mime = FAJL_MIME[path.extname(fajlnev).toLowerCase()] || 'application/octet-stream'
+  const letoltes = req.query.letoltes === '1'
+  const megnyithato = mime === 'application/pdf' || mime.startsWith('image/')
   naplozas(req, {
     kategoria: 'fajl',
     esemeny: 'letoltes',
-    uzenet: `Fájl letöltve / megtekintve: ${path.basename(abs)}.`,
+    uzenet: `Fájl letöltve / megtekintve: ${fajlnev}.`,
     adat: { utvonal: rel },
   })
-  res.download(abs)
+  res.setHeader('Content-Type', mime)
+  res.setHeader('X-Content-Type-Options', 'nosniff')
+  res.setHeader(
+    'Content-Disposition',
+    fajlContentDisposition(!letoltes && megnyithato, fajlnev),
+  )
+  res.sendFile(abs)
 })
 
 app.get('/api/admin/naplo', adminVedett, (req, res) => {
