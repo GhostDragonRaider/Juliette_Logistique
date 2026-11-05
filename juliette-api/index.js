@@ -97,6 +97,38 @@ app.use(express.json({ limit: '2mb' }))
 
 app.use('/api', belsoRouterLetrehozasa(belsoDb, { naplozas }))
 
+/**
+ * Multer/busboy a Content-Disposition fájlnevet latin1 bájtsorként adja.
+ * A böngésző UTF-8 nevét visszaalakítjuk helyes Unicode szöveggé.
+ */
+function utf8Fajlnev(originalname) {
+  const nyers = String(originalname || 'fajl')
+  try {
+    const dekodolt = Buffer.from(nyers, 'latin1').toString('utf8')
+    if (dekodolt.includes('\uFFFD')) {
+      return nyers
+    }
+    return dekodolt
+  } catch {
+    return nyers
+  }
+}
+
+function biztonsagosFajlnev(originalname) {
+  return utf8Fajlnev(originalname)
+    .normalize('NFC')
+    .replace(/[^\p{L}\p{N}._-]+/gu, '_')
+}
+
+/** Már elmentett (hibásan latin1-ként tárolt) fájlnevek javítása válaszadáskor. */
+function fajlokUtf8Javitas(fajlok) {
+  if (!Array.isArray(fajlok)) return fajlok
+  return fajlok.map((fajl) => {
+    if (!fajl || typeof fajl !== 'object') return fajl
+    return { ...fajl, nev: utf8Fajlnev(fajl.nev) }
+  })
+}
+
 const feltoltes = multer({
   storage: multer.diskStorage({
     destination(req, _file, cb) {
@@ -106,8 +138,7 @@ const feltoltes = multer({
       cb(null, dir)
     },
     filename(_req, file, cb) {
-      const biztonsagos = file.originalname.replace(/[^\w.\-áéíóöőúüűÁÉÍÓÖŐÚÜŰ]+/g, '_')
-      cb(null, `${Date.now()}-${biztonsagos}`)
+      cb(null, `${Date.now()}-${biztonsagosFajlnev(file.originalname)}`)
     },
   }),
   limits: { fileSize: 12 * 1024 * 1024, files: 12 },
@@ -267,7 +298,7 @@ app.post('/api/jelentkezesek', (req, res, next) => {
 
     const fajlok = (req.files || []).map((f) => ({
       mezo: f.fieldname,
-      nev: f.originalname,
+      nev: utf8Fajlnev(f.originalname),
       meret: f.size,
       utvonal: path.relative(DATA_DIR, f.path),
     }))
@@ -346,6 +377,7 @@ app.get('/api/admin/jelentkezesek/:id', adminVedett, (req, res) => {
     return
   }
   const adat = JSON.parse(fs.readFileSync(fajl, 'utf8'))
+  adat.fajlok = fajlokUtf8Javitas(adat.fajlok)
   naplozas(req, {
     kategoria: 'jelentkezes',
     esemeny: 'reszlet_megtekintes',
