@@ -9,6 +9,7 @@ import { useTelefonszam } from '../tartalom/WeboldalTartalomContext'
 import { useNyelv } from '../nyelv/useNyelv'
 import { NyelvKapcsolo } from './NyelvKapcsolo'
 import { tema, aranyKeret, fokuszKeret } from '../stilusok/tema'
+import { elemLathatovaGorget } from '../lib/gorgetes'
 import { useBelsoAuth } from '../belso/BelsoAuthContext'
 
 type FejlecTulajdonsagok = {
@@ -268,7 +269,7 @@ export function Fejlec(_props: FejlecTulajdonsagok = {}) {
 
     const elem = document.querySelector(hash)
     if (elem) {
-      elem.scrollIntoView({ behavior: 'smooth' })
+      elemLathatovaGorget(elem, { behavior: 'smooth', block: 'start' })
     }
   }
 

@@ -10,6 +10,7 @@ import { Urlap } from './komponensek/urlap'
 import { AdatvedelmiTajekoztato } from './komponensek/adatvedelmi'
 import { GlobalisStilus } from './stilusok/GlobalisStilus'
 import { HashGorgetes } from './komponensek/HashGorgetes'
+import { DocumentGorgetesOrzo } from './komponensek/DocumentGorgetesOrzo'
 import { NyilvanosLayout } from './komponensek/NyilvanosLayout'
 import { WeboldalTartalomSzolgaltato } from './tartalom/WeboldalTartalomContext'
 import { AdminLayout } from './admin/AdminLayout'
@@ -38,6 +39,7 @@ function App() {
         <BelsoAuthSzolgaltato>
         <WeboldalTartalomSzolgaltato>
         <HashGorgetes />
+        <DocumentGorgetesOrzo />
         <Routes>
           <Route element={<NyilvanosLayout />}>
             <Route path="/" element={<FoOldal />} />

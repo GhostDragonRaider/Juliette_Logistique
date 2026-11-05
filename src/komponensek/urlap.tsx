@@ -21,7 +21,7 @@ import {
   ellenorizFeltoltesFajl,
   profilkepNormalizal,
 } from './urlapFajl'
-import { oldalTetejereGorget } from '../lib/gorgetes'
+import { elemLathatovaGorget, oldalTetejereGorget } from '../lib/gorgetes'
 import { useNyelv } from '../nyelv/useNyelv'
 import type { UrlapOpcio } from '../nyelv/nyelvTipusok'
 import { SeoFej } from './SeoFej'
@@ -874,7 +874,9 @@ export function Urlap() {
     if (Object.keys(ujHibak).length > 0) {
       window.setTimeout(() => {
         const elsoHiba = document.querySelector<HTMLElement>('[data-hiba="true"]')
-        elsoHiba?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        if (elsoHiba) {
+          elemLathatovaGorget(elsoHiba, { behavior: 'smooth', block: 'center' })
+        }
       }, 50)
       return
     }
