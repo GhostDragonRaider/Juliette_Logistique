@@ -55,28 +55,32 @@ const NavigacioLista = styled.nav`
   }
 `
 
-/** Egy navigációs link */
+/** Egy navigációs link — hover csak a szöveg szélességéig, folyékonyan */
 const navigacioLinkStilus = `
   position: relative;
   min-height: 44px;
   display: inline-flex;
   align-items: center;
+  width: fit-content;
+  max-width: 100%;
   font-family: ${tema.betu.cim};
   font-size: clamp(0.62rem, 0.85vw, 0.78rem);
   font-weight: 600;
   letter-spacing: 0.1em;
   color: ${tema.szin.aranyVilagos};
-  transition: color 0.2s ease;
+  transition: color 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 
   &::after {
     content: '';
     position: absolute;
     left: 0;
-    bottom: 0.55rem;
-    width: 0;
+    right: 0;
+    bottom: 0.45rem;
     height: 1px;
     background: ${tema.szin.arany};
-    transition: width 0.25s ease;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   &:hover {
@@ -84,11 +88,19 @@ const navigacioLinkStilus = `
   }
 
   &:hover::after {
-    width: 100%;
+    transform: scaleX(1);
   }
 
   &:focus-visible {
     ${fokuszKeret}
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: color 0.15s ease;
+
+    &::after {
+      transition: none;
+    }
   }
 `
 
@@ -185,22 +197,48 @@ const MobilMenuGomb = styled.button<{ nyitva: boolean }>`
   `}
 `
 
-/** Lenyíló menü panel — 1440px alatt */
+/** Lenyíló menü panel — 1440px alatt, áttűnéssel és finom legördüléssel */
 const MobilMenuPanel = styled.div<{ nyitva: boolean }>`
-  display: ${(props) => (props.nyitva ? 'flex' : 'none')};
+  display: flex;
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
   flex-direction: column;
+  align-items: flex-start;
   gap: 0.35rem;
   padding: 1rem ${tema.oldalsoPadding} 1.4rem;
   background: rgba(27, 27, 27, 0.97);
   backdrop-filter: blur(12px);
   border-bottom: ${aranyKeret};
+  transform-origin: top center;
+  transition:
+    opacity 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.34s;
+
+  ${(props) =>
+    props.nyitva
+      ? `
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  `
+      : `
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-0.7rem);
+    pointer-events: none;
+  `}
 
   @media (min-width: ${tema.szelesseg.nagy}) {
     display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: opacity 0.15s ease, visibility 0.15s;
+    transform: none;
   }
 `
 
